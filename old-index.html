@@ -1,0 +1,372 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="claude:viewport-fit-sides" content="cover">
+<title>gluponya</title>
+<meta name="description" content="Оня (gluponya) делает приложение на стримах, не умея программировать. Twitch, YouTube, шортсы, коты">
+<meta property="og:title" content="gluponya">
+<meta property="og:description" content="Делаю приложение, не умея программировать">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Rubik:wght@900&family=Nunito:wght@700;800;900&display=swap">
+<style>
+/* Одна сливовая сцена: розовый и мята на сливе, жёлтый только для стикеров, фиолетовый только для Twitch */
+:root{
+  --pink:#FF7ABE; --pink-hot:#FF4FA3; --mint:#78EEC4; --plum:#2E0C24; --cream:#FFF8FB;
+  --yellow:#FFD84D; --twitch:#9146FF; --surface:#45173A; --chat:#1E0818;
+  --ink:var(--cream); --ink-muted:#D9B8CC; --on-fill:var(--plum); --line:#6B2E58;
+  --display:"Rubik","Nunito",system-ui,sans-serif;
+  --body:"Nunito","Rubik",system-ui,sans-serif;
+  --shadow:0 12px 28px rgba(20,4,15,.45);
+  --r-sm:10px; --r-md:18px; --r-lg:28px;
+  color-scheme:dark;
+  padding-top:env(safe-area-inset-top,0px); padding-bottom:env(safe-area-inset-bottom,0px);
+}
+*{box-sizing:border-box}
+html,body{margin:0}
+body{
+  background:var(--plum) radial-gradient(rgba(255,122,190,.16) 1.6px,transparent 1.7px) 0 0/26px 26px;
+  color:var(--ink); font-family:var(--body); font-weight:700; font-size:18px; line-height:1.45;
+  overflow-x:hidden;
+}
+a{color:inherit}
+.wrap{max-width:1120px;margin:0 auto;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+h1,h2,h3{font-family:var(--display);font-weight:900;text-transform:uppercase;line-height:.98;text-wrap:balance;margin:0}
+h2{font-size:clamp(34px,5.2vw,54px)}
+p{margin:0}
+.kicker{display:inline-block;font-family:var(--display);font-weight:900;text-transform:uppercase;letter-spacing:.04em;font-size:14px;background:var(--mint);color:var(--on-fill);padding:6px 12px;border-radius:var(--r-sm)}
+section{padding-block:72px}
+.sec-head{display:flex;flex-direction:column;gap:14px;margin-bottom:34px}
+
+/* шапка */
+nav.top{display:flex;justify-content:space-between;align-items:center;gap:12px;padding-block:18px;flex-wrap:wrap}
+.mark{font-family:var(--display);font-weight:900;font-size:26px;color:var(--pink);text-decoration:none;letter-spacing:-.01em}
+.mark span{color:var(--mint)}
+.top-links{display:flex;gap:8px;flex-wrap:wrap}
+.top-links a{text-decoration:none;font-size:14px;font-weight:800;padding:8px 14px;border-radius:999px;background:var(--surface);color:var(--cream)}
+.top-links a:hover,.top-links a:focus-visible{background:var(--pink);color:var(--on-fill);outline:none}
+
+/* герой */
+.hero{padding-block:48px 80px;position:relative}
+.hero-grid{display:grid;grid-template-columns:1.25fr .75fr;gap:40px;align-items:center}
+.hero h1{font-size:clamp(64px,11vw,148px);color:var(--pink);letter-spacing:-.02em;line-height:.9;text-transform:none}
+.hero h1 em{font-style:normal;color:var(--mint)}
+.plate{display:inline-block;font-family:var(--display);font-weight:900;text-transform:uppercase;background:var(--pink);color:var(--on-fill);padding:12px 20px;border-radius:var(--r-sm);font-size:clamp(18px,2.6vw,28px);line-height:1.1;box-shadow:var(--shadow);margin-top:22px}
+.lead{font-size:clamp(18px,2vw,22px);color:var(--ink-muted);max-width:34ch;margin-top:22px}
+.lead b{color:var(--cream)}
+.cta{display:flex;gap:12px;flex-wrap:wrap;margin-top:30px}
+.btn{text-decoration:none;font-family:var(--display);font-weight:900;text-transform:uppercase;font-size:16px;padding:14px 22px;border-radius:999px;background:var(--surface);color:var(--cream);box-shadow:var(--shadow);transition:transform .15s}
+.btn:hover,.btn:focus-visible{transform:translateY(-2px) rotate(-1deg);outline:none}
+.btn.twitch{background:var(--twitch);color:#fff}
+.btn.mint{background:var(--mint);color:var(--on-fill)}
+.btn.pink{background:var(--pink);color:var(--on-fill)}
+
+/* стикеры-callout'ы */
+.stack{position:relative;min-height:340px}
+.sticker{position:absolute;font-family:var(--display);font-weight:900;text-transform:uppercase;font-size:clamp(20px,2.4vw,30px);padding:12px 18px;border-radius:var(--r-md);box-shadow:var(--shadow);white-space:nowrap;line-height:1}
+.sticker.y{background:var(--yellow);color:var(--on-fill)}
+.sticker.p{background:var(--pink);color:var(--on-fill)}
+.sticker.m{background:var(--mint);color:var(--on-fill)}
+.sticker.h{background:var(--pink-hot);color:var(--on-fill)}
+.s1{top:4%;left:4%;transform:rotate(-6deg)}
+.s2{top:30%;right:2%;transform:rotate(5deg)}
+.s3{top:56%;left:10%;transform:rotate(-4deg)}
+.s4{bottom:0;right:14%;transform:rotate(7deg)}
+@media (prefers-reduced-motion:no-preference){
+  .sticker{animation:pop .5s cubic-bezier(.2,1.6,.4,1) both}
+  .s2{animation-delay:.12s}.s3{animation-delay:.24s}.s4{animation-delay:.36s}
+  @keyframes pop{from{scale:0}60%{scale:1.1}to{scale:1}}
+  .clodik{animation:bob 3.4s ease-in-out infinite}
+  @keyframes bob{0%,100%{translate:0 0}50%{translate:0 -10px}}
+}
+/* Клодик: оранжевая глянцевая искорка */
+.clodik{position:absolute;top:34%;left:48%;width:84px;height:84px;filter:drop-shadow(0 10px 18px rgba(20,4,15,.5))}
+.clodik svg{width:100%;height:100%}
+
+/* кто я */
+.who{display:grid;grid-template-columns:1fr 1fr;gap:28px;align-items:start}
+.card{background:var(--surface);border-radius:var(--r-lg);padding:32px;box-shadow:var(--shadow)}
+.card h3{font-size:22px;color:var(--mint);margin-bottom:12px}
+.card p+p{margin-top:12px}
+.facts{display:grid;gap:12px;margin:0;padding:0;list-style:none}
+.facts li{display:flex;gap:12px;align-items:baseline}
+.facts li::before{content:"✓";font-family:var(--display);font-weight:900;color:var(--mint);flex:0 0 auto}
+.quote{font-family:var(--display);font-weight:900;text-transform:uppercase;font-size:clamp(24px,3.4vw,36px);line-height:1.05;color:var(--cream)}
+.quote .hl{color:var(--pink)}
+
+/* что происходит */
+.three{display:grid;grid-template-columns:repeat(3,1fr);gap:20px}
+.three .card{min-width:0}
+.three .num{font-family:var(--display);font-weight:900;font-size:14px;color:var(--mint);letter-spacing:.06em;text-transform:uppercase;margin-bottom:10px}
+
+/* шкала */
+.scale{background:var(--surface);border-radius:var(--r-lg);padding:32px;box-shadow:var(--shadow)}
+.scale-head{display:flex;justify-content:space-between;align-items:baseline;gap:16px;flex-wrap:wrap;font-family:var(--display);font-weight:900;text-transform:uppercase;font-size:clamp(18px,2.4vw,26px)}
+.scale-head .r{color:var(--mint)}
+.track{height:28px;background:var(--line);border-radius:999px;margin-top:18px;overflow:hidden}
+.fill{height:100%;width:0;background:var(--mint);border-radius:999px;transition:width 1.4s cubic-bezier(.2,.9,.3,1)}
+.fill.go{width:31%}
+.scale-note{margin-top:14px;color:var(--ink-muted)}
+.now{display:inline-block;background:var(--pink-hot);color:var(--on-fill);border-radius:999px;padding:3px 10px;font-family:var(--display);font-weight:900;font-size:13px;text-transform:uppercase;margin-left:8px;vertical-align:middle}
+.rating{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:28px}
+.rating div{text-align:center;font-family:var(--display);font-weight:900;text-transform:uppercase;font-size:clamp(13px,1.7vw,18px);padding:12px 8px;border-radius:var(--r-sm);background:var(--chat);color:var(--ink-muted);line-height:1.05}
+.rating .on{background:var(--yellow);color:var(--on-fill)}
+
+/* словарик */
+.words{display:flex;flex-wrap:wrap;gap:14px;align-items:center}
+.words span{font-family:var(--display);font-weight:900;text-transform:uppercase;padding:10px 16px;border-radius:var(--r-md);box-shadow:var(--shadow);font-size:clamp(16px,2vw,22px);line-height:1}
+.words span:nth-child(3n+1){background:var(--pink);color:var(--on-fill);rotate:-3deg}
+.words span:nth-child(3n+2){background:var(--mint);color:var(--on-fill);rotate:2deg}
+.words span:nth-child(3n+3){background:var(--yellow);color:var(--on-fill);rotate:-2deg}
+.term{margin-top:34px;background:var(--surface);border-radius:var(--r-lg);padding:28px 32px;box-shadow:var(--shadow);display:grid;grid-template-columns:auto 1fr;gap:20px;align-items:start}
+.term .bebebe{font-family:var(--display);font-weight:900;text-transform:uppercase;font-size:14px;color:var(--pink);letter-spacing:.04em;line-height:1.3}
+.term .t{font-size:clamp(22px,3vw,32px);font-weight:900;color:var(--cream)}
+.term .d{color:var(--ink-muted);margin-top:6px}
+
+/* палитра */
+.pal{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:14px}
+.sw{border-radius:var(--r-md);padding:18px 16px;min-height:150px;display:flex;flex-direction:column;justify-content:flex-end;gap:4px;box-shadow:var(--shadow)}
+.sw b{font-family:var(--display);font-weight:900;text-transform:uppercase;font-size:15px}
+.sw small{font-size:13px;opacity:.85;font-variant-numeric:tabular-nums}
+.sw.dark{border:2px solid var(--line)}
+
+/* коты */
+.cats{display:grid;grid-template-columns:repeat(3,1fr);gap:20px}
+.cat{background:var(--surface);border-radius:var(--r-lg);padding:26px;box-shadow:var(--shadow);min-width:0}
+.cat .ava{width:88px;height:88px;border-radius:50%;border:4px solid var(--pink);margin-bottom:16px;display:grid;place-items:center;font-family:var(--display);font-weight:900;font-size:34px}
+.cat h3{font-size:24px;color:var(--pink)}
+.cat .tag{display:inline-block;margin:8px 0 10px;font-family:var(--display);font-weight:900;text-transform:uppercase;font-size:13px;background:var(--yellow);color:var(--on-fill);padding:5px 10px;border-radius:var(--r-sm);rotate:-2deg}
+.cat p{color:var(--ink-muted)}
+
+/* где смотреть */
+.links{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:16px}
+.link{text-decoration:none;background:var(--surface);border-radius:var(--r-lg);padding:24px;box-shadow:var(--shadow);display:flex;flex-direction:column;gap:6px;transition:transform .15s}
+.link:hover,.link:focus-visible{transform:translateY(-3px);outline:none}
+.link b{font-family:var(--display);font-weight:900;text-transform:uppercase;font-size:20px}
+.link span{color:var(--ink-muted);font-size:15px}
+.link.tw{background:var(--twitch)}
+.link.tw b,.link.tw span{color:#fff}
+
+/* финал */
+footer{padding-block:70px 60px;text-align:center}
+.bye{font-family:var(--display);font-weight:900;text-transform:uppercase;font-size:clamp(28px,5vw,56px);color:var(--pink);line-height:1}
+.bye2{margin-top:16px;color:var(--ink-muted)}
+.foot-plate{display:inline-block;margin-top:28px;background:var(--twitch);color:#fff;font-family:var(--display);font-weight:900;padding:12px 22px;border-radius:999px;text-decoration:none;font-size:18px}
+
+@media (max-width:860px){
+  .hero-grid,.who,.three,.cats{grid-template-columns:1fr}
+  .stack{min-height:260px;margin-top:10px}
+  .clodik{left:42%;top:30%}
+  section{padding-block:52px}
+  .term{grid-template-columns:1fr}
+}
+@media (max-width:480px){
+  .sticker{font-size:17px;padding:10px 14px}
+  .card,.scale,.cat{padding:22px}
+}
+</style>
+</head>
+<body>
+
+<header class="wrap">
+  <nav class="top">
+    <a class="mark" href="#">glup<span>onya</span></a>
+    <div class="top-links">
+      <a href="#who">кто я</a>
+      <a href="#words">словарик</a>
+      <a href="#cats">коты</a>
+      <a href="#watch">где смотреть</a>
+    </div>
+  </nav>
+</header>
+
+<main>
+<section class="hero wrap">
+  <div class="hero-grid">
+    <div>
+      <h1>glup<em>onya</em></h1>
+      <div class="plate">Делаю приложение,<br>не умея программировать</div>
+      <p class="lead">Я Оня. Стримлю из Львова, вайбкожу приложения с <b>Клодиком</b>, играю в TFT и ищу повод показать вам фотки своих котов</p>
+      <div class="cta">
+        <a class="btn twitch" href="https://twitch.tv/gluponya">twitch.tv/gluponya</a>
+        <a class="btn pink" href="https://www.youtube.com/@gluponya">YouTube</a>
+        <a class="btn mint" href="https://www.tiktok.com/@gluponya_twitch">TikTok</a>
+        <a class="btn" href="https://www.instagram.com/gluponya">Instagram</a>
+      </div>
+    </div>
+    <div class="stack" aria-hidden="true">
+      <div class="sticker y s1">Це перемога</div>
+      <div class="sticker p s2">Я пенсия</div>
+      <div class="sticker m s3">Good enough</div>
+      <div class="sticker h s4">Осуждаю</div>
+      <div class="clodik">
+        <svg viewBox="0 0 100 100">
+          <defs><radialGradient id="g" cx="35%" cy="30%" r="75%"><stop offset="0" stop-color="#FFC37A"/><stop offset=".6" stop-color="#ED993A"/><stop offset="1" stop-color="#C46A1A"/></radialGradient></defs>
+          <path fill="url(#g)" d="M50 4 L62 36 L96 38 L69 59 L79 93 L50 73 L21 93 L31 59 L4 38 L38 36 Z" stroke="#2E0C24" stroke-width="3" stroke-linejoin="round"/>
+          <circle cx="42" cy="49" r="5" fill="#2E0C24"/><circle cx="58" cy="49" r="5" fill="#2E0C24"/>
+          <circle cx="43.5" cy="47.5" r="1.6" fill="#fff"/><circle cx="59.5" cy="47.5" r="1.6" fill="#fff"/>
+          <path d="M43 60 Q50 66 57 60" stroke="#2E0C24" stroke-width="3" fill="none" stroke-linecap="round"/>
+        </svg>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="who" class="wrap">
+  <div class="sec-head">
+    <span class="kicker">Кто я</span>
+    <h2>Без опыта, но сообразительная</h2>
+  </div>
+  <div class="who">
+    <div class="card">
+      <p class="quote">Я не программист, я <span class="hl">вайбкодер</span>: пишу АИшке, и АИшка делает всё за меня</p>
+      <p style="margin-top:18px;color:var(--ink-muted)">Оня — это как друзья зовут, глупс — это то, что я говорю чаще всего. Так и получилась gluponya</p>
+    </div>
+    <div class="card">
+      <h3>Коротко</h3>
+      <ul class="facts">
+        <li>По диплому компьютерный инженер, по жизни бэкенд-разработчица, по вечерам стримерша</li>
+        <li>На стримах строю приложения с нуля, не написав ни строчки кода сама</li>
+        <li>Из стримов выходят длинные эпизоды на YouTube и шортсы</li>
+        <li>Отдыхаю в TFT и с котами в кадре</li>
+        <li>Каждый день мы узнаём что-то новое</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<section class="wrap">
+  <div class="sec-head">
+    <span class="kicker">Что тут происходит</span>
+    <h2>Три вещи сразу</h2>
+  </div>
+  <div class="three">
+    <div class="card">
+      <div class="num">Вайбкодинг</div>
+      <h3>Холодильник, который я слепила словами</h3>
+      <p>Первое приложение уже готово: холодильник с 3D-едой, полками и котами внутри. Клодик писал, я командовала, чат ржал. Дальше новое приложение из моего старого дизайна в Figma</p>
+    </div>
+    <div class="card">
+      <div class="num">TFT</div>
+      <h3>Тактика, удача и «всё пропало»</h3>
+      <p>Когда мозг устал от вайбкодинга, идём в Teamfight Tactics. Моя последняя мозговая клеточка борется за свою жизнь, а чат подсказывает</p>
+    </div>
+    <div class="card">
+      <div class="num">Польза</div>
+      <h3>Перевод с клодовского на человеческий</h3>
+      <p>Какую модель брать, сколько это стоит, почему сломалось и какой промпт сработал. Всё человеческими словами, как подруге</p>
+    </div>
+  </div>
+</section>
+
+<section class="wrap">
+  <div class="sec-head">
+    <span class="kicker">Шкала</span>
+    <h2>Глупс → Хацкер</h2>
+  </div>
+  <div class="scale">
+    <div class="scale-head"><span>Глупс</span><span class="r">Хацкер</span></div>
+    <div class="track"><div class="fill" id="fill"></div></div>
+    <p class="scale-note">До хацкера ещё чуть-чуть <span class="now">сейчас</span></p>
+    <div class="rating" aria-label="Шкала оценки моделек">
+      <div>Омега глупс</div><div class="on">Good enough</div><div>Отвал жопы</div>
+    </div>
+    <p class="scale-note">Так я оцениваю всё, что Клодик лепит на стриме</p>
+  </div>
+</section>
+
+<section id="words" class="wrap">
+  <div class="sec-head">
+    <span class="kicker">Голос</span>
+    <h2>Словарик глупса</h2>
+  </div>
+  <div class="words">
+    <span>Це перемога</span><span>Это люкс</span><span>Ошалеть</span>
+    <span>Давай, работай, машина</span><span>Я дизайнер, я так вижу</span><span>Хватит придумывать слова</span>
+    <span>Зацените</span><span>Это база</span><span>Я прям тащусь</span>
+    <span>Помянем</span><span>Видали такое?</span><span>Обнял, приподнял, поцеловал</span>
+  </div>
+  <div class="term">
+    <div class="bebebe">Бе-бе-бе,<br>бу-бу-бу →</div>
+    <div>
+      <p class="t">Вайбкодинг</p>
+      <p class="d">По-человечески: ты описываешь, что хочешь, словами, а код пишет АИшка. Спойлер: иногда надо было нажать две кнопки</p>
+    </div>
+  </div>
+</section>
+
+<section class="wrap">
+  <div class="sec-head">
+    <span class="kicker">Цвета</span>
+    <h2>Слива, розовый и мята</h2>
+  </div>
+  <div class="pal">
+    <div class="sw" style="background:var(--pink);color:var(--on-fill)"><b>Розовый</b><small>#FF7ABE</small></div>
+    <div class="sw" style="background:var(--pink-hot);color:var(--on-fill)"><b>Ярко-розовый</b><small>#FF4FA3</small></div>
+    <div class="sw" style="background:var(--mint);color:var(--on-fill)"><b>Мята</b><small>#78EEC4</small></div>
+    <div class="sw dark" style="background:var(--plum);color:var(--cream)"><b>Слива</b><small>#2E0C24</small></div>
+    <div class="sw" style="background:var(--cream);color:var(--on-fill)"><b>Крем</b><small>#FFF8FB</small></div>
+    <div class="sw" style="background:var(--yellow);color:var(--on-fill)"><b>Жёлтый для шуток</b><small>#FFD84D</small></div>
+    <div class="sw" style="background:var(--twitch);color:#fff"><b>Только для Twitch</b><small>#9146FF</small></div>
+  </div>
+</section>
+
+<section id="cats" class="wrap">
+  <div class="sec-head">
+    <span class="kicker">Коты</span>
+    <h2>Зачем вайбкодить приложения, если можно вайбкодить котов?</h2>
+  </div>
+  <div class="cats">
+    <div class="cat">
+      <div class="ava" style="background:#1E0818;color:var(--mint)">Б</div>
+      <h3>Бубуня</h3>
+      <span class="tag">Чёрная, закрывает полэкрана</span>
+      <p>Приходит в кадр ровно в тот момент, когда Клодик пишет самое важное</p>
+    </div>
+    <div class="cat">
+      <div class="ava" style="background:#F6D9B8;color:var(--plum)">Ч</div>
+      <h3>Чукенс</h3>
+      <span class="tag">Рыжий, выключает компы</span>
+      <p>Кремово-персиковый, круглые щёки и своё мнение о моей клавиатуре</p>
+    </div>
+    <div class="cat">
+      <div class="ava" style="background:#E8C98F;color:var(--plum)">Р</div>
+      <h3>Ропс</h3>
+      <span class="tag">Мопс, храпит в эфире</span>
+      <p>Главный по звукам на стриме. Шумодав против него бессилен</p>
+    </div>
+  </div>
+</section>
+
+<section id="watch" class="wrap">
+  <div class="sec-head">
+    <span class="kicker">Где смотреть</span>
+    <h2>Приходи на стрим</h2>
+  </div>
+  <div class="links">
+    <a class="link tw" href="https://twitch.tv/gluponya"><b>Twitch</b><span>Всё вживую: вайбкодинг, TFT, коты. Расписание в профиле</span></a>
+    <a class="link" href="https://www.youtube.com/@gluponya"><b>YouTube</b><span>Длинные эпизоды «Делаю приложение, не умея программировать»</span></a>
+    <a class="link" href="https://www.tiktok.com/@gluponya_twitch"><b>TikTok</b><span>Шортсы со стримов, самые глупые моменты</span></a>
+    <a class="link" href="https://www.instagram.com/gluponya"><b>Instagram</b><span>Рилсы и коты</span></a>
+    <a class="link" href="https://ko-fi.com/gluponya"><b>Ko-fi</b><span>Если хочется поддержать. Остальные способы в панелях на Twitch</span></a>
+  </div>
+</section>
+</main>
+
+<footer class="wrap">
+  <p class="bye">Обнял, приподнял, поцеловал</p>
+  <p class="bye2">Ну шо, Клодик, ты доработал сегодня</p>
+  <a class="foot-plate" href="https://twitch.tv/gluponya">twitch.tv/gluponya</a>
+</footer>
+
+<script>
+  var f=document.getElementById('fill');
+  var start=function(){f.classList.add('go')};
+  if('IntersectionObserver' in window){
+    new IntersectionObserver(function(e,o){if(e[0].isIntersecting){start();o.disconnect()}},{threshold:.3}).observe(f);
+  }else{start()}
+</script>
+</body>
+</html>

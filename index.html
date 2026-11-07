@@ -1,372 +1,873 @@
 <!doctype html>
-<html lang="ru">
+<html lang="uk">
 <head>
 <meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<meta name="claude:viewport-fit-sides" content="cover">
-<title>gluponya</title>
-<meta name="description" content="Оня (gluponya) делает приложение на стримах, не умея программировать. Twitch, YouTube, шортсы, коты">
-<meta property="og:title" content="gluponya">
-<meta property="og:description" content="Делаю приложение, не умея программировать">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="description" content="Глупоня: студія з Чернігова. Оня придумує застосунки, Клодік пише код, усе в ефірі на Twitch">
+<link rel="icon" href="/img/cat-black.png">
+<style>:root{padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}img{max-width:100%}[hidden]{display:none!important}</style>
+<title>Феномен Глупоня</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Rubik:wght@900&family=Nunito:wght@700;800;900&display=swap">
+<link href="https://fonts.googleapis.com/css2?family=Rubik:wght@900&family=Nunito:wght@700;800;900&display=swap" rel="stylesheet">
 <style>
-/* Одна сливовая сцена: розовый и мята на сливе, жёлтый только для стикеров, фиолетовый только для Twitch */
 :root{
-  --pink:#FF7ABE; --pink-hot:#FF4FA3; --mint:#78EEC4; --plum:#2E0C24; --cream:#FFF8FB;
-  --yellow:#FFD84D; --twitch:#9146FF; --surface:#45173A; --chat:#1E0818;
-  --ink:var(--cream); --ink-muted:#D9B8CC; --on-fill:var(--plum); --line:#6B2E58;
-  --display:"Rubik","Nunito",system-ui,sans-serif;
-  --body:"Nunito","Rubik",system-ui,sans-serif;
+  --plum:#2E0C24; --surface:#45173A; --chat:#1E0818; --line:#6B2E58;
+  --pink:#FF7ABE; --pink-hot:#FF4FA3; --mint:#78EEC4; --yellow:#FFD84D; --twitch:#9146FF;
+  --cream:#FFF8FB; --muted:#D9B8CC; --on-fill:#2E0C24; --white:#FFFFFF;
   --shadow:0 12px 28px rgba(20,4,15,.45);
   --r-sm:10px; --r-md:18px; --r-lg:28px;
+  --display:"Rubik","Nunito",system-ui,sans-serif;
+  --body:"Nunito","Rubik",system-ui,sans-serif;
+  --gx:max(24px,env(safe-area-inset-left,0px)); --gxr:max(24px,env(safe-area-inset-right,0px));
   color-scheme:dark;
-  padding-top:env(safe-area-inset-top,0px); padding-bottom:env(safe-area-inset-bottom,0px);
 }
 *{box-sizing:border-box}
-html,body{margin:0}
-body{
-  background:var(--plum) radial-gradient(rgba(255,122,190,.16) 1.6px,transparent 1.7px) 0 0/26px 26px;
-  color:var(--ink); font-family:var(--body); font-weight:700; font-size:18px; line-height:1.45;
-  overflow-x:hidden;
+html{scroll-behavior:smooth}
+body{margin:0;background:var(--plum);color:var(--cream);font-family:var(--body);font-weight:700;line-height:1.4;overflow-x:hidden}
+img{max-width:100%;display:block}
+a{color:var(--pink)}
+a:focus-visible,button:focus-visible{outline:3px solid var(--mint);outline-offset:3px}
+.wrap{width:100%;max-width:1320px;margin:0 auto;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+@media(min-width:720px){.wrap{padding-left:var(--gx);padding-right:var(--gxr)}}
+
+body::after{content:"";position:fixed;inset:0;pointer-events:none;z-index:50;opacity:.07;background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='160' height='160'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 1 0 0 0 0 1 0 0 0 0 1 0 0 0 .9 0'/></filter><rect width='100%' height='100%' filter='url(%23n)'/></svg>");mix-blend-mode:soft-light}
+#dots{position:fixed;inset:0;width:100%;height:100%;z-index:0;pointer-events:none}
+main,.foot,.nav{position:relative;z-index:1}
+
+.k{font-family:var(--display);font-weight:900;text-transform:uppercase;letter-spacing:.03em;font-size:clamp(13px,1.2vw,16px);color:var(--pink);margin:0}
+.giant{font-family:var(--display);font-weight:900;text-transform:uppercase;line-height:.88;font-size:clamp(44px,9.6vw,150px);margin:0;letter-spacing:-.01em;text-wrap:balance}
+.h2{font-family:var(--display);font-weight:900;text-transform:uppercase;line-height:.95;font-size:clamp(34px,6vw,92px);margin:0;text-wrap:balance}
+.h3{font-family:var(--body);font-weight:900;font-size:clamp(30px,4.4vw,64px);line-height:1.02;margin:0}
+.lead{font-size:clamp(18px,1.6vw,22px);line-height:1.45;margin:0;max-width:34em}
+.big-lead{font-family:var(--body);font-weight:800;font-size:clamp(26px,3.6vw,56px);line-height:1.28;margin:0;max-width:20em;text-wrap:balance}
+.note{font-size:16px;color:var(--muted);margin:0}
+.mark{background:var(--mint);color:var(--on-fill);padding:0 .14em;box-decoration-break:clone;-webkit-box-decoration-break:clone}
+
+.plate{display:inline-flex;font-family:var(--display);font-weight:900;text-transform:uppercase;font-size:clamp(16px,1.6vw,22px);line-height:1.1;border-radius:var(--r-sm);box-shadow:var(--shadow);text-decoration:none}
+.plate span:first-child{background:var(--mint);color:var(--on-fill);padding:.45em .65em;border-radius:var(--r-sm) 0 0 var(--r-sm)}
+.plate span:last-child{background:var(--pink);color:var(--on-fill);padding:.45em .8em;border-radius:0 var(--r-sm) var(--r-sm) 0}
+.sticker{display:inline-flex;align-items:center;font-family:var(--display);font-weight:900;text-transform:uppercase;line-height:1;padding:.22em .5em;border-radius:var(--r-md);background:var(--yellow);color:var(--on-fill);box-shadow:var(--shadow);transform:rotate(var(--tilt,-5deg));white-space:nowrap}
+.sticker.pink{background:var(--pink-hot)} .sticker.mint{background:var(--mint)}
+.tag{display:inline-flex;font-family:var(--display);font-weight:900;text-transform:uppercase;font-size:14px;letter-spacing:.03em;padding:8px 14px;border-radius:var(--r-sm);color:var(--on-fill);background:var(--mint)}
+.tag.yellow{background:var(--yellow)} .tag.hot{background:var(--pink-hot)}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:10px;min-height:54px;padding:14px 28px;border-radius:999px;font-family:var(--display);font-weight:900;text-transform:uppercase;font-size:17px;letter-spacing:.02em;text-decoration:none;box-shadow:var(--shadow);transition:transform .18s ease,background .18s ease;cursor:pointer;border:0}
+.btn:hover{transform:translateY(-2px) scale(1.02)}
+.btn.mint{background:var(--mint);color:var(--on-fill)} .btn.mint:hover{background:#92F3D1}
+.btn.pink{background:var(--pink);color:var(--on-fill)} .btn.pink:hover{background:var(--pink-hot)}
+.btn.twitch{background:var(--twitch);color:var(--white)} .btn.twitch:hover{background:#A266FF}
+.btn.ghost{background:transparent;color:var(--cream);box-shadow:inset 0 0 0 3px var(--line)} .btn.ghost:hover{box-shadow:inset 0 0 0 3px var(--pink)}
+.btn svg{width:20px;height:20px;flex:none}
+.actions{display:flex;flex-wrap:wrap;gap:14px}
+
+.paper{position:relative;color:var(--on-fill);background:var(--cream);overflow:hidden;isolation:isolate}
+.paper::before{content:"";position:absolute;inset:0;z-index:0;opacity:.3;mix-blend-mode:multiply;background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='300' height='300'><filter id='p'><feTurbulence type='fractalNoise' baseFrequency='.012 .05' numOctaves='3' seed='4'/><feColorMatrix values='0 0 0 0 .3 0 0 0 0 .1 0 0 0 0 .25 0 0 0 .6 0'/></filter><rect width='100%' height='100%' filter='url(%23p)'/></svg>");background-size:600px 600px}
+.paper>*{position:relative;z-index:1}
+.paper.pink{background:var(--pink)} .paper.mint{background:var(--mint)} .paper.yellow{background:var(--yellow)} .paper.plum{background:var(--surface);color:var(--cream)}
+
+.nav{position:sticky;top:env(safe-area-inset-top,0px);z-index:20;background:rgba(46,12,36,.78);backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);border-bottom:2px solid var(--line)}
+.nav .wrap{display:flex;align-items:center;justify-content:space-between;gap:16px;padding-block:12px}
+.nav nav{display:flex;align-items:center;gap:4px;flex-wrap:wrap;justify-content:flex-end}
+.nav nav a{color:var(--cream);text-decoration:none;font-weight:800;font-size:16px;padding:10px 14px;border-radius:999px;transition:background .18s}
+.nav nav a:hover{background:var(--surface)}
+.nav .btn{min-height:44px;padding:10px 18px;font-size:15px;box-shadow:none}
+@media(max-width:700px){.nav nav a:not(.btn){display:none}}
+body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset-top,0px);z-index:30;background:var(--plum)}
+
+.hero{min-height:calc(100svh - 70px);display:grid;grid-template-rows:1fr auto;position:relative}
+.hero .mid{display:grid;grid-template-columns:minmax(0,1fr) auto;align-items:center;gap:40px;padding-block:40px}
+.hero .mid .intro{display:grid;gap:22px;justify-items:start}
+.hero .me{width:min(320px,32vw);aspect-ratio:1;object-fit:cover;object-position:50% 30%;border-radius:var(--r-md);border:6px solid var(--cream);box-shadow:var(--shadow);rotate:3deg;animation:fade 1s ease both .6s}
+@media(max-width:800px){.hero .mid{grid-template-columns:1fr;gap:24px}.hero .me{width:min(220px,55vw);justify-self:end;rotate:-3deg}}
+.hero .mid p{font-size:clamp(22px,2.6vw,38px);font-weight:800;margin:0;max-width:19em;line-height:1.32;text-wrap:pretty;animation:fade 1.2s ease both .3s}
+.hero .mid p b{color:var(--mint);font-weight:900}
+.hero .mid .sticker{font-size:clamp(22px,2.6vw,36px);animation:stick .6s cubic-bezier(.2,.9,.2,1.3) both 1.1s}
+.hero .bottom{padding-bottom:28px;display:flex;flex-direction:column;gap:18px}
+.hero .giant .w{display:inline-block;overflow:hidden;vertical-align:bottom;padding-bottom:.06em;margin-bottom:-.06em}
+.hero .giant .w span{display:inline-block;transform:translateY(110%);animation:rise .8s cubic-bezier(.2,.8,.2,1) forwards;animation-delay:var(--d,0s)}
+.hero .giant .mint{color:var(--mint)} .hero .giant .pink{color:var(--pink)}
+.hero .row{display:flex;flex-wrap:wrap;justify-content:space-between;align-items:flex-end;gap:16px}
+.hero .row .note{max-width:28em}
+@keyframes rise{to{transform:translateY(0)}}
+@keyframes fade{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}
+@keyframes stick{from{transform:rotate(var(--tilt)) scale(0);opacity:0}to{transform:rotate(var(--tilt)) scale(1);opacity:1}}
+
+.state{min-height:100svh;display:grid;grid-template-rows:auto 1fr auto;padding-block:56px 40px;gap:40px}
+.state .big-lead{max-width:18em}
+.state .corner{justify-self:end;max-width:420px;width:100%}
+.chatcard{background:var(--chat);border:2px solid var(--line);border-radius:var(--r-md);padding:22px 24px;display:grid;gap:12px;box-shadow:var(--shadow)}
+.chatcard p{margin:0;font-size:18px;font-weight:800;line-height:1.35}
+.chatcard p b{color:var(--mint);font-weight:900}
+.chatcard .nick{display:inline-flex;align-self:flex-start;background:var(--twitch);color:var(--white);font-family:var(--display);font-size:13px;padding:5px 12px;border-radius:var(--r-sm)}
+
+.rail-sec{height:320vh;position:relative}
+.rail-sec .pin{position:sticky;top:0;height:100svh;overflow:hidden;display:flex;flex-direction:column}
+.rail-sec .head{padding-block:22px 10px}
+.rail{display:flex;gap:10px;height:100%;padding:0 var(--gx) 24px var(--gx);will-change:transform;flex:1;min-height:0}
+.rail .paper{flex:none;width:min(62vw,760px);display:grid;place-items:center;border-radius:6px;box-shadow:var(--shadow)}
+.rail .paper .num{font-family:var(--display);font-size:clamp(90px,17vw,260px);line-height:1;letter-spacing:-.02em;font-variant-numeric:tabular-nums}
+.rail .paper .cap{position:absolute;left:28px;bottom:24px;right:28px;font-size:clamp(18px,1.8vw,24px);font-weight:900;line-height:1.2;max-width:18em}
+.rail .paper .src{position:absolute;left:28px;top:22px;font-family:var(--display);font-size:13px;letter-spacing:.04em;text-transform:uppercase;opacity:.75}
+.rail .paper .sticker{position:absolute;right:28px;top:24px;font-size:clamp(18px,2vw,30px)}
+@media(max-width:800px){
+  .rail-sec{height:auto}.rail-sec .pin{position:static;height:auto;overflow:visible}
+  .rail{flex-direction:column;transform:none!important;padding-inline:max(16px,env(safe-area-inset-left,0px)) max(16px,env(safe-area-inset-right,0px))}
+  .rail .paper{width:100%;min-height:380px;padding:80px 20px 90px}
 }
-a{color:inherit}
-.wrap{max-width:1120px;margin:0 auto;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
-h1,h2,h3{font-family:var(--display);font-weight:900;text-transform:uppercase;line-height:.98;text-wrap:balance;margin:0}
-h2{font-size:clamp(34px,5.2vw,54px)}
-p{margin:0}
-.kicker{display:inline-block;font-family:var(--display);font-weight:900;text-transform:uppercase;letter-spacing:.04em;font-size:14px;background:var(--mint);color:var(--on-fill);padding:6px 12px;border-radius:var(--r-sm)}
-section{padding-block:72px}
-.sec-head{display:flex;flex-direction:column;gap:14px;margin-bottom:34px}
 
-/* шапка */
-nav.top{display:flex;justify-content:space-between;align-items:center;gap:12px;padding-block:18px;flex-wrap:wrap}
-.mark{font-family:var(--display);font-weight:900;font-size:26px;color:var(--pink);text-decoration:none;letter-spacing:-.01em}
-.mark span{color:var(--mint)}
-.top-links{display:flex;gap:8px;flex-wrap:wrap}
-.top-links a{text-decoration:none;font-size:14px;font-weight:800;padding:8px 14px;border-radius:999px;background:var(--surface);color:var(--cream)}
-.top-links a:hover,.top-links a:focus-visible{background:var(--pink);color:var(--on-fill);outline:none}
-
-/* герой */
-.hero{padding-block:48px 80px;position:relative}
-.hero-grid{display:grid;grid-template-columns:1.25fr .75fr;gap:40px;align-items:center}
-.hero h1{font-size:clamp(64px,11vw,148px);color:var(--pink);letter-spacing:-.02em;line-height:.9;text-transform:none}
-.hero h1 em{font-style:normal;color:var(--mint)}
-.plate{display:inline-block;font-family:var(--display);font-weight:900;text-transform:uppercase;background:var(--pink);color:var(--on-fill);padding:12px 20px;border-radius:var(--r-sm);font-size:clamp(18px,2.6vw,28px);line-height:1.1;box-shadow:var(--shadow);margin-top:22px}
-.lead{font-size:clamp(18px,2vw,22px);color:var(--ink-muted);max-width:34ch;margin-top:22px}
-.lead b{color:var(--cream)}
-.cta{display:flex;gap:12px;flex-wrap:wrap;margin-top:30px}
-.btn{text-decoration:none;font-family:var(--display);font-weight:900;text-transform:uppercase;font-size:16px;padding:14px 22px;border-radius:999px;background:var(--surface);color:var(--cream);box-shadow:var(--shadow);transition:transform .15s}
-.btn:hover,.btn:focus-visible{transform:translateY(-2px) rotate(-1deg);outline:none}
-.btn.twitch{background:var(--twitch);color:#fff}
-.btn.mint{background:var(--mint);color:var(--on-fill)}
-.btn.pink{background:var(--pink);color:var(--on-fill)}
-
-/* стикеры-callout'ы */
-.stack{position:relative;min-height:340px}
-.sticker{position:absolute;font-family:var(--display);font-weight:900;text-transform:uppercase;font-size:clamp(20px,2.4vw,30px);padding:12px 18px;border-radius:var(--r-md);box-shadow:var(--shadow);white-space:nowrap;line-height:1}
-.sticker.y{background:var(--yellow);color:var(--on-fill)}
-.sticker.p{background:var(--pink);color:var(--on-fill)}
-.sticker.m{background:var(--mint);color:var(--on-fill)}
-.sticker.h{background:var(--pink-hot);color:var(--on-fill)}
-.s1{top:4%;left:4%;transform:rotate(-6deg)}
-.s2{top:30%;right:2%;transform:rotate(5deg)}
-.s3{top:56%;left:10%;transform:rotate(-4deg)}
-.s4{bottom:0;right:14%;transform:rotate(7deg)}
-@media (prefers-reduced-motion:no-preference){
-  .sticker{animation:pop .5s cubic-bezier(.2,1.6,.4,1) both}
-  .s2{animation-delay:.12s}.s3{animation-delay:.24s}.s4{animation-delay:.36s}
-  @keyframes pop{from{scale:0}60%{scale:1.1}to{scale:1}}
-  .clodik{animation:bob 3.4s ease-in-out infinite}
-  @keyframes bob{0%,100%{translate:0 0}50%{translate:0 -10px}}
+.apps-sec{height:230vh;position:relative}
+.apps-sec .pin{position:sticky;top:0;height:100svh;overflow:hidden}
+.apps-sec .pin .wrap{height:100%;display:grid;grid-template-columns:minmax(0,1fr) auto minmax(0,1fr);grid-template-rows:auto 1fr auto;gap:16px 24px;padding-block:20px 24px}
+.apps-sec .head{grid-column:1/-1;display:flex;justify-content:space-between;align-items:flex-start;gap:16px;flex-wrap:wrap}
+.apps-sec .titles{align-self:center;position:relative;min-height:1.1em}
+.apps-sec .titles .h3{position:absolute;left:0;top:50%;transform:translateY(-50%) translateX(-20px);opacity:0;transition:opacity .45s ease,transform .45s cubic-bezier(.2,.8,.2,1)}
+.apps-sec .titles .h3.on{opacity:1;transform:translateY(-50%)}
+.apps-sec .device{align-self:center;position:relative;--ph:min(600px,64svh)}
+.apps-sec .tabs{position:absolute;right:0;top:-34px;display:flex;gap:3px}
+.apps-sec .tabs b{width:28px;height:26px;display:grid;place-items:center;background:var(--chat);color:var(--muted);font-family:var(--display);font-size:13px;border-radius:6px;transition:background .3s,color .3s}
+.apps-sec .tabs b.on{background:var(--mint);color:var(--on-fill)}
+.apps-sec .side{align-self:center;display:grid;gap:14px;justify-items:start}
+.apps-sec .side .text{position:relative;min-height:9em;width:100%}
+.apps-sec .side .text p{position:absolute;inset:0;margin:0;opacity:0;transform:translateY(16px);transition:opacity .45s ease,transform .45s ease;font-size:clamp(16px,1.4vw,19px);line-height:1.45}
+.apps-sec .side .text p.on{opacity:1;transform:none}
+.apps-sec .side .meta{display:flex;gap:8px;flex-wrap:wrap;min-height:34px}
+.apps-sec .side .meta .tag{display:none}.apps-sec .side .meta .tag.on{display:inline-flex}
+.apps-sec .foot{grid-column:1/-1;display:flex;justify-content:space-between;align-items:center;gap:16px;flex-wrap:wrap}
+.apps-sec .foot .cta{display:flex;align-items:center;gap:16px;flex-wrap:wrap}
+.apps-sec .foot .cta a,.apps-sec .foot .cta .stores{display:none}.apps-sec .foot .cta a.on{display:inline-flex}.apps-sec .foot .cta .stores.on{display:inline-flex}
+.stores{font-family:var(--display);font-weight:900;text-transform:uppercase;font-size:14px;letter-spacing:.03em;color:var(--yellow)}
+.apps-sec .dotsbar{display:flex;gap:6px}
+.apps-sec .dotsbar i{width:46px;height:6px;border-radius:999px;background:var(--line);transition:background .3s}
+.apps-sec .dotsbar i.on{background:var(--pink)}
+.cases-m{display:none}
+@media(max-width:800px){
+  .apps-sec{height:auto}.apps-sec .pin{display:none}
+  .cases-m{display:grid;gap:40px;padding-block:56px}
+  .case-m{display:grid;gap:18px}
+  .case-m .meta{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+  .case-m .stage{display:grid;place-items:center;padding-block:10px;--ph:520px}
 }
-/* Клодик: оранжевая глянцевая искорка */
-.clodik{position:absolute;top:34%;left:48%;width:84px;height:84px;filter:drop-shadow(0 10px 18px rgba(20,4,15,.5))}
-.clodik svg{width:100%;height:100%}
 
-/* кто я */
-.who{display:grid;grid-template-columns:1fr 1fr;gap:28px;align-items:start}
-.card{background:var(--surface);border-radius:var(--r-lg);padding:32px;box-shadow:var(--shadow)}
-.card h3{font-size:22px;color:var(--mint);margin-bottom:12px}
-.card p+p{margin-top:12px}
-.facts{display:grid;gap:12px;margin:0;padding:0;list-style:none}
-.facts li{display:flex;gap:12px;align-items:baseline}
-.facts li::before{content:"✓";font-family:var(--display);font-weight:900;color:var(--mint);flex:0 0 auto}
-.quote{font-family:var(--display);font-weight:900;text-transform:uppercase;font-size:clamp(24px,3.4vw,36px);line-height:1.05;color:var(--cream)}
-.quote .hl{color:var(--pink)}
+.phone{width:calc(var(--ph,600px)*.5);height:var(--ph,600px);border-radius:calc(var(--ph,600px)*.073);background:#120510;padding:calc(var(--ph,600px)*.02);box-shadow:var(--shadow),0 40px 80px rgba(20,4,15,.5);position:relative;transition:transform .5s cubic-bezier(.2,.8,.2,1)}
+.phone .scr{width:100%;height:100%;border-radius:calc(var(--ph,600px)*.057);overflow:hidden;background:var(--plum);position:relative;font-size:calc(var(--ph,600px)*.0225)}
+.phone .notch{position:absolute;top:.6em;left:50%;translate:-50% 0;width:6.5em;height:1.8em;border-radius:999px;background:#120510;z-index:2}
+.scr .screen{position:absolute;inset:0;display:flex;flex-direction:column;opacity:0;transition:opacity .4s ease}
+.scr .screen.on{opacity:1}
+.scr .screen .shot{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:50% 0}
+.scr .screen:has(.shot){z-index:3}
+.scr .top{padding:3.6em 1.4em 1em;display:flex;flex-direction:column;gap:.3em}
+.scr .top b{font-family:var(--display);text-transform:uppercase;font-size:.95em;color:var(--pink);letter-spacing:.03em}
+.scr .top strong{font-size:1.5em;font-weight:900;line-height:1.1}
+.scr .big{font-family:var(--display);font-size:2.7em;line-height:1;color:var(--mint);font-variant-numeric:tabular-nums}
+.scr .card{margin:0 1.1em .7em;background:var(--surface);border-radius:1.2em;padding:.95em 1.1em;display:flex;align-items:center;gap:.8em}
+.scr .card img{width:2.7em;height:2.7em;object-fit:contain;flex:none}
+.scr .card .t{display:flex;flex-direction:column;gap:.1em;min-width:0;flex:1}
+.scr .card .t b{font-size:1.05em;font-weight:900;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.scr .card .t small{font-size:.85em;color:var(--muted)}
+.scr .card .v{font-family:var(--display);font-size:1.1em;font-variant-numeric:tabular-nums}
+.scr .card .v.minus{color:var(--pink-hot)} .scr .card .v.plus{color:var(--mint)}
+.scr .bar{margin:.3em 1.1em .9em;height:1em;border-radius:999px;background:var(--line);overflow:hidden}
+.scr .bar i{display:block;height:100%;width:0;background:var(--mint);border-radius:999px;transition:width 1.2s cubic-bezier(.2,.8,.2,1) .3s}
+.screen.on .bar i{width:var(--w,60%)}
+.scr .shelf{margin:0 1.1em .7em;background:var(--surface);border-radius:1.1em;padding:.7em .85em .6em;display:flex;flex-direction:column;gap:.45em}
+.scr .shelf small{font-size:.78em;text-transform:uppercase;letter-spacing:.04em;color:var(--muted);font-weight:900}
+.scr .shelf .row{display:flex;gap:.55em}
+.scr .shelf .row img{width:3.1em;height:3.1em;object-fit:contain;background:var(--chat);border-radius:.85em;padding:.3em}
+.scr .shelf .row img.soon{box-shadow:inset 0 0 0 .22em var(--yellow)}
+.scr .shelf .row img.bad{box-shadow:inset 0 0 0 .22em var(--pink-hot)}
+.scr .pill{display:inline-flex;align-self:flex-start;font-family:var(--display);font-size:.8em;text-transform:uppercase;padding:.4em .7em;border-radius:.6em;background:var(--yellow);color:var(--on-fill)}
+.scr .pill.hot{background:var(--pink-hot)} .scr .pill.mint{background:var(--mint)}
+.scr .tabbar{position:absolute;bottom:0;left:0;right:0;background:var(--chat);padding:.9em 1.4em 1.3em;display:flex;justify-content:space-between}
+.scr .tabbar i{width:2em;height:2em;border-radius:.65em;background:var(--line);display:block}
+.scr .tabbar i.on{background:var(--pink)}
 
-/* что происходит */
-.three{display:grid;grid-template-columns:repeat(3,1fr);gap:20px}
-.three .card{min-width:0}
-.three .num{font-family:var(--display);font-weight:900;font-size:14px;color:var(--mint);letter-spacing:.06em;text-transform:uppercase;margin-bottom:10px}
+.kin{padding-block:40px 56px}
+.kin .paper{border-radius:6px;padding:clamp(20px,3vw,40px) max(12px,env(safe-area-inset-left,0px)) clamp(20px,3vw,40px) max(12px,env(safe-area-inset-right,0px));box-shadow:var(--shadow);display:grid;gap:0}
+.kin .lines{position:absolute;inset:0;z-index:0;background:repeating-linear-gradient(to bottom,transparent 0 11px,rgba(46,12,36,.28) 11px 12px)}
+.kin .word{font-family:var(--display);font-size:clamp(36px,10.4vw,160px);text-transform:uppercase;line-height:1.08;letter-spacing:-.02em;text-align:center;margin:0;transform-origin:50% 50%;transform:scaleY(var(--sy,1));will-change:transform;white-space:nowrap;overflow:hidden;max-width:100%}
+.kin .word:nth-child(odd){color:var(--cream)}
 
-/* шкала */
-.scale{background:var(--surface);border-radius:var(--r-lg);padding:32px;box-shadow:var(--shadow)}
-.scale-head{display:flex;justify-content:space-between;align-items:baseline;gap:16px;flex-wrap:wrap;font-family:var(--display);font-weight:900;text-transform:uppercase;font-size:clamp(18px,2.4vw,26px)}
-.scale-head .r{color:var(--mint)}
-.track{height:28px;background:var(--line);border-radius:999px;margin-top:18px;overflow:hidden}
-.fill{height:100%;width:0;background:var(--mint);border-radius:999px;transition:width 1.4s cubic-bezier(.2,.9,.3,1)}
-.fill.go{width:31%}
-.scale-note{margin-top:14px;color:var(--ink-muted)}
-.now{display:inline-block;background:var(--pink-hot);color:var(--on-fill);border-radius:999px;padding:3px 10px;font-family:var(--display);font-weight:900;font-size:13px;text-transform:uppercase;margin-left:8px;vertical-align:middle}
-.rating{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:28px}
-.rating div{text-align:center;font-family:var(--display);font-weight:900;text-transform:uppercase;font-size:clamp(13px,1.7vw,18px);padding:12px 8px;border-radius:var(--r-sm);background:var(--chat);color:var(--ink-muted);line-height:1.05}
-.rating .on{background:var(--yellow);color:var(--on-fill)}
+.how{padding-block:0 64px}
+.how .grid{display:grid;grid-template-columns:minmax(0,1.3fr) minmax(0,1fr);gap:10px}
+@media(max-width:800px){.how .grid{grid-template-columns:1fr}}
+.how .paper{border-radius:6px;box-shadow:var(--shadow)}
+.how .left{padding:clamp(28px,4vw,56px);display:grid;gap:28px;align-content:start}
+.how .left .big-lead{max-width:14em}
+.how .right{padding:clamp(24px,3vw,40px);display:grid;gap:0;align-content:start}
+.how .right .item{display:grid;grid-template-columns:2.2em 1fr;gap:12px;padding-block:20px;border-bottom:2px solid rgba(46,12,36,.35)}
+.how .right .item:last-child{border:0}
+.how .right .item b{font-family:var(--display);font-size:22px}
+.how .right .item strong{display:block;font-size:20px;font-weight:900;margin-bottom:4px}
+.how .right .item p{margin:0;font-size:16px;line-height:1.4}
+.how .left .stack{display:flex;flex-wrap:wrap;gap:12px}
+.how .left .stack .sticker{font-size:clamp(20px,2.2vw,30px)}
 
-/* словарик */
-.words{display:flex;flex-wrap:wrap;gap:14px;align-items:center}
-.words span{font-family:var(--display);font-weight:900;text-transform:uppercase;padding:10px 16px;border-radius:var(--r-md);box-shadow:var(--shadow);font-size:clamp(16px,2vw,22px);line-height:1}
-.words span:nth-child(3n+1){background:var(--pink);color:var(--on-fill);rotate:-3deg}
-.words span:nth-child(3n+2){background:var(--mint);color:var(--on-fill);rotate:2deg}
-.words span:nth-child(3n+3){background:var(--yellow);color:var(--on-fill);rotate:-2deg}
-.term{margin-top:34px;background:var(--surface);border-radius:var(--r-lg);padding:28px 32px;box-shadow:var(--shadow);display:grid;grid-template-columns:auto 1fr;gap:20px;align-items:start}
-.term .bebebe{font-family:var(--display);font-weight:900;text-transform:uppercase;font-size:14px;color:var(--pink);letter-spacing:.04em;line-height:1.3}
-.term .t{font-size:clamp(22px,3vw,32px);font-weight:900;color:var(--cream)}
-.term .d{color:var(--ink-muted);margin-top:6px}
+.sec{padding-block:clamp(56px,8vw,96px)}
+.story{display:grid;gap:clamp(40px,6vw,72px)}
+.story-grid{display:grid;grid-template-columns:minmax(0,.8fr) minmax(0,1.2fr);gap:clamp(24px,4vw,56px);align-items:center}
+@media(max-width:800px){.story-grid{grid-template-columns:1fr}}
+.story-photo{margin:0;position:relative;justify-self:center;width:min(100%,420px)}
+.story-photo img{width:100%;aspect-ratio:1;object-fit:cover;object-position:50% 50%;border-radius:var(--r-lg);border:6px solid var(--cream);box-shadow:var(--shadow);rotate:-2deg}
+.story-photo .sticker{position:absolute;right:-10px;bottom:28px;font-size:clamp(22px,2.4vw,34px)}
+.story-text{display:grid;gap:18px}
+.story-text .lead{max-width:30em}
+.story-text .stack{display:flex;flex-wrap:wrap;gap:12px;margin-top:8px}
+.cats{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px}
+@media(max-width:800px){.cats{grid-template-columns:1fr}}
+.cat{background:var(--surface);border-radius:var(--r-md);padding:22px;display:grid;gap:12px;justify-items:start;box-shadow:var(--shadow)}
+.cat img{width:120px;height:120px;object-fit:cover;object-position:50% 20%;border-radius:999px;border:4px solid var(--cream);background:var(--chat)}
+.cat h3{margin:0;font-family:var(--display);text-transform:uppercase;font-size:clamp(24px,2.4vw,32px);line-height:1;color:var(--mint)}
+.cat p{margin:0;font-size:17px;line-height:1.45}
+.catpics{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:16px}
+@media(max-width:800px){.catpics{grid-template-columns:1fr 1fr}}
+.catpics img{width:100%;aspect-ratio:1;object-fit:cover;border-radius:var(--r-md);border:6px solid var(--cream);box-shadow:var(--shadow);rotate:var(--tilt,0deg)}
+.clips{display:grid;gap:16px}
+.clips-row{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:16px}
+@media(max-width:800px){.clips-row{grid-template-columns:1fr 1fr}}
+.clips-row figure{margin:0;position:relative}
+.clips-row video{display:block;width:100%;aspect-ratio:4/3;object-fit:cover;border-radius:var(--r-md);border:6px solid var(--cream);box-shadow:var(--shadow);background:var(--chat)}
+.clips-row .sticker{position:absolute;left:14px;bottom:14px;font-size:clamp(18px,1.8vw,24px)}
 
-/* палитра */
-.pal{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:14px}
-.sw{border-radius:var(--r-md);padding:18px 16px;min-height:150px;display:flex;flex-direction:column;justify-content:flex-end;gap:4px;box-shadow:var(--shadow)}
-.sw b{font-family:var(--display);font-weight:900;text-transform:uppercase;font-size:15px}
-.sw small{font-size:13px;opacity:.85;font-variant-numeric:tabular-nums}
-.sw.dark{border:2px solid var(--line)}
+.sec-head{display:flex;flex-direction:column;gap:14px;margin-bottom:clamp(28px,4vw,48px)}
+.media{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px}
+@media(max-width:900px){.media{grid-template-columns:1fr}}
+.mcard{background:var(--surface);border-radius:var(--r-md);padding:26px 24px;display:grid;gap:14px;align-content:start;justify-items:start;box-shadow:var(--shadow)}
+.mcard h3{margin:0;font-family:var(--display);text-transform:uppercase;font-size:clamp(26px,2.6vw,36px);line-height:1}
+.mcard p{margin:0;font-size:17px;line-height:1.45}
+.mcard .btn{margin-top:auto}
+.quotes{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px}
+.quotes .chatcard{rotate:var(--tilt,0deg)}
+@media(max-width:900px){.quotes{grid-template-columns:1fr}}
+.quotes .chatcard p{font-size:19px}
+.quotes .chatcard small{color:var(--muted);font-size:13px}
+.band .inner{border-radius:6px;padding:clamp(32px,5vw,64px);display:grid;grid-template-columns:minmax(0,1.2fr) minmax(0,.8fr);gap:40px;align-items:center;box-shadow:var(--shadow)}
+@media(max-width:800px){.band .inner{grid-template-columns:1fr}}
+.band .copy{display:flex;flex-direction:column;gap:20px}
+.band .copy .lead{color:var(--on-fill)}
+.faces{display:flex;justify-content:center;align-items:center}
+.faces img{width:28%;aspect-ratio:1;border-radius:999px;object-fit:cover;box-shadow:var(--shadow);margin-left:-6%;border:4px solid var(--cream);transition:transform .3s ease}
+.faces img:first-child{margin-left:0}
+.faces img:hover{transform:translateY(-10px) rotate(-6deg);z-index:1}
 
-/* коты */
-.cats{display:grid;grid-template-columns:repeat(3,1fr);gap:20px}
-.cat{background:var(--surface);border-radius:var(--r-lg);padding:26px;box-shadow:var(--shadow);min-width:0}
-.cat .ava{width:88px;height:88px;border-radius:50%;border:4px solid var(--pink);margin-bottom:16px;display:grid;place-items:center;font-family:var(--display);font-weight:900;font-size:34px}
-.cat h3{font-size:24px;color:var(--pink)}
-.cat .tag{display:inline-block;margin:8px 0 10px;font-family:var(--display);font-weight:900;text-transform:uppercase;font-size:13px;background:var(--yellow);color:var(--on-fill);padding:5px 10px;border-radius:var(--r-sm);rotate:-2deg}
-.cat p{color:var(--ink-muted)}
+.ticker{border-top:2px solid var(--line);border-bottom:2px solid var(--line);background:var(--chat);overflow:hidden;padding-block:14px}
+.ticker .track{display:flex;gap:40px;width:max-content;animation:scroll 40s linear infinite}
+.ticker:hover .track{animation-play-state:paused}
+.ticker span{font-family:var(--display);font-weight:900;text-transform:uppercase;font-size:clamp(18px,2vw,26px);white-space:nowrap;color:var(--cream)}
+.ticker span:nth-child(3n+1){color:var(--pink)} .ticker span:nth-child(3n+2){color:var(--mint)} .ticker span:nth-child(3n){color:var(--yellow)}
+@keyframes scroll{to{transform:translateX(-50%)}}
 
-/* где смотреть */
-.links{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:16px}
-.link{text-decoration:none;background:var(--surface);border-radius:var(--r-lg);padding:24px;box-shadow:var(--shadow);display:flex;flex-direction:column;gap:6px;transition:transform .15s}
-.link:hover,.link:focus-visible{transform:translateY(-3px);outline:none}
-.link b{font-family:var(--display);font-weight:900;text-transform:uppercase;font-size:20px}
-.link span{color:var(--ink-muted);font-size:15px}
-.link.tw{background:var(--twitch)}
-.link.tw b,.link.tw span{color:#fff}
+.foot{padding-block:56px 24px;border-top:2px solid var(--line)}
+.foot .grid{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:40px;align-items:start}
+@media(max-width:800px){.foot .grid{grid-template-columns:1fr}}
+.clocks{display:grid;gap:10px}
+.clock{display:flex;align-items:center;gap:12px}
+.clock b{display:inline-flex;gap:4px}
+.clock b span{display:grid;place-items:center;min-width:2.1em;padding:.2em .3em;background:var(--chat);border:2px solid var(--line);border-radius:6px;font-family:var(--display);font-size:20px;font-variant-numeric:tabular-nums}
+.clock small{font-size:14px;color:var(--muted)}
+.foot .links{display:grid;gap:6px;justify-items:start}
+.foot .links a{font-size:22px;font-weight:900;color:var(--cream);text-decoration:none}
+.foot .links a:hover{color:var(--pink)}
+.foot .cols{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:16px;margin-top:40px;padding-top:24px;border-top:2px solid var(--line)}
+@media(max-width:700px){.foot .cols{grid-template-columns:1fr}}
+.foot .cols div{display:grid;gap:10px;justify-items:start}
+.foot .cols .note{font-size:15px}
+.foot .cols a{font-size:15px;color:var(--cream)}
+.foot .mail{margin-top:40px;display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:12px}
+.foot .mail code{font-family:var(--display);font-weight:900;font-size:clamp(28px,7.6vw,118px);line-height:1;letter-spacing:-.02em;color:var(--mint);user-select:all;word-break:break-all;transition:color .3s}
+.foot .mail code:hover{color:var(--pink)}
+.foot .mail button{min-height:44px;border:0;border-radius:999px;padding:10px 18px;font-family:var(--display);font-weight:900;text-transform:uppercase;font-size:14px;background:var(--pink);color:var(--on-fill);cursor:pointer}
+.foot .legal{margin-top:28px;display:flex;flex-wrap:wrap;justify-content:space-between;gap:12px}
 
-/* финал */
-footer{padding-block:70px 60px;text-align:center}
-.bye{font-family:var(--display);font-weight:900;text-transform:uppercase;font-size:clamp(28px,5vw,56px);color:var(--pink);line-height:1}
-.bye2{margin-top:16px;color:var(--ink-muted)}
-.foot-plate{display:inline-block;margin-top:28px;background:var(--twitch);color:#fff;font-family:var(--display);font-weight:900;padding:12px 22px;border-radius:999px;text-decoration:none;font-size:18px}
-
-@media (max-width:860px){
-  .hero-grid,.who,.three,.cats{grid-template-columns:1fr}
-  .stack{min-height:260px;margin-top:10px}
-  .clodik{left:42%;top:30%}
-  section{padding-block:52px}
-  .term{grid-template-columns:1fr}
-}
-@media (max-width:480px){
-  .sticker{font-size:17px;padding:10px 14px}
-  .card,.scale,.cat{padding:22px}
+/* motion pass */
+.progress{position:fixed;left:0;top:0;height:5px;width:100%;transform-origin:0 50%;transform:scaleX(var(--p,0));background:linear-gradient(90deg,var(--pink),var(--mint));z-index:60;pointer-events:none}
+.sticker:hover{animation:wobble .55s ease both}
+@keyframes wobble{0%{transform:rotate(var(--tilt,0deg)) scale(1)}30%{transform:rotate(calc(var(--tilt,0deg) - 6deg)) scale(1.08)}60%{transform:rotate(calc(var(--tilt,0deg) + 5deg)) scale(1.05)}100%{transform:rotate(var(--tilt,0deg)) scale(1)}}
+.hero .me{animation:stick .7s cubic-bezier(.2,.9,.2,1.3) both .6s,bob 5s ease-in-out infinite 1.4s;transition:rotate .4s,scale .4s}
+@keyframes bob{0%,100%{translate:0 0}50%{translate:0 -10px}}
+.hero .me:hover{rotate:-2deg;scale:1.04}
+.js .quotes .chatcard{opacity:0;transform:translateY(30px) rotate(var(--tilt,0deg)) scale(.92);transition:opacity .5s ease,transform .6s cubic-bezier(.2,.9,.2,1.3);transition-delay:calc(var(--n,0)*70ms)}
+.js .quotes.in .chatcard{opacity:1;transform:translateY(0) rotate(var(--tilt,0deg)) scale(1)}
+.quotes .chatcard:hover{transform:translateY(-6px) rotate(0deg) scale(1.03)!important;transition-delay:0s}
+.js .cats .cat{opacity:0;transform:translateY(30px);transition:opacity .5s ease,transform .6s cubic-bezier(.2,.9,.2,1.3);transition-delay:calc(var(--n,0)*120ms)}
+.js .cats.in .cat{opacity:1;transform:none}
+.cat img{transition:transform .4s cubic-bezier(.2,.9,.2,1.4)}
+.cat:hover img{transform:rotate(-8deg) scale(1.12) translateY(-6px)}
+.js .catpics img{opacity:0;transform:translateY(40px) rotate(var(--tilt,0deg)) scale(.9);transition:opacity .5s ease,transform .6s cubic-bezier(.2,.9,.2,1.3);transition-delay:calc(var(--n,0)*90ms)}
+.js .catpics.in img{opacity:1;transform:translateY(0) rotate(var(--tilt,0deg)) scale(1)}
+.catpics img:hover{transform:rotate(0deg) scale(1.05)!important;transition-delay:0s;z-index:2;position:relative}
+.clips-row figure{transition:transform .4s cubic-bezier(.2,.9,.2,1.3)}
+.clips-row figure:nth-child(odd){rotate:-1.5deg}.clips-row figure:nth-child(even){rotate:1.5deg}
+.clips-row figure:hover{transform:scale(1.05) translateY(-6px);rotate:0deg;z-index:2}
+.js .clips-row figure{opacity:0;translate:0 40px;transition:opacity .5s ease,translate .6s cubic-bezier(.2,.9,.2,1.3),transform .4s cubic-bezier(.2,.9,.2,1.3),rotate .4s;transition-delay:calc(var(--n,0)*100ms)}
+.js .clips.in .clips-row figure{opacity:1;translate:0 0}
+.h2 .w{display:inline-block;overflow:hidden;vertical-align:bottom;padding-bottom:.08em;margin-bottom:-.08em}
+.h2 .w span{display:inline-block}
+.js .h2 .w span{transform:translateY(110%);transition:transform .7s cubic-bezier(.2,.8,.2,1);transition-delay:calc(var(--d,0)*80ms)}
+.js .in .h2 .w span,.js .h2.in .w span{transform:none}
+.phone{animation:bobphone 6s ease-in-out infinite}
+@keyframes bobphone{0%,100%{translate:0 0}50%{translate:0 -12px}}
+.faces img:hover{transform:translateY(-10px) rotate(-8deg) scale(1.1)}
+.sec-head .k::before{content:"";display:inline-block;width:.6em;height:.6em;border-radius:999px;background:var(--pink);margin-right:.5em;vertical-align:middle;animation:blink 1.4s ease-in-out infinite}
+@keyframes blink{0%,100%{opacity:1;scale:1}50%{opacity:.3;scale:.7}}
+@media(prefers-reduced-motion:reduce){.js .quotes .chatcard,.js .cats .cat,.js .catpics img,.js .clips-row figure,.js .h2 .w span{opacity:1;transform:none;translate:0 0}}
+/* v13: typed hero, running cats, 3d phone + swipe, typed chat, live chat */
+.hero .mid,.hero .bottom{position:relative;z-index:1}
+.giant.typed{position:relative}
+.giant.typed .ghost{opacity:0;display:block}
+.giant.typed .live-t{position:absolute;inset:0;display:block}
+.giant.typed .mint{color:var(--mint)} .giant.typed .pink{color:var(--pink)}
+.giant.typed .err{color:var(--pink-hot);text-decoration:underline wavy;text-decoration-thickness:.04em;text-underline-offset:.1em}
+.giant.typed .cur{display:inline-block;width:.09em;height:.8em;background:var(--mint);vertical-align:-.02em;margin-left:.05em;animation:blink2 .85s steps(1) infinite}
+.giant.typed .cur.off{display:none}
+@keyframes blink2{50%{opacity:0}}
+.hero .run{position:absolute;left:0;right:0;bottom:-4px;height:70px;pointer-events:none;z-index:0}
+.hero .rc{position:absolute;bottom:0;width:62px;height:62px;object-fit:contain;opacity:.92;filter:drop-shadow(0 8px 10px rgba(0,0,0,.45));animation:runx 16s linear infinite,hop .42s ease-in-out infinite alternate}
+.hero .rc.b{width:44px;animation-duration:23s,.36s;animation-delay:-11s,0s;animation-direction:reverse,alternate;transform:scaleX(-1)}
+@keyframes runx{from{left:-10%}to{left:104%}}
+@keyframes hop{from{translate:0 0}to{translate:0 -7px}}
+.apps-sec .device{perspective:1400px}
+.apps-sec .titles .h3{cursor:pointer}
+#phone{transform:rotateX(var(--rx,0deg)) rotateY(var(--ry,0deg)) rotate(var(--rz,-4deg));touch-action:pan-y;cursor:grab;user-select:none;-webkit-user-select:none;will-change:transform}
+#phone.drag{transition:none;cursor:grabbing}
+#phone .scr{box-shadow:inset 0 0 0 1px rgba(255,255,255,.05)}
+#phone .scr .screen{opacity:1;z-index:auto;transform:translateX(calc(var(--k,0)*100% + var(--dx,0px)));transition:transform .55s cubic-bezier(.2,.8,.2,1)}
+#phone.drag .scr .screen{transition:none}
+#phone .scr .screen .shot{pointer-events:none;-webkit-user-drag:none}
+.chatcard p.ty::after{content:"";display:inline-block;width:.45em;height:1em;background:var(--mint);vertical-align:-.15em;margin-left:.1em;animation:blink2 .7s steps(1) infinite}
+.live{grid-column:2;justify-self:end;width:min(320px,32vw);z-index:30;display:flex;flex-direction:column;align-items:flex-end;gap:8px;pointer-events:none}
+.live.fx{position:fixed;right:max(12px,env(safe-area-inset-right,0px));bottom:max(12px,env(safe-area-inset-bottom,0px));width:300px}
+.live.fx:not(.open) .msgs{display:none}
+.live .lh{pointer-events:auto;display:inline-flex;align-items:center;gap:8px;background:var(--chat);border:2px solid var(--line);border-radius:999px;padding:7px 14px 7px 11px;font-family:var(--display);font-size:13px;text-transform:uppercase;letter-spacing:.03em;color:var(--cream);cursor:pointer;box-shadow:var(--shadow)}
+.live .lh i{width:9px;height:9px;border-radius:50%;background:#ff4f4f;box-shadow:0 0 0 3px rgba(255,79,79,.25);animation:blink 1.4s ease-in-out infinite}
+.live .lh b{color:var(--muted);font-family:var(--body);font-weight:900;font-variant-numeric:tabular-nums}
+.live .msgs{width:100%;display:flex;flex-direction:column;justify-content:flex-end;gap:6px;height:min(30vh,260px);overflow:hidden;-webkit-mask-image:linear-gradient(to bottom,transparent,#000 25%);mask-image:linear-gradient(to bottom,transparent,#000 25%)}
+.live .m{background:rgba(30,8,24,.88);border:2px solid var(--line);border-radius:14px;padding:8px 12px;font-size:14px;line-height:1.35;font-weight:700;color:var(--cream);animation:pop .45s cubic-bezier(.2,.9,.2,1.3) both;backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);overflow-wrap:anywhere}
+.live .m .bd{display:inline-block;width:14px;height:14px;border-radius:4px;vertical-align:-2px;margin-right:5px}
+.live .m .bd.mod{background:var(--mint)} .live .m .bd.vip{background:var(--yellow)} .live .m .bd.sub{background:var(--twitch)}
+.live .m .u{font-family:var(--display);font-size:12.5px;margin-right:6px;color:var(--pink)}
+.live .m .u.mod{color:var(--mint)} .live .m .u.vip{color:var(--yellow)}
+.live .m img{display:inline-block;width:24px;height:24px;vertical-align:-7px;border-radius:50%;margin-left:3px}
+.live.off .msgs{display:none}
+@keyframes pop{from{opacity:0;transform:translateY(14px) scale(.92)}to{opacity:1;transform:none}}
+@media(max-width:800px){.live{display:none}}
+.hero .mid{grid-template-rows:auto auto}
+.hero .mid .intro{grid-row:1/3}
+@media(prefers-reduced-motion:reduce){.hero .rc{animation:none;display:none}.live .m{animation:none}}
+.reveal{opacity:1;transform:none}
+.js .reveal{opacity:0;transform:translateY(24px);transition:opacity .7s ease,transform .7s cubic-bezier(.2,.8,.2,1)}
+.js .reveal.in{opacity:1;transform:none}
+@media(prefers-reduced-motion:reduce){
+  *{animation:none!important;transition:none!important}
+  .hero .giant .w span{transform:none}
+  .js .reveal{opacity:1;transform:none}
+  .screen.on .bar i{width:var(--w,60%)}
 }
 </style>
 </head>
 <body>
 
-<header class="wrap">
-  <nav class="top">
-    <a class="mark" href="#">glup<span>onya</span></a>
-    <div class="top-links">
-      <a href="#who">кто я</a>
-      <a href="#words">словарик</a>
-      <a href="#cats">коты</a>
-      <a href="#watch">где смотреть</a>
-    </div>
-  </nav>
+<div class="progress" id="progress" aria-hidden="true"></div>
+<canvas id="dots" aria-hidden="true"></canvas>
+
+<header class="nav">
+  <div class="wrap">
+    <a class="plate" href="#top" aria-label="Глупоня, на початок сторінки"><span>феномен</span><span>Глупоня</span></a>
+    <nav aria-label="Розділи">
+      <a href="#apps">Застосунки</a>
+      <a href="#me">Про мене</a>
+      <a href="#content">Стріми</a>
+      <a href="#chat">Чат</a>
+      <a href="#contacts">Контакти</a>
+      <a class="btn twitch" href="https://twitch.tv/gluponya">
+        <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M4 2 2 6v14h5v3h3l3-3h4l5-5V2H4zm16 12-3 3h-5l-3 3v-3H5V4h15v10zM15 7h2v5h-2V7zm-5 0h2v5h-2V7z"/></svg>
+        Стрім
+      </a>
+    </nav>
+  </div>
 </header>
 
 <main>
-<section class="hero wrap">
-  <div class="hero-grid">
-    <div>
-      <h1>glup<em>onya</em></h1>
-      <div class="plate">Делаю приложение,<br>не умея программировать</div>
-      <p class="lead">Я Оня. Стримлю из Львова, вайбкожу приложения с <b>Клодиком</b>, играю в TFT и ищу повод показать вам фотки своих котов</p>
-      <div class="cta">
-        <a class="btn twitch" href="https://twitch.tv/gluponya">twitch.tv/gluponya</a>
-        <a class="btn pink" href="https://www.youtube.com/@gluponya">YouTube</a>
-        <a class="btn mint" href="https://www.tiktok.com/@gluponya_twitch">TikTok</a>
-        <a class="btn" href="https://www.instagram.com/gluponya">Instagram</a>
+<section class="hero wrap" id="top" data-shape="cat">
+  <div class="mid">
+    <div class="intro">
+      <p>Я Оня. Придумую застосунки і доводжу їх до релізу. Код за мене пише <b>Клодік</b>. І все це на стрімі, з котами перед камерою</p>
+      <span class="sticker" style="--tilt:-6deg">продукт мій, код Клодіка</span>
+    </div>
+    <img class="me" src="img/onya-frogs.jpg" alt="Оня з жабками на обличчі, селфі">
+    <aside class="live" id="live" aria-label="Чат зі стріму">
+      <button class="lh" id="livebtn" type="button"><i></i>чат зі стріму <b id="livecnt"></b></button>
+      <div class="msgs" id="livemsgs" aria-live="off"></div>
+    </aside>
+  </div>
+  <div class="bottom">
+    <h1 class="giant typed">
+      <span class="ghost" id="h1g">Придумуємо, <span class="mint">робимо</span><br>і показуємо <span class="pink">в ефірі</span></span>
+      <span class="live-t" id="h1t" aria-hidden="true"></span>
+    </h1>
+    <div class="row">
+      <p class="note">Студія з Чернігова. Я продакт і дизайнер, Клодік мій кодер. Робимо все в ефірі, з котами і чатом</p>
+      <div class="actions"><a class="btn mint" href="#apps">Застосунки</a><a class="btn ghost" href="#how">Як це працює</a></div>
+    </div>
+  </div>
+  <div class="run" aria-hidden="true"><img class="rc a" src="img/cat-black.png" alt=""><img class="rc b" src="img/cat-black.png" alt=""></div>
+</section>
+
+<section class="apps-sec" id="apps" data-shape="cat">
+  <div class="pin">
+    <div class="wrap">
+      <div class="head">
+        <div><p class="k">Застосунки</p><h2 class="h2">Три застосунки,<br>три сезони стрімів</h2></div>
+        <p class="note" style="max-width:22em">Кожен виріс із того, що мене бісило в побуті. Гортайте, покажу всі три</p>
+      </div>
+      <div class="titles">
+        <h3 class="h3 on" data-i="0">Грошик</h3>
+        <h3 class="h3" data-i="1">Фрешка</h3>
+        <h3 class="h3" data-i="2">Аптечка</h3>
+      </div>
+      <div class="device">
+        <div class="tabs" aria-hidden="true"><b class="on">1</b><b>2</b><b>3</b></div>
+        <div class="phone" id="phone">
+          <div class="scr">
+            <div class="notch"></div>
+            <div class="screen on" data-i="0" aria-label="Екран Грошика: головна"><img class="shot" src="img/scr-groshik.jpg" alt=""></div>
+            <div class="screen" data-i="1" aria-label="Екран Фрешки: холодильник"><img class="shot" src="img/scr-freshka.jpg" alt=""></div>
+            <div class="screen" data-i="2" aria-label="Екран Аптечки: список ліків">
+              <div class="top"><b>Аптечка</b><strong>Сьогодні о 9:00</strong></div>
+              <div class="card"><img src="img/heart.png" alt=""><div class="t"><b>Вітамін D</b><small>1 крапля, щодня</small></div><span class="pill mint">випито</span></div>
+              <div class="card"><img src="img/paws.png" alt=""><div class="t"><b>Для кота: від бліх</b><small>раз на місяць</small></div><span class="pill">завтра</span></div>
+              <div class="card"><img src="img/sparkles.png" alt=""><div class="t"><b>Ібупрофен</b><small>термін до 03.2026</small></div><span class="pill hot">викинути</span></div>
+              <div class="card"><img src="img/egg.png" alt=""><div class="t"><b>Купити</b><small>пластир, спирт</small></div><span class="v">2</span></div>
+              <div class="tabbar" aria-hidden="true"><i></i><i></i><i class="on"></i><i></i></div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="side">
+        <div class="meta">
+          <span class="tag on" data-i="0">вже працює</span><span class="tag yellow" data-i="1">відкрито в Telegram</span><span class="tag hot" data-i="2">бета в Telegram</span>
+        </div>
+        <div class="text">
+          <p class="on" data-i="0">Сімейний гаманець у Telegram. Підключається до monobank, сам розкладає витрати по категоріях і показує, чи дотягнете до кінця місяця. Токен банку живе тільки на вашому телефоні</p>
+          <p data-i="1">Холодильник у телефоні. Скануєте штрихкод, Фрешка знає термін придатності і нагадає, що молоко треба допити сьогодні. Полиці з 3D-іконками, список покупок із того, що закінчилось</p>
+          <p data-i="2">Домашня аптечка, яка пам'ятає терміни за вас. Нагадування про прийом для всієї родини, прострочені ліки підсвічуються одразу, список для аптеки в один тап</p>
+        </div>
+      </div>
+      <div class="foot">
+        <div class="dotsbar" aria-hidden="true"><i class="on"></i><i></i><i></i></div>
+        <div class="cta">
+          <a class="btn pink on" data-i="0" href="https://groshyk-app.nb-77d18a.workers.dev/app">Відкрити Грошик</a>
+          <a class="btn mint" data-i="1" href="https://t.me/freshkapp_bot/fridge">Відкрити Фрешку в Telegram</a>
+          <a class="btn mint" data-i="2" href="https://t.me/medkitapp_bot/app">Відкрити Аптечку в Telegram</a>
+          <span class="stores on" data-i="0">Telegram і стори — СКОРО</span>
+          <span class="stores" data-i="1">В App Store і Google Play — СКОРО</span>
+          <span class="stores" data-i="2">В App Store і Google Play — СКОРО</span>
+        </div>
       </div>
     </div>
-    <div class="stack" aria-hidden="true">
-      <div class="sticker y s1">Це перемога</div>
-      <div class="sticker p s2">Я пенсия</div>
-      <div class="sticker m s3">Good enough</div>
-      <div class="sticker h s4">Осуждаю</div>
-      <div class="clodik">
-        <svg viewBox="0 0 100 100">
-          <defs><radialGradient id="g" cx="35%" cy="30%" r="75%"><stop offset="0" stop-color="#FFC37A"/><stop offset=".6" stop-color="#ED993A"/><stop offset="1" stop-color="#C46A1A"/></radialGradient></defs>
-          <path fill="url(#g)" d="M50 4 L62 36 L96 38 L69 59 L79 93 L50 73 L21 93 L31 59 L4 38 L38 36 Z" stroke="#2E0C24" stroke-width="3" stroke-linejoin="round"/>
-          <circle cx="42" cy="49" r="5" fill="#2E0C24"/><circle cx="58" cy="49" r="5" fill="#2E0C24"/>
-          <circle cx="43.5" cy="47.5" r="1.6" fill="#fff"/><circle cx="59.5" cy="47.5" r="1.6" fill="#fff"/>
-          <path d="M43 60 Q50 66 57 60" stroke="#2E0C24" stroke-width="3" fill="none" stroke-linecap="round"/>
-        </svg>
-      </div>
+  </div>
+  <div class="cases-m wrap">
+    <p class="k">Застосунки</p>
+    <article class="case-m"><div class="meta"><span class="tag">вже працює</span></div><h3 class="h3">Грошик</h3><p class="lead">Сімейний гаманець у Telegram. Підключається до monobank, сам розкладає витрати і показує, чи дотягнете до кінця місяця</p><div class="stage"><div class="phone"><div class="scr"><div class="notch"></div><div class="screen on"><img class="shot" src="img/scr-groshik.jpg" alt=""></div></div></div></div><a class="btn pink" href="https://groshyk-app.nb-77d18a.workers.dev/app">Відкрити Грошик</a><span class="stores">Telegram і стори — СКОРО</span></article>
+    <article class="case-m"><div class="meta"><span class="tag yellow">відкрито в Telegram</span></div><h3 class="h3">Фрешка</h3><p class="lead">Холодильник у телефоні. Скануєте штрихкод, Фрешка знає термін придатності і нагадає, що молоко треба допити сьогодні</p><div class="stage"><div class="phone"><div class="scr"><div class="notch"></div><div class="screen on"><img class="shot" src="img/scr-freshka.jpg" alt=""></div></div></div></div><a class="btn mint" href="https://t.me/freshkapp_bot/fridge">Відкрити Фрешку в Telegram</a><span class="stores">В App Store і Google Play — СКОРО</span></article>
+    <article class="case-m"><div class="meta"><span class="tag hot">бета в Telegram</span></div><h3 class="h3">Аптечка</h3><p class="lead">Домашня аптечка, яка пам'ятає терміни за вас і нагадує про прийом усій родині</p><div class="stage"><div class="phone"><div class="scr"><div class="notch"></div><div class="screen on"><div class="top"><b>Аптечка</b><strong>Сьогодні о 9:00</strong></div><div class="card"><img src="img/heart.png" alt=""><div class="t"><b>Вітамін D</b><small>1 крапля, щодня</small></div><span class="pill mint">випито</span></div><div class="card"><img src="img/paws.png" alt=""><div class="t"><b>Для кота: від бліх</b><small>раз на місяць</small></div><span class="pill">завтра</span></div><div class="card"><img src="img/sparkles.png" alt=""><div class="t"><b>Ібупрофен</b><small>термін до 03.2026</small></div><span class="pill hot">викинути</span></div><div class="tabbar" aria-hidden="true"><i></i><i></i><i class="on"></i><i></i></div></div></div></div></div><a class="btn mint" href="https://t.me/medkitapp_bot/app">Відкрити Аптечку в Telegram</a><span class="stores">В App Store і Google Play — СКОРО</span></article>
+  </div>
+</section>
+
+<section class="state wrap" data-shape="paws">
+  <p class="k">Що таке Глупоня</p>
+  <p class="big-lead">Глупоня — це я, Клодік і чат. Я придумую застосунок, малюю екрани, <span class="mark">вирішую, що робимо, а що ні</span> і доводжу до релізу. Клодік пише код. Усе на стрімі</p>
+  <div class="corner chatcard reveal">
+    <span class="nick">Оня</span>
+    <p>З жовтня три застосунки. Ідеї мої, екрани мої, що робити спочатку, а що потім, теж я. Код Клодіка</p>
+    <p><b>— А чого на стрімі?</b></p>
+    <p>Бо так веселіше. Чат бачить, як воно робиться, і пише, що не так, ще до релізу</p>
+  </div>
+</section>
+
+<section class="sec wrap story" id="me" data-shape="cat">
+  <div class="story-grid">
+    <figure class="story-photo reveal">
+      <img src="img/onya-hat.jpg" alt="Оня в шапці з вушками і рожевих окулярах">
+      <span class="sticker pink" style="--tilt:-7deg">це я</span>
+    </figure>
+    <div class="story-text reveal">
+      <p class="k">Про мене</p>
+      <h2 class="h2">Я не вмію програмувати. Чесно</h2>
+      <p class="lead">Диплом комп&#39;ютерного інженера є, але востаннє я щось кодила так давно, що це не рахується. Зате я вмію придумати, що має бути в застосунку, намалювати, як воно виглядає, і не відпускати, поки воно не запрацює</p>
+      <p class="lead">Почала в жовтні 2026. Витратила купу грошей на підписки ШІ і захотіла зробити щось маленьке, але до кінця. Ідея прийшла, коли я знову викинула засохлу зелень, яку заховала в глибині холодильника. Так з&#39;явилась Фрешка: холодильник у телефоні</p>
+      <p class="lead">Стрімлю, бо так веселіше. Чат знаходить баги раніше за мене, сперечається про кольори і дивиться на котів. Коти теж на стрімі постійно: ходять перед камерою, лягають на клавіатуру і показують попи</p>
+      <div class="stack"><span class="sticker" style="--tilt:-4deg">почуваюсь бабулечкою</span><span class="sticker mint" style="--tilt:3deg">good enough</span></div>
+    </div>
+  </div>
+  <div class="cats reveal">
+    <article class="cat"><img src="img/bubunya.jpg" alt="Бубуня, чорний кіт"><h3>Бубуня</h3><p>Чорний кіт і зірка стріму. Приходить, коли все пропало, і сідає прямо в кадр</p></article>
+    <article class="cat"><img src="img/chukens.jpg" alt="Чукенс, рудий кіт, дивиться вгору"><h3>Чукенс</h3><p>Рудий. Лягає на клавіатуру в найважливіший момент і дивиться так, ніби це я заважаю</p></article>
+    <article class="cat"><img src="img/rops.jpg" alt="Ропс, мопс, спить на подушці"><h3>Ропс</h3><p>Мопс, який упевнений, що він кіт. Хропе під столом, чат чує</p></article>
+  </div>
+  <div class="catpics reveal" id="pets">
+    <img src="img/rops-67.jpg" alt="Ропс облизується, Оня тримає кубик із числом 67" style="--tilt:3deg">
+    <img src="img/chukens-belly.jpg" alt="Чукенс лежить догори пузом на жовтій ковдрі" style="--tilt:-3deg">
+    <img src="img/cats-both.jpg" alt="Бубуня і Чукенс разом на полиці" style="--tilt:2deg">
+    <img src="img/chukens-peek.jpg" alt="Чукенс визирає з-за шафи" style="--tilt:-2deg">
+  </div>
+  <div class="clips reveal" id="cuts">
+    <p class="k">Нарізки зі стрімів</p>
+    <div class="clips-row">
+      <figure><video src="clip/mops.mp4" autoplay muted loop playsinline></video><span class="sticker" style="--tilt:-5deg">їм яблуко</span></figure>
+      
+      
     </div>
   </div>
 </section>
 
-<section id="who" class="wrap">
-  <div class="sec-head">
-    <span class="kicker">Кто я</span>
-    <h2>Без опыта, но сообразительная</h2>
+<section class="sec wrap" id="chat" data-shape="cat">
+  <div class="sec-head reveal"><p class="k">Із чату, дослівно</p><h2 class="h2">Що кажуть ті,<br>хто дивиться</h2></div>
+  <div class="quotes reveal">
+    <div class="chatcard" style="--tilt:-1deg"><span class="nick">ta6ejib</span><p>«Ну приложения у тебя стильные получаются. Таких мало в магазине. Классно!»</p></div>
+    <div class="chatcard" style="--tilt:1deg"><span class="nick">leksa_faers</span><p>«Стилизация бомбезная, lo-fi вайбы) а как ты делаешь иконки продуктов?»</p></div>
+    <div class="chatcard" style="--tilt:-0.5deg"><span class="nick">nicktonypostradal</span><p>«Интересно тут. Я 25 лет кодю, интересно, как вот это всё настроить :)»</p></div>
+    <div class="chatcard" style="--tilt:1.5deg"><span class="nick">klirmio21</span><p>«А стрим становится все лучше и лучше. Потрясающий потенциал»</p></div>
+    <div class="chatcard" style="--tilt:-1deg"><span class="nick">alexsad95</span><p>«Дизайн прикольный, люблю такой. Вроде необрутализм или типо того»</p></div>
+    <div class="chatcard" style="--tilt:0.5deg"><span class="nick">pashok_26</span><p>«Первый раз зашел из реков, классный стрим, постоянно кодишь на стримах?»</p></div>
+    <div class="chatcard" style="--tilt:1deg"><span class="nick">leksa_faers</span><p>«Видела ютуб видео, кайфово смонтировано, было интересно смотреть и про кастрюлю в горошек, и про яйцо)»</p></div>
+    <div class="chatcard" style="--tilt:-1.5deg"><span class="nick">allyadin</span><p>«Ты меня конечно извини)) дизайн красивый, НО прога по слежению за аптечкой.. ну.. спорно КАК ПО МНЕ»</p></div>
+    <div class="chatcard" style="--tilt:0.5deg"><span class="nick">i_am_peepo_man</span><p>«Предлагаю киллер фичу: это напоминание, что корм для кота заканчивается»</p></div>
+    <div class="chatcard" style="--tilt:-1deg"><span class="nick">klirmio21</span><p>«Блин, выглядит как будто навайбкожено Kappa»</p></div>
+    <div class="chatcard" style="--tilt:1deg"><span class="nick">footagegod</span><p>«Ну лучше чем у большинства получается))»</p></div>
+    <div class="chatcard" style="--tilt:-0.5deg"><span class="nick">cesarus1337</span><p>«Графика на стриме прикольная»</p></div>
   </div>
-  <div class="who">
-    <div class="card">
-      <p class="quote">Я не программист, я <span class="hl">вайбкодер</span>: пишу АИшке, и АИшка делает всё за меня</p>
-      <p style="margin-top:18px;color:var(--ink-muted)">Оня — это как друзья зовут, глупс — это то, что я говорю чаще всего. Так и получилась gluponya</p>
-    </div>
-    <div class="card">
-      <h3>Коротко</h3>
-      <ul class="facts">
-        <li>По диплому компьютерный инженер, по жизни бэкенд-разработчица, по вечерам стримерша</li>
-        <li>На стримах строю приложения с нуля, не написав ни строчки кода сама</li>
-        <li>Из стримов выходят длинные эпизоды на YouTube и шортсы</li>
-        <li>Отдыхаю в TFT и с котами в кадре</li>
-        <li>Каждый день мы узнаём что-то новое</li>
-      </ul>
+</section>
+
+<section class="rail-sec" id="nums" data-shape="heart">
+  <div class="pin">
+    <div class="head wrap"><p class="k">Стрім у цифрах, жовтень 2026</p></div>
+    <div class="rail" id="rail">
+      <div class="paper"><span class="src">досвід програмування</span><span class="num">0</span><span class="cap">рядків коду написала сама. Три застосунки, і жодного рядка руками</span><span class="sticker" style="--tilt:6deg">я пенсія</span></div>
+      <div class="paper pink"><span class="src">Twitch, з жовтня</span><span class="num" data-count="144">0</span><span class="cap">людей писали в чат за перший місяць стрімів. Половина з них знайшла хоча б один баг</span><span class="sticker" style="--tilt:-5deg">осуджую</span></div>
+      <div class="paper mint"><span class="src">у кадрі</span><span class="num">3</span><span class="cap">хвости ходять перед камерою: Бубуня, Чукенс і мопс Ропс, який вважає, що він кіт</span></div>
+      <div class="paper yellow"><span class="src">Twitch, 30 днів</span><span class="num" data-count="5708">0</span><span class="cap">переглядів за місяць. Майже всі зайшли вперше</span><span class="sticker pink" style="--tilt:-5deg">ошалєть</span></div>
+      <div class="paper plum"><span class="src">застосунки</span><span class="num" style="color:var(--mint)">3</span><span class="cap">Грошик уже в телефоні, Фрешку робимо, Аптечка чекає своєї черги</span></div>
     </div>
   </div>
 </section>
 
-<section class="wrap">
-  <div class="sec-head">
-    <span class="kicker">Что тут происходит</span>
-    <h2>Три вещи сразу</h2>
+<section class="kin wrap" data-shape="paws">
+  <div class="paper pink" id="kin">
+    <div class="lines" aria-hidden="true"></div>
+    <p class="word">Придумуємо</p>
+    <p class="word">Ламаємо</p>
+    <p class="word">Чинимо</p>
+    <p class="word">Випускаємо</p>
   </div>
-  <div class="three">
-    <div class="card">
-      <div class="num">Вайбкодинг</div>
-      <h3>Холодильник, который я слепила словами</h3>
-      <p>Первое приложение уже готово: холодильник с 3D-едой, полками и котами внутри. Клодик писал, я командовала, чат ржал. Дальше новое приложение из моего старого дизайна в Figma</p>
+</section>
+
+<section class="how wrap" id="how" data-shape="heart">
+  <div class="grid">
+    <div class="paper left reveal">
+      <p class="k" style="color:var(--on-fill)">Як це працює</p>
+      <p class="big-lead">Приблизно так виглядає кожен стрім. Код пише Клодік, усе інше на мені</p>
+      <div class="stack"><span class="sticker" style="--tilt:-4deg">так, окей</span><span class="sticker mint" style="--tilt:3deg">бе-бе-бе</span><span class="sticker pink" style="--tilt:-6deg">все пропало</span><span class="sticker mint" style="--tilt:4deg">це перемога</span></div>
+      <img src="img/krutaya.png" alt="Оня показує великий палець, кружечок зі стріму" style="width:min(260px,60%);border-radius:999px;box-shadow:var(--shadow)">
     </div>
-    <div class="card">
-      <div class="num">TFT</div>
-      <h3>Тактика, удача и «всё пропало»</h3>
-      <p>Когда мозг устал от вайбкодинга, идём в Teamfight Tactics. Моя последняя мозговая клеточка борется за свою жизнь, а чат подсказывает</p>
-    </div>
-    <div class="card">
-      <div class="num">Польза</div>
-      <h3>Перевод с клодовского на человеческий</h3>
-      <p>Какую модель брать, сколько это стоит, почему сломалось и какой промпт сработал. Всё человеческими словами, как подруге</p>
+    <div class="paper mint right reveal">
+      <div class="item"><b>А:</b><div><strong>Оня придумує продукт</strong><p>Починається з того, що мене щось бісить у побуті. Малюю екрани, вирішую, що в першу версію, а що потім</p></div></div>
+      <div class="item"><b>Б:</b><div><strong>Клодік пише код</strong><p>Я ставлю задачу, Клодік робить, я перевіряю і повертаю на доробку. Чату пояснюю, що відбувається, людською мовою</p></div></div>
+      <div class="item"><b>В:</b><div><strong>Щось ламається</strong><p>Завжди. Я або чат знаходимо баг, Клодік чинить, я кажу «все пропало», а потім «це перемога»</p></div></div>
+      <div class="item"><b>Г:</b><div><strong>Тестуємо на людях</strong><p>Спочатку на собі, потім на сім'ї і друзях, потім на глядачах. Якщо мама розібралась без пояснень, можна випускати</p></div></div>
+      <div class="item"><b>Ґ:</b><div><strong>Good enough</strong><p>Випускаємо те, що працює сьогодні. Решту доробляємо на наступному стрімі</p></div></div>
     </div>
   </div>
 </section>
 
-<section class="wrap">
-  <div class="sec-head">
-    <span class="kicker">Шкала</span>
-    <h2>Глупс → Хацкер</h2>
-  </div>
-  <div class="scale">
-    <div class="scale-head"><span>Глупс</span><span class="r">Хацкер</span></div>
-    <div class="track"><div class="fill" id="fill"></div></div>
-    <p class="scale-note">До хацкера ещё чуть-чуть <span class="now">сейчас</span></p>
-    <div class="rating" aria-label="Шкала оценки моделек">
-      <div>Омега глупс</div><div class="on">Good enough</div><div>Отвал жопы</div>
-    </div>
-    <p class="scale-note">Так я оцениваю всё, что Клодик лепит на стриме</p>
+<section class="sec wrap" id="content" data-shape="paws">
+  <div class="sec-head reveal"><p class="k">Не тільки застосунки</p><h2 class="h2">Стріми і контент,<br>де все це відбувається</h2><p class="lead">Застосунки це половина. Друга половина — стріми, епізоди на YouTube і шортси про те, як воно все робилось</p></div>
+  <div class="media reveal">
+    <article class="mcard"><span class="tag" style="background:var(--twitch);color:var(--white)">Twitch</span><h3>Прямі ефіри</h3><p>Кілька разів на тиждень. На початку пишу список, що сьогодні звершуємо, в кінці ставимо галочки. Чат підказує, сперечається і вибирає, який екран кращий</p><a class="btn twitch" href="https://twitch.tv/gluponya">twitch.tv/gluponya</a></article>
+    <article class="mcard"><span class="tag">YouTube</span><h3>Довгі епізоди</h3><p>Один епізод — одна історія: як збирали Фрешку, як за пів години намалювали 66 іконок, як Грошик навчився рахувати до зарплати</p><a class="btn mint" href="https://youtube.com/@gluponya">Дивитись епізоди</a></article>
+    <article class="mcard"><span class="tag yellow">TikTok і Shorts</span><h3>Короткі моменти</h3><p>Хвилина про одну фічу або один баг. Від «все пропало» до «це перемога» за шістдесят секунд</p><a class="btn pink" href="https://tiktok.com/@gluponya">Шортси</a></article>
   </div>
 </section>
 
-<section id="words" class="wrap">
-  <div class="sec-head">
-    <span class="kicker">Голос</span>
-    <h2>Словарик глупса</h2>
+<div class="ticker" aria-hidden="true">
+  <div class="track" id="track">
+    <span>Це перемога</span><span>Good enough</span><span>Я пенсія</span><span>Кайф</span><span>Імба</span><span>Давай, працюй, машино</span><span>Хіхоньки-хахоньки</span><span>Ошалєть</span><span>Клодік, ти допрацював?</span><span>Це база</span><span>Вот і думайте</span><span>Осуджую</span>
   </div>
-  <div class="words">
-    <span>Це перемога</span><span>Это люкс</span><span>Ошалеть</span>
-    <span>Давай, работай, машина</span><span>Я дизайнер, я так вижу</span><span>Хватит придумывать слова</span>
-    <span>Зацените</span><span>Это база</span><span>Я прям тащусь</span>
-    <span>Помянем</span><span>Видали такое?</span><span>Обнял, приподнял, поцеловал</span>
-  </div>
-  <div class="term">
-    <div class="bebebe">Бе-бе-бе,<br>бу-бу-бу →</div>
-    <div>
-      <p class="t">Вайбкодинг</p>
-      <p class="d">По-человечески: ты описываешь, что хочешь, словами, а код пишет АИшка. Спойлер: иногда надо было нажать две кнопки</p>
-    </div>
-  </div>
-</section>
+</div>
 
-<section class="wrap">
-  <div class="sec-head">
-    <span class="kicker">Цвета</span>
-    <h2>Слива, розовый и мята</h2>
-  </div>
-  <div class="pal">
-    <div class="sw" style="background:var(--pink);color:var(--on-fill)"><b>Розовый</b><small>#FF7ABE</small></div>
-    <div class="sw" style="background:var(--pink-hot);color:var(--on-fill)"><b>Ярко-розовый</b><small>#FF4FA3</small></div>
-    <div class="sw" style="background:var(--mint);color:var(--on-fill)"><b>Мята</b><small>#78EEC4</small></div>
-    <div class="sw dark" style="background:var(--plum);color:var(--cream)"><b>Слива</b><small>#2E0C24</small></div>
-    <div class="sw" style="background:var(--cream);color:var(--on-fill)"><b>Крем</b><small>#FFF8FB</small></div>
-    <div class="sw" style="background:var(--yellow);color:var(--on-fill)"><b>Жёлтый для шуток</b><small>#FFD84D</small></div>
-    <div class="sw" style="background:var(--twitch);color:#fff"><b>Только для Twitch</b><small>#9146FF</small></div>
-  </div>
-</section>
-
-<section id="cats" class="wrap">
-  <div class="sec-head">
-    <span class="kicker">Коты</span>
-    <h2>Зачем вайбкодить приложения, если можно вайбкодить котов?</h2>
-  </div>
-  <div class="cats">
-    <div class="cat">
-      <div class="ava" style="background:#1E0818;color:var(--mint)">Б</div>
-      <h3>Бубуня</h3>
-      <span class="tag">Чёрная, закрывает полэкрана</span>
-      <p>Приходит в кадр ровно в тот момент, когда Клодик пишет самое важное</p>
+<section class="sec band wrap" id="stream" data-shape="heart">
+  <div class="inner paper reveal">
+    <div class="copy">
+      <p class="k" style="color:var(--on-fill)">Усе це в прямому ефірі</p>
+      <h2 class="h2">Приходьте дивитись, як воно ламається</h2>
+      <p class="lead">Стріми на Twitch кілька разів на тиждень. Що не влізло в ефір, виходить епізодами на YouTube і шортсами в TikTok</p>
+      <div class="actions"><a class="btn twitch" href="https://twitch.tv/gluponya">twitch.tv/gluponya</a><a class="btn pink" href="https://youtube.com/@gluponya">YouTube</a></div>
     </div>
-    <div class="cat">
-      <div class="ava" style="background:#F6D9B8;color:var(--plum)">Ч</div>
-      <h3>Чукенс</h3>
-      <span class="tag">Рыжий, выключает компы</span>
-      <p>Кремово-персиковый, круглые щёки и своё мнение о моей клавиатуре</p>
-    </div>
-    <div class="cat">
-      <div class="ava" style="background:#E8C98F;color:var(--plum)">Р</div>
-      <h3>Ропс</h3>
-      <span class="tag">Мопс, храпит в эфире</span>
-      <p>Главный по звукам на стриме. Шумодав против него бессилен</p>
-    </div>
-  </div>
-</section>
-
-<section id="watch" class="wrap">
-  <div class="sec-head">
-    <span class="kicker">Где смотреть</span>
-    <h2>Приходи на стрим</h2>
-  </div>
-  <div class="links">
-    <a class="link tw" href="https://twitch.tv/gluponya"><b>Twitch</b><span>Всё вживую: вайбкодинг, TFT, коты. Расписание в профиле</span></a>
-    <a class="link" href="https://www.youtube.com/@gluponya"><b>YouTube</b><span>Длинные эпизоды «Делаю приложение, не умея программировать»</span></a>
-    <a class="link" href="https://www.tiktok.com/@gluponya_twitch"><b>TikTok</b><span>Шортсы со стримов, самые глупые моменты</span></a>
-    <a class="link" href="https://www.instagram.com/gluponya"><b>Instagram</b><span>Рилсы и коты</span></a>
-    <a class="link" href="https://ko-fi.com/gluponya"><b>Ko-fi</b><span>Если хочется поддержать. Остальные способы в панелях на Twitch</span></a>
+    <div class="faces" aria-hidden="true"><img src="img/shok.png" alt=""><img src="img/hehe.png" alt=""><img src="img/kaif.png" alt=""><img src="img/omega-glups.png" alt=""><img src="img/hatsker.png" alt=""></div>
   </div>
 </section>
 </main>
 
-<footer class="wrap">
-  <p class="bye">Обнял, приподнял, поцеловал</p>
-  <p class="bye2">Ну шо, Клодик, ты доработал сегодня</p>
-  <a class="foot-plate" href="https://twitch.tv/gluponya">twitch.tv/gluponya</a>
+<footer class="foot wrap" id="contacts">
+  <div class="grid">
+    <div class="clocks">
+      <div class="clock"><b id="kyiv"><span>00</span><span>00</span></b><small>Чернігів, тут усе і робиться</small></div>
+      <div class="clock"><b id="utc"><span>00</span><span>00</span></b><small>UTC, для чату з інших країн</small></div>
+    </div>
+    <nav class="links" aria-label="Розділи сайту"><a href="#top">Головна</a><a href="#apps">Застосунки</a><a href="#how">Як це працює</a><a href="#chat">Чат</a><a href="https://twitch.tv/gluponya">Twitch</a><a href="https://youtube.com/@gluponya">YouTube</a></nav>
+  </div>
+  <div class="cols">
+    <div><p class="k">Написати</p><p class="note">Якщо хочете щось зробити разом, спитати про застосунки або покликати на подкаст</p></div>
+    <div><p class="k">Юридично</p><p class="note">ТОВ «Глупоня», Україна. Розробка застосунків і відеоконтент</p></div>
+    <div><p class="k">Документи</p><a href="#privacy">Політика конфіденційності</a><a href="#terms">Умови використання</a></div>
+  </div>
+  <div class="mail"><code id="mail">hello@gluponya.tv</code><button type="button" id="copy">Скопіювати</button></div>
+  <div class="legal"><span class="note">2026 ТОВ «Глупоня»</span><span class="note">Зроблено в Чернігові, з котами</span></div>
 </footer>
 
 <script>
-  var f=document.getElementById('fill');
-  var start=function(){f.classList.add('go')};
-  if('IntersectionObserver' in window){
-    new IntersectionObserver(function(e,o){if(e[0].isIntersecting){start();o.disconnect()}},{threshold:.3}).observe(f);
-  }else{start()}
+(function(){
+  var root = document.documentElement; root.classList.add('js');
+  var reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+  var narrow = function(){ return matchMedia('(max-width: 800px)').matches; };
+
+  /* dot matrix background: particles form the brand icons, flee from the cursor */
+  var cv = document.getElementById('dots'), ctx = cv.getContext('2d');
+  var W, H, DPR = Math.min(2, devicePixelRatio || 1), pts = [], shapes = {}, cur = 'cat', mouse = {x:-9999,y:-9999};
+  var SRC = {cat:'img/cat-black.png', paws:'img/paws.png', heart:'img/heart.png'};
+  var COLORS = ['#FF7ABE','#78EEC4','#D9B8CC','#FFD84D'];
+  var N = 1600;
+  for (var i=0;i<N;i++) pts.push({x:Math.random()*innerWidth,y:Math.random()*innerHeight,tx:0,ty:0,vx:0,vy:0,c:COLORS[i%7===0?3:(i%3)],r:1.1+Math.random()*1.6,ph:Math.random()*6.28,on:false});
+  function setTargets(list){
+    var size = Math.min(W, H)*0.78, ox = W*0.5 - size/2, oy = H*0.5 - size/2;
+    if (W > 900) ox = W*0.64 - size/2;
+    for (var i=0;i<N;i++){ var p = pts[i], q = list[(i*7919) % list.length]; p.tx = ox + q[0]*size; p.ty = oy + q[1]*size; p.on = i < Math.min(N, list.length*1.2); }
+  }
+  function loadShape(name){
+    if (shapes[name]) return setTargets(shapes[name]);
+    var im = new Image(); im.src = SRC[name];
+    im.onload = function(){
+      var g = 64, oc = document.createElement('canvas'); oc.width = oc.height = g; var o = oc.getContext('2d');
+      var s = Math.min(g/im.width, g/im.height)*.92, w = im.width*s, h = im.height*s;
+      o.drawImage(im,(g-w)/2,(g-h)/2,w,h);
+      var d = o.getImageData(0,0,g,g).data, list = [];
+      for (var y=0;y<g;y++) for (var x=0;x<g;x++){ if (d[(y*g+x)*4+3]>60) list.push([x/g, y/g]); }
+      shapes[name] = list; if (cur===name) setTargets(list);
+    };
+  }
+  function resize(){ W = innerWidth; H = innerHeight; cv.width = W*DPR; cv.height = H*DPR; ctx.setTransform(DPR,0,0,DPR,0,0); if (shapes[cur]) setTargets(shapes[cur]); }
+  resize(); addEventListener('resize', resize); loadShape(cur);
+  addEventListener('mousemove', function(e){ mouse.x = e.clientX; mouse.y = e.clientY; });
+  document.addEventListener('mouseleave', function(){ mouse.x = -9999; });
+  var t = 0;
+  function draw(){
+    ctx.clearRect(0,0,W,H);
+    for (var i=0;i<N;i++){ var p = pts[i]; if (!p.on) continue;
+      ctx.globalAlpha = .5 + Math.sin(t*2+p.ph)*.25; ctx.fillStyle = p.c; ctx.beginPath(); ctx.arc(p.x,p.y,p.r,0,6.283); ctx.fill(); }
+    ctx.globalAlpha = 1;
+  }
+  function frame(){
+    t += .016;
+    for (var i=0;i<N;i++){ var p = pts[i]; if (!p.on) continue;
+      var dx = p.tx - p.x + Math.sin(t*1.3+p.ph)*4, dy = p.ty - p.y + Math.cos(t*1.1+p.ph)*4;
+      p.vx += dx*.012; p.vy += dy*.012;
+      var mx = p.x - mouse.x, my = p.y - mouse.y, md = mx*mx+my*my;
+      if (md < 22500 && md > 1){ var dd = Math.sqrt(md), f = (150 - dd)/150; p.vx += mx/dd*f*2.4; p.vy += my/dd*f*2.4; }
+      p.vx *= .86; p.vy *= .86; p.x += p.vx; p.y += p.vy;
+    }
+    draw(); requestAnimationFrame(frame);
+  }
+  function snap(){ for (var j=0;j<N;j++){ pts[j].x = pts[j].tx; pts[j].y = pts[j].ty; } draw(); }
+  if (!reduce) requestAnimationFrame(frame);
+  else { setTimeout(snap, 600); addEventListener('resize', snap); }
+  var secs = document.querySelectorAll('[data-shape]');
+  if ('IntersectionObserver' in window) {
+    var so = new IntersectionObserver(function(es){ es.forEach(function(e){ if (e.isIntersecting){ var s = e.target.getAttribute('data-shape'); if (s!==cur){ cur = s; loadShape(s); if (reduce) setTimeout(snap, 300); } } }); }, {rootMargin:'-45% 0px -45% 0px'});
+    secs.forEach(function(s){ so.observe(s); });
+  }
+
+
+  /* motion pass */
+  ['.quotes .chatcard','.cats .cat','.catpics img','.clips-row figure'].forEach(function(sel){ document.querySelectorAll(sel).forEach(function(el,i){ el.style.setProperty('--n', i); }); });
+  document.querySelectorAll('.h2').forEach(function(h){ if (h.querySelector('.w')) return; var d=0; h.innerHTML = h.innerHTML.split(/<br\s*\/?>/i).map(function(line){ return line.trim().split(/\s+/).filter(Boolean).map(function(w){ return '<span class="w"><span style="--d:'+(d++)+'">'+w+'</span></span>'; }).join(' '); }).join('<br>'); });
+  var pbar = document.getElementById('progress');
+  function setProg(){ var h = document.documentElement; var max = h.scrollHeight - innerHeight; pbar.style.setProperty('--p', max>0 ? (h.scrollTop/max).toFixed(4) : 0); }
+  addEventListener('scroll', setProg, {passive:true}); setProg();
+  if (!reduce && matchMedia('(hover:hover)').matches){
+    document.querySelectorAll('.btn').forEach(function(b){
+      b.addEventListener('mousemove', function(e){ var r=b.getBoundingClientRect(); var x=(e.clientX-r.left-r.width/2)/r.width, y=(e.clientY-r.top-r.height/2)/r.height; b.style.transform='translate('+(x*14)+'px,'+(y*10)+'px) scale(1.04)'; });
+      b.addEventListener('mouseleave', function(){ b.style.transform=''; });
+    });
+    var hero = document.getElementById('top'), me = hero && hero.querySelector('.me'), hs = hero ? hero.querySelectorAll('.sticker') : [];
+    if (hero) hero.addEventListener('mousemove', function(e){ var x=(e.clientX/innerWidth-.5), y=(e.clientY/innerHeight-.5); if (me) me.style.translate=(x*-18)+'px '+(y*-14)+'px'; hs.forEach(function(s,i){ s.style.translate=(x*(10+i*6))+'px '+(y*(8+i*4))+'px'; }); });
+    if (hero) hero.addEventListener('mouseleave', function(){ if (me) me.style.translate=''; hs.forEach(function(s){ s.style.translate=''; }); });
+  }
+  /* hero: the headline gets typed, with typos and fixes, like code on stream */
+  (function(){
+    var g = document.getElementById('h1g'), out = document.getElementById('h1t'); if (!g || !out) return;
+    if (reduce){ out.innerHTML = g.innerHTML; return; }
+    var ops = [
+      ['t','Придум'],['t','уе'],['w',380],['mark',1],['w',420],['bs',1],['t','ємо,'],['t',' '],['t','робимо','mint'],['w',260],['br'],
+      ['t','і показу'],['t','ю'],['w',360],['mark',1],['w',380],['bs',1],['t','ємо'],['t',' '],['t','в еф','pink'],['t','ир','pink'],['w',420],['mark',2],['w',400],['bs',2],['t','ірі','pink']
+    ];
+    var chars = [], k = 0;
+    function render(cursor){ var h = '', last = null; chars.forEach(function(c){ if (c.cls !== last){ if (last !== null) h += '</span>'; h += '<span class="' + (c.cls||'') + '">'; last = c.cls; } h += c.ch === '\n' ? '<br>' : c.ch; }); if (last !== null) h += '</span>'; out.innerHTML = h + (cursor ? '<span class="cur"></span>' : ''); }
+    function next(){
+      if (k >= ops.length){ render(true); setTimeout(function(){ var c = out.querySelector('.cur'); if (c) c.classList.add('off'); }, 2600); return; }
+      var o = ops[k++], d = 0;
+      if (o[0]==='t'){ var str = o[1], j = 0; (function tc(){ chars.push({ch:str[j], cls:o[2]||''}); render(true); j++; if (j < str.length) setTimeout(tc, 42 + Math.random()*55); else setTimeout(next, 40); })(); return; }
+      if (o[0]==='bs'){ var n = o[1]; (function bc(){ chars.pop(); render(true); n--; if (n>0) setTimeout(bc, 70); else setTimeout(next, 90); })(); return; }
+      if (o[0]==='mark'){ for (var i=1;i<=o[1];i++) chars[chars.length-i].cls = ((chars[chars.length-i].cls||'') + ' err').trim(); render(true); }
+      if (o[0]==='br'){ chars.push({ch:'\n', cls:''}); render(true); }
+      if (o[0]==='w') d = o[1];
+      setTimeout(next, d);
+    }
+    setTimeout(next, 500);
+  })();
+
+  /* chat quotes get typed in, like messages landing in the chat */
+  (function(){
+    var qs = document.querySelector('.quotes'); if (!qs || reduce || !('IntersectionObserver' in window)) return;
+    var ps = qs.querySelectorAll('.chatcard p');
+    ps.forEach(function(p){ p.setAttribute('data-t', p.textContent); p.textContent = ''; p.classList.add('ty'); });
+    var qo = new IntersectionObserver(function(es){ if (!es[0].isIntersecting) return; qo.disconnect();
+      ps.forEach(function(p,i){ setTimeout(function(){ var t = p.getAttribute('data-t'), j = 0; (function st(){ j++; p.textContent = t.slice(0,j); if (j < t.length) setTimeout(st, 12 + Math.random()*22); else p.classList.remove('ty'); })(); }, 200 + i*300); });
+    }, {threshold:.15}); qo.observe(qs);
+  })();
+
+  /* live chat: real messages from the stream chat, landing one by one */
+  (function(){
+    var box = document.getElementById('livemsgs'), live = document.getElementById('live'), btn = document.getElementById('livebtn'), cnt = document.getElementById('livecnt'); if (!box) return;
+    var E = {hehe:'img/hehe.png', kaif:'img/kaif.png', shok:'img/shok.png', hatsker:'img/hatsker.png', omega:'img/omega-glups.png', kru:'img/krutaya.png'};
+    var pool = [
+      ['vvmeansvlad','mod','Капельку мне кажется лагает ещё'],
+      ['k0r1___','vip','у меня не лагает'],
+      ['klirmio21','mod','показывай. рум тур','shok'],
+      ['i_am_peepo_man','','по фотке холодильника будет подсказка «помой»?'],
+      ['sleepidead','sub','ооо коты на холодосе, я их не замечала'],
+      ['k0r1___','vip','Ты выбрасываешь просроченное лекарство?'],
+      ['sudosimon','','Да холодильник определенно стоит того','kru'],
+      ['eutelsat','','поздравляю с выпуском приложения!','kaif'],
+      ['vvmeansvlad','mod','ну да, эволюция была очень наглядная)'],
+      ['i_am_peepo_man','','интеграция потом с сильпо нужна.. аля накидал и доставка уже едет'],
+      ['kringex','vip','ты ж знаешь что домен это очень-очень просто и дешево?'],
+      ['klirmio21','mod','29 ВИДЕО'],
+      ['fiashenergy67','','это телефон?'],
+      ['alexsad95','','Дизайн прикольный, люблю такой. Вроде необрутализм или типо того'],
+      ['ta6ejib','','Ну приложения у тебя стильные получаются. Таких мало в магазине'],
+      ['nicktonypostradal','sub','Я 25 лет кодю, интересно, как вот это всё настроить :)'],
+      ['k0r1___','vip','ДАЙТЕ АЧИВКУ ГАДЫ','hehe'],
+      ['vvmeansvlad','mod','АХАХАХХАХА'],
+      ['klirmio21','mod','Блин, выглядит как будто навайбкожено','hatsker'],
+      ['footagegod','','Ну лучше чем у большинства получается))'],
+      ['pashok_26','','Первый раз зашел из реков, классный стрим'],
+      ['leksa_faers','','Стилизация бомбезная, lo-fi вайбы)'],
+      ['i_am_peepo_man','','Предлагаю киллер фичу: напоминание, что корм для кота заканчивается'],
+      ['cesarus1337','','Графика на стриме прикольная'],
+      ['sherly42','','Перед публикацией попроси аудит безопасности'],
+      ['v4rich','sub','пітончик. пон'],
+      ['vovak9z','','Что за игру делаешь?'],
+      ['sher1ch','','игра про плесень?'],
+      ['prest_play','','А че через агента делаешь?'],
+      ['vvorm44','','это дистилят клода','omega'],
+      ['hasmin32','','можно просто апкшку скачать'],
+      ['lmmassacre','sub','Надеюсь время от времени он будет сбрасываться чтобы я принимал почаще'],
+      ['k0r1___','vip','останні гроші відбирають...','shok'],
+      ['zhivo_horosho_246','sub','Мне кажется я в мескалиновом сне Ивангая'],
+      ['barsnow_official','','щас пойду фоткать кокосы'],
+      ['kringex','vip','опа, скоро ж черная пятница'],
+      ['yudiiee','','Hello from India'],
+      ['klirmio21','mod','А стрим становится все лучше и лучше','kaif'],
+      ['vvmeansvlad','mod','мб её вверх-влево?'],
+      ['streykinggg','sub','«ПР готов к мержу» тоже довольно расплывчатое описание'],
+      ['glupobot','mod','Привет, NickTonyPostRadal! 💜'],
+      ['vvmeansvlad','mod','Все таки есть выходной онлайн)'],
+      ['k0r1___','vip','МЕНЯ ЗАСКАМИЛИ.','shok'],
+      ['vvmeansvlad','mod','не получилось убить ноду)'],
+      ['klirmio21','mod','пусть владик погуляет блин'],
+      ['kringex','vip','хм…. интересно']
+    ];
+    for (var i = pool.length-1; i>0; i--){ var j = Math.floor(Math.random()*(i+1)); var t = pool[i]; pool[i] = pool[j]; pool[j] = t; }
+    var idx = 0, n = 0, timer;
+    function esc(t){ return t.replace(/&/g,'&amp;').replace(/</g,'&lt;'); }
+    function add(){
+      var m = pool[idx++ % pool.length]; var el = document.createElement('div'); el.className = 'm';
+      el.innerHTML = (m[1] ? '<i class="bd '+m[1]+'"></i>' : '') + '<span class="u '+m[1]+'">'+esc(m[0])+'</span>' + esc(m[2]) + (m[3] ? '<img src="'+E[m[3]]+'" alt="">' : '');
+      box.appendChild(el); n++; cnt.textContent = 12 + (n % 7);
+      while (box.children.length > 9) box.removeChild(box.firstChild);
+      timer = setTimeout(add, reduce ? 4000 : 1300 + Math.random()*2600);
+    }
+    var off = false; try { off = localStorage.getItem('liveoff') === '1'; } catch(e){}
+    if (off) live.classList.add('off');
+    btn.addEventListener('click', function(){ if (live.classList.contains('fx')){ live.classList.toggle('open'); return; } off = !off; live.classList.toggle('off', off); try { localStorage.setItem('liveoff', off ? '1' : '0'); } catch(e){} });
+    var heroEl = document.getElementById('top'); if ('IntersectionObserver' in window) new IntersectionObserver(function(es){ live.classList.toggle('fx', !es[0].isIntersecting); if (es[0].isIntersecting) live.classList.remove('open'); }, {threshold:0, rootMargin:'-120px 0px 0px 0px'}).observe(heroEl);
+    document.addEventListener('visibilitychange', function(){ if (document.hidden) clearTimeout(timer); else timer = setTimeout(add, 800); });
+    if (matchMedia('(min-width:801px)').matches) timer = setTimeout(add, 1800); else cnt.textContent = '';
+  })();
+
+  var track = document.getElementById('track'); if (track) track.innerHTML += track.innerHTML;
+
+  var items = document.querySelectorAll('.reveal, .h2');
+  if ('IntersectionObserver' in window && !reduce) {
+    var io = new IntersectionObserver(function(es){ es.forEach(function(e){ if (e.isIntersecting){ e.target.classList.add('in'); io.unobserve(e.target);} }); }, {threshold:.12});
+    items.forEach(function(el){ io.observe(el); });
+  } else items.forEach(function(el){ el.classList.add('in'); });
+
+  function fmt(n){ return n.toString().replace(/\B(?=(\d{3})+(?!\d))/g,' '); }
+  function count(el){ var to=+el.getAttribute('data-count'), t0=null, dur=1400; if (reduce){ el.textContent=fmt(to); return; }
+    function tick(ts){ if(!t0) t0=ts; var p=Math.min(1,(ts-t0)/dur); p=1-Math.pow(1-p,3); el.textContent=fmt(Math.round(to*p)); if(p<1) requestAnimationFrame(tick); } requestAnimationFrame(tick); }
+  var nums = document.querySelectorAll('[data-count]');
+  if ('IntersectionObserver' in window){ var io2 = new IntersectionObserver(function(es){ es.forEach(function(e){ if(e.isIntersecting){ count(e.target); io2.unobserve(e.target);} }); }, {threshold:.3}); nums.forEach(function(n){ io2.observe(n); }); } else nums.forEach(count);
+
+  var railSec = document.getElementById('nums'), rail = document.getElementById('rail');
+  var appsSec = document.getElementById('apps'), appI = -1;
+  var kin = document.getElementById('kin'), words = kin.querySelectorAll('.word');
+  function prog(sec){ var r = sec.getBoundingClientRect(); var total = sec.offsetHeight - innerHeight; return total <= 0 ? 0 : Math.max(0, Math.min(1, -r.top/total)); }
+  function setApp(i){
+    if (i===appI) return; appI = i;
+    appsSec.querySelectorAll('[data-i]').forEach(function(el){ el.classList.toggle('on', +el.getAttribute('data-i')===i); });
+    appsSec.querySelectorAll('.tabs b').forEach(function(b,k){ b.classList.toggle('on',k===i); });
+    appsSec.querySelectorAll('.dotsbar i').forEach(function(b,k){ b.classList.toggle('on',k===i); });
+    var ph = document.getElementById('phone'); ph.style.setProperty('--rz', [-4,3,-2][i] + 'deg'); ph.querySelectorAll('.screen').forEach(function(sc,k){ sc.style.setProperty('--k', k - i); }); ph.querySelector('.scr').style.setProperty('--dx','0px');
+  }
+  function onScroll(){
+    if (narrow()) return;
+    var p = prog(railSec); var max = Math.max(0, rail.scrollWidth - innerWidth); rail.style.transform = 'translateX(' + (-p*max) + 'px)';
+    var a = prog(appsSec); setApp(a < .3 ? 0 : a < .62 ? 1 : 2);
+    if (!reduce){ var r = kin.getBoundingClientRect(); var v = Math.max(0, Math.min(1, (innerHeight - r.top)/(innerHeight + r.height)));
+      words.forEach(function(w,k){ w.style.setProperty('--sy', (0.72 + 0.56*Math.abs(Math.sin(Math.PI*(v*1.6 + k*0.27)))).toFixed(3)); }); }
+  }
+  addEventListener('scroll', onScroll, {passive:true}); addEventListener('resize', onScroll); onScroll();
+  setApp(0);
+
+  /* phone: 3d tilt behind the cursor, swipe between apps */
+  var phone = document.getElementById('phone'), pin = appsSec.querySelector('.pin'), scr = phone.querySelector('.scr');
+  function goTo(i){ i = Math.max(0, Math.min(2, i)); var total = appsSec.offsetHeight - innerHeight; var top = appsSec.getBoundingClientRect().top + scrollY + [.12,.46,.8][i]*total; scrollTo({top:top, behavior: reduce ? 'auto' : 'smooth'}); }
+  appsSec.querySelectorAll('.titles .h3').forEach(function(h){ h.addEventListener('click', function(){ goTo(+h.getAttribute('data-i')); }); });
+  if (!reduce && matchMedia('(hover:hover)').matches){
+    pin.addEventListener('mousemove', function(e){ if (phone.classList.contains('drag')) return; var r = pin.getBoundingClientRect(); var x = (e.clientX - r.left)/r.width - .5, y = (e.clientY - r.top)/r.height - .5; phone.style.setProperty('--ry', (x*22).toFixed(2)+'deg'); phone.style.setProperty('--rx', (-y*16).toFixed(2)+'deg'); });
+    pin.addEventListener('mouseleave', function(){ phone.style.setProperty('--ry','0deg'); phone.style.setProperty('--rx','0deg'); });
+  }
+  var sx = null, sdx = 0;
+  phone.addEventListener('pointerdown', function(e){ if (e.button) return; sx = e.clientX; sdx = 0; phone.classList.add('drag'); phone.setPointerCapture(e.pointerId); });
+  phone.addEventListener('pointermove', function(e){ if (sx===null) return; sdx = e.clientX - sx; if ((appI===0 && sdx>0) || (appI===2 && sdx<0)) sdx *= .3; scr.style.setProperty('--dx', sdx+'px'); phone.style.setProperty('--ry', (sdx*.08).toFixed(2)+'deg'); });
+  function endDrag(){ if (sx===null) return; phone.classList.remove('drag'); phone.style.setProperty('--ry','0deg'); var d = sdx; sx = null; sdx = 0; if (Math.abs(d) > 50 && !narrow()) goTo(appI + (d < 0 ? 1 : -1)); else scr.style.setProperty('--dx','0px'); }
+  phone.addEventListener('pointerup', endDrag); phone.addEventListener('pointercancel', endDrag);
+
+  function clock(){ var now = new Date();
+    function put(id, h, m){ var s = document.getElementById(id).children; s[0].textContent = ('0'+h).slice(-2); s[1].textContent = ('0'+m).slice(-2); }
+    try { var k = new Intl.DateTimeFormat('uk-UA',{timeZone:'Europe/Kyiv',hour:'2-digit',minute:'2-digit',hour12:false}).formatToParts(now); var kh = k.find(function(x){return x.type==='hour'}).value, km = k.find(function(x){return x.type==='minute'}).value; put('kyiv', kh, km); } catch(e){ put('kyiv', now.getHours(), now.getMinutes()); }
+    put('utc', now.getUTCHours(), now.getUTCMinutes());
+  }
+  clock(); setInterval(clock, 15000);
+
+  var btn = document.getElementById('copy'), mail = document.getElementById('mail');
+  btn.addEventListener('click', function(){
+    var done = function(){ btn.textContent='Скопійовано'; setTimeout(function(){ btn.textContent='Скопіювати'; },1600); };
+    function sel(){ var rg=document.createRange(); rg.selectNodeContents(mail); var s=getSelection(); s.removeAllRanges(); s.addRange(rg); }
+    if (navigator.clipboard && navigator.clipboard.writeText) navigator.clipboard.writeText(mail.textContent).then(done, sel); else sel();
+  });
+})();
 </script>
+
 </body>
 </html>

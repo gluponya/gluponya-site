@@ -8,77 +8,121 @@
 <title>Підтримка Фрешки</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Comfortaa:wght@700&family=Lora:wght@600&family=Nunito:wght@600;800&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Comfortaa:wght@700&family=Lora:wght@700&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="/freshka/_shared.css">
 <style>
-.hero{display:grid;gap:24px;padding:24px 0 40px;align-items:center}
-@media(min-width:760px){.hero{grid-template-columns:1fr auto;gap:40px;padding:40px 0 56px}}
-.hero .text{display:grid;gap:20px}
-.hero img{width:min(200px,45vw);justify-self:center}
-.stack{display:grid;gap:18px}
-.card{display:grid;gap:12px}
-.card p,.card ol,.card ul{margin:0}
-.card ol,.card ul{padding-left:22px;display:grid;gap:6px}
-.mail{font-family:var(--display);font-weight:700;font-size:clamp(20px,3vw,28px);word-break:break-all}
-.en{margin-top:48px;padding-top:32px;border-top:1.5px solid var(--line)}
-.en h2{margin-bottom:16px}
+.hero{display:grid;gap:28px;padding:28px 0 48px;align-items:center}
+@media(min-width:760px){.hero{grid-template-columns:1fr 300px;gap:40px;padding:40px 0 64px}}
+.hero .text{display:grid;gap:20px;justify-items:start}
+.hero .pic{position:relative;width:min(260px,60vw);margin:0 auto}
+.hero .pic .lamp{position:absolute;right:-6%;top:-38%;width:30%}
+.hero .pic .mascot{position:relative}
+.topics{display:grid;gap:18px}
+@media(min-width:760px){.topics{grid-template-columns:1fr 1fr}}
+.topic{display:grid;grid-template-columns:64px 1fr;gap:18px;align-items:start}
+.topic .pic{width:64px;height:64px;display:grid;place-items:center;background:var(--sunk);border:1.5px solid var(--line);border-radius:var(--r-md)}
+.topic .pic img{max-width:48px;max-height:48px;width:auto}
+.topic h2{font-size:22px;margin-bottom:10px}
+.topic p,.topic ol{margin:0 0 10px;font-size:16px;line-height:1.5}
+.topic p:last-child,.topic ol:last-child{margin-bottom:0}
+.topic ol{padding-left:20px;display:grid;gap:4px}
+.path{display:inline-flex;flex-wrap:wrap;gap:4px;align-items:center;font-weight:700}
+.path b{font-weight:700;background:var(--card);border:1.5px solid var(--line);border-radius:8px;padding:1px 8px;font-size:14px}
+.path i{font-style:normal;color:var(--ink-soft)}
+.mail{font-family:var(--display);font-weight:700;font-size:clamp(20px,3vw,26px);word-break:break-all;text-decoration:none}
+.en{padding:48px 0 8px}
+.en .card{display:grid;gap:14px}
+.en .card p{font-size:17px}
 </style>
 </head>
 <body>
 <div class="wrap">
   <nav class="nav">
     <a class="brand" href="/freshka/"><img src="/img/freshka-icon.png" alt="">Фрешка</a>
-    <a class="home" href="/">Глупоня</a>
+    <div class="links">
+      <a href="/freshka/">Про Фрешку</a>
+      <a href="/">Глупоня</a>
+    </div>
   </nav>
 
   <header class="hero">
     <div class="text">
-      <h1>Підтримка</h1>
-      <p class="lead">Щось не працює, незрозуміло або хочеться, щоб було інакше? Напиши нам. Відповідаємо на пошту, зазвичай протягом двох днів.</p>
+      <span class="tag amber">Підтримка</span>
+      <h1>Щось не так? Напиши нам</h1>
+      <p class="lead">Не працює, незрозуміло або хочеться, щоб було інакше. Відповідаємо на пошту, зазвичай протягом двох днів.</p>
       <div class="actions">
         <a class="btn amber" href="mailto:hello@gluponya.tv?subject=Фрешка">Написати на пошту</a>
       </div>
+      <a class="mail" href="mailto:hello@gluponya.tv">hello@gluponya.tv</a>
     </div>
-    <img src="/img/freshka-points.png" alt="" width="302" height="294">
+    <div class="pic" aria-hidden="true">
+      <img class="lamp" src="/freshka/img/room-lamp.png" alt="">
+      <img class="mascot" src="/freshka/img/mascot-points.png" alt="" width="302" height="294">
+    </div>
   </header>
+</div>
 
-  <div class="stack">
-    <div class="card">
-      <h2>Як написати нам</h2>
-      <p><strong>З додатка.</strong> Відкрий «Налаштування», вкладка «Я», рядок «Написати нам». Там можна додати скриншот і, якщо хочеш, дані телефона, вони допомагають знайти причину. Відповідь прийде на пошту акаунта або на ту, яку ти вкажеш.</p>
-      <p><strong>Поштою.</strong> <a class="mail" href="mailto:hello@gluponya.tv">hello@gluponya.tv</a></p>
-      <p class="soft">У листі напиши, що саме сталося і на якому телефоні. Скриншот дуже допомагає.</p>
-    </div>
+<span class="edge paper-to-sunk"></span>
+<section class="band">
+  <div class="wrap section" style="padding-top:48px">
+    <div class="topics">
+      <div class="card topic">
+        <div class="pic"><img src="/freshka/img/ui-start-photo.png" alt=""></div>
+        <div>
+          <h2>Як написати нам</h2>
+          <p><span class="path"><b>Налаштування</b><i>→</i><b>Я</b><i>→</i><b>Написати нам</b></span></p>
+          <p>Там можна додати скриншот і, якщо хочеш, дані телефона, вони допомагають знайти причину. Відповідь прийде на пошту акаунта або на ту, яку ти вкажеш.</p>
+          <p class="soft">Або просто листом на hello@gluponya.tv. Напиши, що саме сталося і на якому телефоні. Скриншот дуже допомагає.</p>
+        </div>
+      </div>
 
-    <div class="card">
-      <h2>Якщо щось не синхронізується</h2>
-      <p>Фрешка працює без інтернету, а зміни надсилає, коли звʼязок повертається. Якщо на аватарці зʼявився знак, що частина змін не надіслана, відкрий «Налаштування», вкладка «Я», і натисни «Повторити». Якщо не допомогло, напиши нам.</p>
-    </div>
+      <div class="card topic">
+        <div class="pic"><img src="/freshka/img/ui-no-picture.png" alt=""></div>
+        <div>
+          <h2>Якщо щось не синхронізується</h2>
+          <p>Фрешка працює без інтернету, а зміни надсилає, коли звʼязок повертається. Якщо на аватарці зʼявився знак, що частина змін не надіслана:</p>
+          <p><span class="path"><b>Налаштування</b><i>→</i><b>Я</b><i>→</i><b>Повторити</b></span></p>
+          <p>Якщо не допомогло, напиши нам.</p>
+        </div>
+      </div>
 
-    <div class="card">
-      <h2>Підписка</h2>
-      <p>Підписку продає магазин додатків, тож скасовується вона там же: у налаштуваннях Apple ID або Google Play, розділ «Підписки». У Фрешці це рядок «Підписка» у вкладці «Я», він веде на ту саму сторінку магазину. Куплене в магазині привʼязане до акаунта Фрешки і переходить на новий телефон разом з ним.</p>
-    </div>
+      <div class="card topic">
+        <div class="pic"><img src="/freshka/img/ui-start-join.png" alt=""></div>
+        <div>
+          <h2>Підписка</h2>
+          <p>Підписку продає магазин додатків, тож скасовується вона там же: у налаштуваннях Apple ID або Google Play, розділ «Підписки». У Фрешці це рядок «Підписка» у вкладці «Я», він веде на ту саму сторінку магазину.</p>
+          <p>Куплене привʼязане до акаунта Фрешки і переходить на новий телефон разом з ним.</p>
+        </div>
+      </div>
 
-    <div class="card">
-      <h2>Як видалити акаунт</h2>
-      <ol>
-        <li>Відкрий «Налаштування», вкладка «Я».</li>
-        <li>Унизу натисни «Видалити акаунт» і підтвердь.</li>
-      </ol>
-      <p>Разом з акаунтом видаляються твої листи до нас, скриншоти й те, що лежало лише на сервері. Холодильник на телефоні залишається, і Фрешка далі працює без акаунта. Якщо не виходить зайти в додаток, напиши на пошту з адреси акаунта, і ми видалимо його вручну.</p>
+      <div class="card topic">
+        <div class="pic"><img src="/freshka/img/ui-take-away.png" alt=""></div>
+        <div>
+          <h2>Як видалити акаунт</h2>
+          <p><span class="path"><b>Налаштування</b><i>→</i><b>Я</b><i>→</i><b>Видалити акаунт</b></span></p>
+          <p>Разом з акаунтом видаляються твої листи до нас, скриншоти й те, що лежало лише на сервері. Холодильник на телефоні залишається, і Фрешка далі працює без акаунта.</p>
+          <p class="soft">Якщо не виходить зайти в додаток, напиши на пошту з адреси акаунта, і ми видалимо його вручну.</p>
+        </div>
+      </div>
     </div>
   </div>
+</section>
+<span class="edge sunk-to-paper"></span>
 
+<div class="wrap">
   <section class="en" lang="en">
-    <h2>Support in English</h2>
-    <p class="lead">Something is not working or unclear? Write to us at <a href="mailto:hello@gluponya.tv?subject=Freshka">hello@gluponya.tv</a>, or from the app: Settings, the “Me” tab, “Write to us”. We reply by email, usually within two days. To delete your account: Settings, “Me”, “Delete the account” at the bottom. Your fridge stays on the phone and the app keeps working without an account.</p>
+    <div class="card">
+      <h2>Support in English</h2>
+      <p>Something is not working or unclear? Write to us at <a href="mailto:hello@gluponya.tv?subject=Freshka">hello@gluponya.tv</a>, or from the app: Settings, the “Me” tab, “Write to us”. We reply by email, usually within two days.</p>
+      <p>To delete your account: Settings, “Me”, “Delete the account” at the bottom. Your fridge stays on the phone and the app keeps working without an account. Subscriptions are managed in your Apple ID or Google Play settings.</p>
+    </div>
   </section>
 
   <footer class="foot">
+    <a class="brand" href="/"><img src="/img/freshka-icon.png" alt="">Фрешка</a>
     <div class="row">
       <a href="/">Глупоня</a>
-      <a href="/freshka/">Фрешка</a>
+      <a href="/freshka/">Про Фрешку</a>
       <a href="/freshka/privacy/">Конфіденційність</a>
       <a href="/freshka/terms/">Умови</a>
       <a href="mailto:hello@gluponya.tv">hello@gluponya.tv</a>

@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="uk">
+<html lang="uk" data-lang="uk">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
@@ -11,6 +11,7 @@
 <link href="https://fonts.googleapis.com/css2?family=Comfortaa:wght@700&family=Lora:wght@700&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="/freshka/_shared.css">
 <link rel="stylesheet" href="/freshka/_doc.css">
+<script>(function(){if(location.hash==="#en")document.documentElement.setAttribute("data-lang","en")})()</script>
 </head>
 <body>
 <div class="wrap">
@@ -24,16 +25,119 @@
 
   <header class="hero">
     <div class="text">
-      <span class="tag plum">Політика конфіденційності</span>
-      <h1>Що Фрешка знає про тебе</h1>
-      <p class="lead">Коротко: холодильник живе на твоєму телефоні. На сервер потрапляє лише те, що потрібно для акаунта, спільного холодильника й вечірнього нагадування. Ми нічого не продаємо, не показуємо рекламу й не ставимо трекерів.</p>
-      <p class="soft date">Фрешка (Freshka), iOS та Android. Чинна з 5 листопада 2026 року.</p>
-      <div class="actions"><a class="btn paper" href="#en">In English</a><a class="btn paper" href="/freshka/terms/">Умови</a></div>
+      <div class="seg" role="group" aria-label="Мова">
+        <button type="button" class="on" data-set-lang="uk">Українською</button>
+        <button type="button" data-set-lang="en">English</button>
+      </div>
+      <span class="tag plum uk">Політика конфіденційності</span>
+      <span class="tag plum" lang="en">Privacy policy</span>
+      <h1 class="uk">Що Фрешка знає про тебе</h1>
+      <h1 lang="en">What Freshka knows about you</h1>
+      <p class="lead uk">Холодильник живе на твоєму телефоні. На сервер потрапляє лише те, що потрібно для акаунта, спільного холодильника й вечірнього нагадування</p>
+      <p class="lead" lang="en">Your fridge lives on your phone. The server only gets what the account, the shared fridge and the evening reminder need</p>
+      <p class="soft date uk">Фрешка (Freshka), iOS та Android. Чинна з 5 листопада 2026 року</p>
+      <p class="soft date" lang="en">Freshka (Фрешка), iOS and Android. Effective 5 November 2026</p>
+      <div class="actions"><a class="btn paper" href="#full"><span class="uk">Повний текст</span><span lang="en">Full text</span></a><a class="btn paper" href="/freshka/terms/"><span class="uk">Умови</span><span lang="en">Terms</span></a></div>
     </div>
-    <img class="mascot" src="/freshka/img/mascot-thinks.png" alt="" width="243" height="292">
+    <img class="mascot" src="/freshka/img/mascot-thinks.webp" alt="" width="243" height="292">
   </header>
 
-  <nav class="toc card">
+  <section class="glance" aria-label="Коротко">
+    <div class="card phone">
+      <h3><img src="/freshka/img/ui-fridge-new.webp" alt=""><span class="uk">Лишається на телефоні</span><span lang="en">Stays on the phone</span></h3>
+      <div class="list uk"><span class="chip">холодильники</span><span class="chip">продукти</span><span class="chip">дати</span><span class="chip">історія</span><span class="chip">статистика</span></div>
+      <div class="list" lang="en"><span class="chip">fridges</span><span class="chip">food</span><span class="chip">dates</span><span class="chip">history</span><span class="chip">statistics</span></div>
+      <p class="foot uk">Без входу нікуди не надсилається. Винятки: штрихкод і фото для ШІ</p>
+      <p class="foot" lang="en">Without sign-in nothing is sent anywhere, except barcodes and AI photos</p>
+    </div>
+    <div class="card">
+      <h3><img src="/freshka/img/ui-start-join.webp" alt=""><span class="uk">На сервері, якщо ввійшов</span><span lang="en">On the server if signed in</span></h3>
+      <div class="list uk"><span class="chip">пошта</span><span class="chip">імʼя й аватар</span><span class="chip">вміст холодильників</span><span class="chip">учасники й коди</span><span class="chip">мова, часовий пояс</span><span class="chip">час нагадування</span><span class="chip">push-токен</span><span class="chip">стан підписки</span></div>
+      <div class="list" lang="en"><span class="chip">email</span><span class="chip">name and avatar</span><span class="chip">fridge contents</span><span class="chip">members and codes</span><span class="chip">language, time zone</span><span class="chip">reminder time</span><span class="chip">push token</span><span class="chip">subscription status</span></div>
+      <p class="foot uk">Щоб холодильник був на кількох телефонах і приходили нагадування</p>
+      <p class="foot" lang="en">So the fridge works on several phones and reminders arrive</p>
+    </div>
+    <div class="card never">
+      <h3><img src="/freshka/img/ui-no-picture.webp" alt=""><span class="uk">Ніколи</span><span lang="en">Never</span></h3>
+      <div class="list uk"><span class="chip">реклама</span><span class="chip">трекери</span><span class="chip">аналітика</span><span class="chip">продаж даних</span><span class="chip">дані картки</span><span class="chip">фото в архіві</span></div>
+      <div class="list" lang="en"><span class="chip">ads</span><span class="chip">trackers</span><span class="chip">analytics</span><span class="chip">selling data</span><span class="chip">card details</span><span class="chip">stored photos</span></div>
+      <p class="foot uk">Оплату приймає App Store чи Google Play, ми бачимо лише факт підписки</p>
+      <p class="foot" lang="en">Payment is taken by the App Store or Google Play, we only see that you subscribed</p>
+    </div>
+  </section>
+</div>
+
+<div style="height:40px"></div>
+<span class="edge paper-to-sunk"></span>
+<section class="band">
+  <div class="wrap section" style="padding-top:40px">
+    <div class="section-head center">
+      <h2 class="uk">Що стається з фото</h2>
+      <h2 lang="en">What happens to a photo</h2>
+      <p class="lead uk">Перед першим фото застосунок питає згоду. Разом із фото не йдуть ні імʼя, ні пошта</p>
+      <p class="lead" lang="en">The app asks for consent before the first photo. No name or email travels with it</p>
+    </div>
+    <div class="flow">
+      <div class="step"><img src="/freshka/img/ui-start-photo.webp" alt=""><span class="uk">Фото продукту, чека чи холодильника</span><span lang="en">Photo of food, a receipt or the fridge</span></div>
+      <i class="next" aria-hidden="true"></i>
+      <div class="step"><span class="badge">Qwen</span><span>OpenRouter</span><small class="uk">читає і повертає назви й дати</small><small lang="en">reads it and returns names and dates</small></div>
+      <i class="next" aria-hidden="true"></i>
+      <div class="step"><img src="/freshka/img/lib/tomato-pile-three.webp" alt=""><span class="uk">Продукти на полиці</span><span lang="en">Food on the shelf</span></div>
+    </div>
+    <div class="flow-foot">
+      <span class="chip fresh uk">Фото не зберігається</span><span class="chip fresh" lang="en">The photo is not stored</span>
+      <span class="chip soon uk">Виняток: фото упаковки для спільного каталогу бачать усі</span><span class="chip soon" lang="en">Exception: pack photos for the shared catalogue are public</span>
+      <span class="chip plum uk">Згоду можна відкликати в Налаштуваннях</span><span class="chip plum" lang="en">Consent can be withdrawn in Settings</span>
+    </div>
+  </div>
+</section>
+<span class="edge sunk-to-paper"></span>
+
+<div class="wrap">
+  <section class="section">
+    <div class="section-head">
+      <h2 class="uk">Хто ще торкається даних</h2>
+      <h2 lang="en">Who else touches the data</h2>
+      <p class="lead uk">Вісім сервісів, кожен для однієї справи. Частина працює поза ЄС і Україною</p>
+      <p class="lead" lang="en">Eight services, each for one job. Some work outside the EU and Ukraine</p>
+    </div>
+    <div class="services">
+      <div class="svc"><b>Supabase</b><span class="uk">база даних, вхід, файли</span><span lang="en">database, sign-in, files</span><span class="where eu uk">Ірландія, ЄС</span><span class="where eu" lang="en">Ireland, EU</span></div>
+      <div class="svc"><b>OpenRouter, Alibaba Cloud</b><span class="uk">розпізнавання фото (Qwen)</span><span lang="en">reading photos (Qwen)</span><span class="where far uk">США, Китай</span><span class="where far" lang="en">USA, China</span></div>
+      <div class="svc"><b>Expo, Apple, Google</b><span class="uk">push-сповіщення</span><span lang="en">push notifications</span><span class="where far uk">США</span><span class="where far" lang="en">USA</span></div>
+      <div class="svc"><b>Google</b><span class="uk">вхід через Google на Android</span><span lang="en">Google sign-in on Android</span><span class="where far uk">США</span><span class="where far" lang="en">USA</span></div>
+      <div class="svc"><b>Open Food Facts, DeepL</b><span class="uk">товар за штрихкодом і переклад</span><span lang="en">barcode lookup and translation</span><span class="where eu uk">ЄС</span><span class="where eu" lang="en">EU</span></div>
+      <div class="svc"><b>RevenueCat, Apple, Google</b><span class="uk">оплата й перевірка підписки</span><span lang="en">payment and subscription checks</span><span class="where far uk">США</span><span class="where far" lang="en">USA</span></div>
+      <div class="svc"><b>Gmail, Spacemail</b><span class="uk">код входу й відповіді на відгуки</span><span lang="en">sign-in codes and replies to feedback</span><span class="where far uk">США</span><span class="where far" lang="en">USA</span></div>
+      <div class="svc"><b>Telegram</b><span class="uk">доставка відгуків розробнику</span><span lang="en">delivering feedback to the developer</span><span class="where uk">ОАЕ</span><span class="where" lang="en">UAE</span></div>
+    </div>
+  </section>
+
+  <section class="how">
+    <div class="card">
+      <h3 class="uk">Видалити все</h3>
+      <h3 lang="en">Delete everything</h3>
+      <p><span class="path"><b class="uk">Налаштування</b><b lang="en">Settings</b><i>→</i><b class="uk">Я</b><b lang="en">Me</b><i>→</i><b class="uk">Видалити акаунт</b><b lang="en">Delete account</b></span></p>
+      <p class="uk">Профіль, холодильники, яких більше ніхто не використовує, токени й відгуки зникають із сервера. Холодильник на телефоні лишається</p>
+      <p lang="en">Your profile, fridges no one else uses, tokens and feedback are removed from the server. The fridge on your phone stays</p>
+    </div>
+    <div class="card">
+      <h3 class="uk">Отримати копію чи спитати</h3>
+      <h3 lang="en">Get a copy or ask</h3>
+      <p><a class="btn paper" href="mailto:hello@gluponya.tv">hello@gluponya.tv</a></p>
+      <p class="uk">Копія даних, виправлення, видалення, відкликання згоди. Поскаржитися можна Уповноваженому Верховної Ради з прав людини або органу захисту даних у своїй країні ЄС</p>
+      <p lang="en">A copy of your data, corrections, deletion, withdrawing consent. You can also complain to the Ukrainian Parliament Commissioner for Human Rights or your EU data protection authority</p>
+    </div>
+  </section>
+
+  <div class="full-head" id="full">
+    <h2 class="uk">Повний текст політики</h2>
+    <h2 lang="en">Full text of the policy</h2>
+    <span class="tiny uk">Чинна з 5 листопада 2026 року</span>
+    <span class="tiny" lang="en">Effective 5 November 2026</span>
+  </div>
+
+  <nav class="toc card uk">
     <b>Зміст</b>
     <ol>
       <li><a href="#local">Без акаунта</a></li>
@@ -51,7 +155,7 @@
     </ol>
   </nav>
 
-  <article class="doc">
+  <article class="doc uk">
     <section>
       <p>Ця політика пояснює, які дані збирає застосунок «Фрешка», навіщо, кому вони передаються і як їх видалити. Питання та запити щодо даних надсилай на <a href="mailto:hello@gluponya.tv">hello@gluponya.tv</a>.</p>
     </section>
@@ -147,24 +251,35 @@
     </section>
   </article>
 
-  <div class="wave line lang-break"></div>
+  <nav class="toc card" lang="en">
+    <b>Contents</b>
+    <ol>
+      <li><a href="#en-local">Without an account</a></li>
+      <li><a href="#en-account">With an account</a></li>
+      <li><a href="#en-why">Why, and on what basis</a></li>
+      <li><a href="#en-photo">Photos read by AI</a></li>
+      <li><a href="#en-barcode">Barcode lookup</a></li>
+      <li><a href="#en-feedback">Feedback</a></li>
+      <li><a href="#en-pay">Subscription</a></li>
+      <li><a href="#en-where">Who data is shared with</a></li>
+      <li><a href="#en-delete">Retention and deletion</a></li>
+      <li><a href="#en-rights">Your rights</a></li>
+      <li><a href="#en-kids">Children</a></li>
+      <li><a href="#en-changes">Changes</a></li>
+    </ol>
+  </nav>
 
-  <article class="doc" id="en" lang="en">
-    <header class="doc-head">
-      <h1>Privacy Policy</h1>
-      <p class="soft date">Freshka (Фрешка), iOS and Android. Effective 5 November 2026.</p>
-    </header>
-
+  <article class="doc" lang="en">
     <section>
       <p>This policy explains what data the Freshka app collects, why, who it is shared with, and how to delete it. Questions and data requests: <a href="mailto:hello@gluponya.tv">hello@gluponya.tv</a>.</p>
     </section>
 
-    <section>
+    <section id="en-local">
       <h2>Without an account</h2>
       <p>You can use the app without signing in. Everything you add (fridges, food, dates, history) then stays on your phone and is not sent anywhere, except for the barcode lookup and AI-read photos described below.</p>
     </section>
 
-    <section>
+    <section id="en-account">
       <h2>With an account</h2>
       <p>If you sign in (with an email code, or with Google on Android), we store on our server:</p>
       <ul>
@@ -179,7 +294,7 @@
       <p>This data is needed to keep a fridge on several phones, to share it, and to remind you of food going off. We do not sell data, show ads, or use analytics or tracking.</p>
     </section>
 
-    <section>
+    <section id="en-why">
       <h2>Why, and on what basis</h2>
       <ul>
         <li>The account, sync, shared fridges, reminders and the subscription: this is carrying out our agreement with you.</li>
@@ -188,7 +303,7 @@
       </ul>
     </section>
 
-    <section>
+    <section id="en-photo">
       <h2>Photos read by AI</h2>
       <p>When you add food from a photo (one item, a bag or a receipt), photograph your fridge to set up its layout, or photograph a pack for the shared catalogue, the photo is sent to the Qwen model (Alibaba Cloud) through OpenRouter. The app asks for your consent before the first such photo. Your name, email and other account data are not sent with it.</p>
       <ul>
@@ -197,22 +312,22 @@
       </ul>
     </section>
 
-    <section>
+    <section id="en-barcode">
       <h2>Barcode lookup</h2>
       <p>A scanned barcode is sent to our server. If the product is not in the catalogue, the server looks it up on Open Food Facts and translates its name with DeepL. Only the barcode and the product name are sent.</p>
     </section>
 
-    <section>
+    <section id="en-feedback">
       <h2>Feedback</h2>
       <p>If you write to us through “Contact us” («Написати нам»), we receive the text, plus a reply email, a screenshot and phone details (model, system, app version, language) if you add them. The message reaches the developer in Telegram; the reply is sent by email.</p>
     </section>
 
-    <section>
+    <section id="en-pay">
       <h2>Subscription</h2>
       <p>Payment is taken by the App Store or Google Play; we never see card details. Purchases are verified by RevenueCat, which receives your Freshka account identifier and the purchase information from the store.</p>
     </section>
 
-    <section>
+    <section id="en-where">
       <h2>Who data is shared with</h2>
       <table>
         <tr><th>Service</th><th>Purpose</th></tr>
@@ -228,23 +343,23 @@
       <p>Some of these services work outside the EU and Ukraine, including in the USA and China. The transfer is needed to do what you ask for, and photos are sent only with your consent.</p>
     </section>
 
-    <section>
+    <section id="en-delete">
       <h2>Retention and deletion</h2>
       <p>Data is kept while your account exists. You can delete your account in the app: Settings → Me → “Delete account” («Налаштування» → «Я» → «Видалити акаунт»). Your profile, fridges no one else uses, notification tokens, feedback and your address on the list of Catalogue members are then deleted from the server. Copies of feedback in Telegram and email correspondence are deleted on request. Product pages you added to the shared catalogue stay, no longer linked to you. Data on your phone is removed with the app.</p>
       <p>You can also write to <a href="mailto:hello@gluponya.tv">hello@gluponya.tv</a> for a copy of your data or to have it deleted. Feedback sent without an account is kept for as long as it is needed to reply and to fix what it is about. To have it deleted sooner, write to the same address.</p>
     </section>
 
-    <section>
+    <section id="en-rights">
       <h2>Your rights</h2>
       <p>You can find out what data we hold, get a copy, correct or delete it, restrict or object to its processing, and withdraw consent. To do so, write to <a href="mailto:hello@gluponya.tv">hello@gluponya.tv</a>. You can complain to the Ukrainian Parliament Commissioner for Human Rights or to the data protection authority in your EU country.</p>
     </section>
 
-    <section>
+    <section id="en-kids">
       <h2>Children</h2>
       <p>The app is not meant for children under 13, and we do not knowingly collect their data.</p>
     </section>
 
-    <section>
+    <section id="en-changes">
       <h2>Changes</h2>
       <p>If this policy changes, the new version will appear on this page with a new date.</p>
     </section>
@@ -261,5 +376,6 @@
     </div>
   </footer>
 </div>
+<script src="/freshka/_lang.js"></script>
 </body>
 </html>

@@ -4,6 +4,57 @@
 .hero .text{display:grid;gap:18px;justify-items:start}
 .hero .mascot{width:min(200px,50vw);margin:0 auto}
 .hero .date{font-size:15px}
+.hero .actions{gap:12px}
+.hero .actions .btn{padding:12px 20px;font-size:15px}
+
+/* мова: сегментований трек, дві версії тексту в розмітці */
+[data-lang="uk"] [lang="en"]{display:none!important}
+[data-lang="en"] .uk{display:none!important}
+
+/* погляд одним оком: картки з малюнками замість абзаців */
+.glance{display:grid;gap:18px;margin-bottom:8px}
+@media(min-width:760px){.glance{grid-template-columns:repeat(3,1fr)}}
+.glance .card{display:grid;gap:14px;padding:22px;align-content:start}
+.glance .card h3{font-size:20px;display:flex;align-items:center;gap:12px}
+.glance .card h3 img{width:40px;height:40px;object-fit:contain}
+.glance .list{display:flex;flex-wrap:wrap;gap:8px}
+.glance .list .chip{background:var(--sunk)}
+.glance .card.never .list .chip{background:var(--plum-tint);text-decoration:line-through;text-decoration-color:var(--terra);text-decoration-thickness:1.5px}
+.glance .card.phone{background:var(--mint-soft)}
+.glance .card.phone .list .chip{background:var(--card)}
+.glance .foot{font-size:15px;color:var(--ink-soft)}
+
+/* потік: фото → модель → назва */
+.flow{display:grid;grid-template-columns:1fr;gap:12px;align-items:center;margin:0 auto 18px;max-width:860px}
+@media(min-width:720px){.flow{grid-template-columns:1fr auto 1fr auto 1fr}}
+.flow .step{display:grid;gap:10px;justify-items:center;text-align:center;padding:20px 16px;background:var(--card);border:1.5px solid var(--line);border-radius:var(--r-md);box-shadow:var(--shadow);font-weight:700}
+.flow .step img{height:64px;width:auto}
+.flow .step small{font-weight:600;color:var(--ink-soft);font-size:14px}
+.flow .step .badge{display:grid;place-items:center;width:64px;height:64px;border-radius:50%;background:var(--sunk);border:1.5px solid var(--line);font-family:var(--serif);font-size:15px}
+.flow .next{justify-self:center;width:24px;height:24px;background:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%234A3F35' stroke-width='1.8' stroke-linecap='round' stroke-linejoin='round'><path d='M4 12h15M13 6l6 6-6 6'/></svg>") center/contain no-repeat}
+@media(max-width:719px){.flow .next{transform:rotate(90deg)}}
+.flow-foot{display:flex;flex-wrap:wrap;gap:10px;justify-content:center;margin-bottom:8px}
+
+/* сервіси: сітка карток із краями-прапорцями */
+.services{display:grid;grid-template-columns:repeat(2,1fr);gap:12px}
+@media(min-width:760px){.services{grid-template-columns:repeat(4,1fr)}}
+.svc{display:grid;gap:8px;padding:16px;background:var(--card);border:1.5px solid var(--line);border-radius:var(--r-md);align-content:start}
+.svc b{font-size:16px;line-height:1.3}
+.svc span{font-size:14px;color:var(--ink-soft);line-height:1.4}
+.svc .where{display:inline-flex;align-self:start;justify-self:start;padding:3px 9px;border-radius:999px;font-size:12px;font-weight:700;color:var(--ink);background:var(--sunk)}
+.svc .where.eu{background:#CFE0DD}
+.svc .where.far{background:var(--amber-soft)}
+
+/* шлях у налаштуваннях і ряд дій */
+.how{display:grid;gap:14px}
+@media(min-width:760px){.how{grid-template-columns:1fr 1fr}}
+.how .card{display:grid;gap:10px;padding:20px 22px;align-content:start}
+.how .card h3{font-size:19px}
+.how .card p{font-size:16px;line-height:1.5;margin:0}
+
+/* повний текст */
+.full-head{display:flex;flex-wrap:wrap;align-items:baseline;justify-content:space-between;gap:10px 24px;margin:64px 0 20px}
+.full-head h2{font-size:clamp(24px,3vw,32px)}
 .toc{display:grid;gap:12px;padding:22px 26px;margin-bottom:32px;max-width:760px}
 .toc b{font-weight:700}
 .toc ol{margin:0;padding-left:22px;columns:1;column-gap:32px;font-size:16px;line-height:1.5}
@@ -16,13 +67,11 @@
 .doc h2{font-size:clamp(22px,2.4vw,27px)}
 .doc p,.doc li{font-size:17px;line-height:1.55}
 .doc ul{margin:0;padding-left:22px;display:grid;gap:8px}
-.doc li b{font-weight:700}
 .doc table{border-collapse:collapse;width:100%;font-size:15px;line-height:1.4}
 .doc th,.doc td{text-align:left;vertical-align:top;padding:9px 10px;border-bottom:1.5px solid var(--sunk)}
 .doc th{font-weight:700;color:var(--ink-soft);font-size:14px}
 .doc tr:last-child td{border-bottom:0}
 @media(max-width:560px){.doc table,.doc thead,.doc tbody,.doc tr,.doc th,.doc td{display:block}.doc tr{padding:10px 0;border-bottom:1.5px solid var(--sunk)}.doc th{display:none}.doc td{padding:2px 0;border:0}.doc td:first-child{font-weight:700}}
-.lang-break{margin:56px 0 40px}
 .doc-head{display:grid;gap:8px;margin-bottom:6px}
 .doc-head h1{font-size:clamp(30px,4vw,44px)}
-.hero .actions .btn{padding:12px 20px;font-size:15px}
+.tiny{font-size:15px;color:var(--ink-soft)}

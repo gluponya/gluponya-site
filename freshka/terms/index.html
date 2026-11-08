@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="uk">
+<html lang="uk" data-lang="uk">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
@@ -11,6 +11,7 @@
 <link href="https://fonts.googleapis.com/css2?family=Comfortaa:wght@700&family=Lora:wght@700&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="/freshka/_shared.css">
 <link rel="stylesheet" href="/freshka/_doc.css">
+<script>(function(){if(location.hash==="#en")document.documentElement.setAttribute("data-lang","en")})()</script>
 </head>
 <body>
 <div class="wrap">
@@ -24,16 +25,114 @@
 
   <header class="hero">
     <div class="text">
-      <span class="tag amber">Умови використання</span>
-      <h1>Про що ми домовляємося</h1>
-      <p class="lead">Фрешка допомагає памʼятати, що лежить у холодильнику. Тут написано, як працює підписка, чому дати в застосунку є підказками і що бачать інші в спільному каталозі.</p>
-      <p class="soft date">Фрешка (Freshka). Чинні з 5 листопада 2026 року.</p>
-      <div class="actions"><a class="btn paper" href="#en">In English</a><a class="btn paper" href="/freshka/privacy/">Конфіденційність</a></div>
+      <div class="seg" role="group" aria-label="Мова">
+        <button type="button" class="on" data-set-lang="uk">Українською</button>
+        <button type="button" data-set-lang="en">English</button>
+      </div>
+      <span class="tag amber uk">Умови використання</span>
+      <span class="tag amber" lang="en">Terms of use</span>
+      <h1 class="uk">Про що ми домовляємося</h1>
+      <h1 lang="en">What we agree on</h1>
+      <p class="lead uk">Фрешка допомагає памʼятати, що лежить у холодильнику. Тут про підписку, про те, чому дати це підказки, і про те, що бачать інші</p>
+      <p class="lead" lang="en">Freshka helps you remember what is in the fridge. This is about the subscription, why dates are hints, and what other people see</p>
+      <p class="soft date uk">Фрешка (Freshka). Чинні з 5 листопада 2026 року</p>
+      <p class="soft date" lang="en">Freshka (Фрешка). Effective 5 November 2026</p>
+      <div class="actions"><a class="btn paper" href="#full"><span class="uk">Повний текст</span><span lang="en">Full text</span></a><a class="btn paper" href="/freshka/privacy/"><span class="uk">Конфіденційність</span><span lang="en">Privacy</span></a></div>
     </div>
-    <img class="mascot" src="/freshka/img/mascot-points.png" alt="" width="302" height="294">
+    <img class="mascot" src="/freshka/img/mascot-points.webp" alt="" width="302" height="294">
   </header>
 
-  <article class="doc">
+  <section class="glance" aria-label="Коротко">
+    <div class="card">
+      <h3><img src="/freshka/img/ui-fresh-face-soon.webp" alt=""><span class="uk">Дати це підказки</span><span lang="en">Dates are hints</span></h3>
+      <div class="states" style="display:flex;gap:10px;justify-content:center">
+        <img src="/freshka/img/lib/avocado.webp" alt="" style="width:30%">
+        <img src="/freshka/img/lib/avocado-wilting.webp" alt="" style="width:30%">
+        <img src="/freshka/img/lib/avocado-spoiled.webp" alt="" style="width:30%">
+      </div>
+      <p class="foot uk">Терміни орієнтовні. Перевір дату на упаковці, вигляд і запах. Що їсти, вирішуєш ти</p>
+      <p class="foot" lang="en">Shelf lives are estimates. Check the date on the pack, the look and the smell. What to eat is your call</p>
+    </div>
+    <div class="card">
+      <h3><img src="/freshka/img/ui-start-photo.webp" alt=""><span class="uk">ШІ може помилятись</span><span lang="en">AI can be wrong</span></h3>
+      <div class="list uk"><span class="chip">назви</span><span class="chip">кількість</span><span class="chip">дати</span></div>
+      <div class="list" lang="en"><span class="chip">names</span><span class="chip">amounts</span><span class="chip">dates</span></div>
+      <p class="foot uk">Усе, що модель знайшла на фото, перевір перед додаванням</p>
+      <p class="foot" lang="en">Check everything the model found in a photo before adding it</p>
+    </div>
+    <div class="card">
+      <h3><img src="/freshka/img/ui-start-join.webp" alt=""><span class="uk">Спільне бачать усі</span><span lang="en">Shared means visible</span></h3>
+      <div class="list uk"><span class="chip">спільний холодильник: учасники</span><span class="chip">каталог штрихкодів: усі користувачі</span></div>
+      <div class="list" lang="en"><span class="chip">shared fridge: its members</span><span class="chip">barcode catalogue: every user</span></div>
+      <p class="foot uk">Запрошуй тих, кому довіряєш. У каталог не додавай нічого особистого чи чужого</p>
+      <p class="foot" lang="en">Invite people you trust. Add nothing personal or belonging to others to the catalogue</p>
+    </div>
+  </section>
+</div>
+
+<div style="height:40px"></div>
+<span class="edge paper-to-sunk"></span>
+<section class="band">
+  <div class="wrap section" style="padding-top:40px">
+    <div class="section-head center">
+      <h2 class="uk">Підписка «Фрешка»</h2>
+      <h2 lang="en">The Freshka subscription</h2>
+      <p class="lead uk">Безкоштовно: один холодильник і 5 фото. Далі підписка на місяць або рік</p>
+      <p class="lead" lang="en">Free: one fridge and 5 photos. Then a monthly or yearly subscription</p>
+    </div>
+    <div class="flow">
+      <div class="step"><img src="/freshka/img/ui-fridge-new.webp" alt=""><span class="uk">Безкоштовно</span><span lang="en">Free</span><small class="uk">1 холодильник, 5 фото</small><small lang="en">1 fridge, 5 photos</small></div>
+      <i class="next" aria-hidden="true"></i>
+      <div class="step"><span class="badge uk">1 міс</span><span class="badge" lang="en">1 mo</span><span class="uk">або рік</span><span lang="en">or a year</span><small class="uk">фото без ліміту, кілька холодильників</small><small lang="en">unlimited photos, several fridges</small></div>
+      <i class="next" aria-hidden="true"></i>
+      <div class="step"><img src="/freshka/img/ui-take-away.webp" alt=""><span class="uk">Скасувати будь-коли</span><span lang="en">Cancel any time</span><small class="uk">в налаштуваннях App Store чи Google Play</small><small lang="en">in App Store or Google Play settings</small></div>
+    </div>
+    <div class="flow-foot">
+      <span class="chip soon uk">Продовжується сама, якщо не скасувати за 24 години до кінця періоду</span><span class="chip soon" lang="en">Renews itself unless cancelled 24 hours before the period ends</span>
+      <span class="chip fresh uk">Після скасування діє до кінця оплаченого періоду</span><span class="chip fresh" lang="en">After cancelling it works till the end of the paid period</span>
+      <span class="chip plum uk">Повернення коштів розглядає Apple або Google</span><span class="chip plum" lang="en">Refunds are handled by Apple or Google</span>
+    </div>
+  </div>
+</section>
+<span class="edge sunk-to-paper"></span>
+
+<div class="wrap">
+  <section class="how" style="margin-top:40px">
+    <div class="card">
+      <h3 class="uk">Що можна</h3>
+      <h3 lang="en">What you may do</h3>
+      <div class="list uk" style="display:flex;flex-wrap:wrap;gap:8px"><span class="chip fresh">свої пристрої</span><span class="chip fresh">родина</span><span class="chip fresh">ті, з ким ділиш холодильник</span></div>
+      <div class="list" lang="en" style="display:flex;flex-wrap:wrap;gap:8px"><span class="chip fresh">your devices</span><span class="chip fresh">family</span><span class="chip fresh">people you share a fridge with</span></div>
+    </div>
+    <div class="card">
+      <h3 class="uk">Що не можна</h3>
+      <h3 lang="en">What you may not</h3>
+      <div class="list uk" style="display:flex;flex-wrap:wrap;gap:8px"><span class="chip gone">копіювати й продавати</span><span class="chip gone">зламувати</span><span class="chip gone">витягати малюнки й каталог</span><span class="chip gone">обходити підписку</span><span class="chip gone">заважати серверу</span></div>
+      <div class="list" lang="en" style="display:flex;flex-wrap:wrap;gap:8px"><span class="chip gone">copy or resell</span><span class="chip gone">reverse engineer</span><span class="chip gone">extract artwork or catalogue</span><span class="chip gone">bypass the subscription</span><span class="chip gone">interfere with the server</span></div>
+    </div>
+    <div class="card">
+      <h3 class="uk">Без мережі теж працює</h3>
+      <h3 lang="en">Works offline too</h3>
+      <p class="uk">Холодильник на телефоні живе без інтернету, зміни доїдуть на сервер пізніше. Сервер може бути недоступний через оновлення. Якщо колись закриємо сервіс, попередимо за 30 днів</p>
+      <p lang="en">The fridge on your phone lives without internet, changes reach the server later. The server may be down for updates. If we ever shut down, we give 30 days' notice</p>
+    </div>
+    <div class="card">
+      <h3 class="uk">Якщо щось пішло не так</h3>
+      <h3 lang="en">If something goes wrong</h3>
+      <p><a class="btn paper" href="mailto:hello@gluponya.tv">hello@gluponya.tv</a></p>
+      <p class="uk">Спершу напиши нам, ми майже напевно домовимося. Права споживача за законом твоєї країни ці умови не обмежують</p>
+      <p lang="en">Write to us first, we will almost certainly sort it out. These terms do not limit your consumer rights under your country's law</p>
+    </div>
+  </section>
+
+  <div class="full-head" id="full">
+    <h2 class="uk">Повний текст умов</h2>
+    <h2 lang="en">Full text of the terms</h2>
+    <span class="tiny uk">Чинні з 5 листопада 2026 року</span>
+    <span class="tiny" lang="en">Effective 5 November 2026</span>
+  </div>
+
+  <article class="doc uk">
     <section>
       <p>Для застосунку, завантаженого з App Store, діє <a href="https://www.apple.com/legal/internet-services/itunes/dev/stdeula/">стандартна ліцензійна угода Apple (EULA)</a>. Ці умови доповнюють її. Для застосунку з Google Play ці умови є угодою між тобою і розробником. Розробник: Глупоня, Україна, <a href="mailto:hello@gluponya.tv">hello@gluponya.tv</a>.</p>
     </section>
@@ -91,14 +190,7 @@
     </section>
   </article>
 
-  <div class="wave line lang-break"></div>
-
-  <article class="doc" id="en" lang="en">
-    <header class="doc-head">
-      <h1>Terms of Use</h1>
-      <p class="soft date">Freshka (Фрешка). Effective 5 November 2026.</p>
-    </header>
-
+  <article class="doc" lang="en">
     <section>
       <p>For the app downloaded from the App Store, <a href="https://www.apple.com/legal/internet-services/itunes/dev/stdeula/">Apple's standard licence agreement (EULA)</a> applies. These terms add to it. For the app from Google Play, these terms are the agreement between you and the developer. Developer: Gluponya, Ukraine, <a href="mailto:hello@gluponya.tv">hello@gluponya.tv</a>.</p>
     </section>
@@ -167,5 +259,6 @@
     </div>
   </footer>
 </div>
+<script src="/freshka/_lang.js"></script>
 </body>
 </html>

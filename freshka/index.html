@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta name="description" content="Фрешка показує холодильник як картинку: полиці, продукти на них і те, що скоро зіпсується">
 <meta property="og:title" content="Фрешка">
-<meta property="og:description" content="Твій холодильник як картинка. Видно, що лежить позаду і що зʼїсти першим">
+<meta property="og:description" content="Холодильник, який видно. Полиці й продукти намальовані, що ось-ось зіпсується, видно одразу">
 <meta property="og:image" content="https://gluponya.tv/freshka/img/mascot-joy.png">
 <link rel="icon" href="/img/freshka-icon.png">
 <title>Фрешка</title>
@@ -14,62 +14,102 @@
 <link href="https://fonts.googleapis.com/css2?family=Comfortaa:wght@700&family=Lora:wght@700&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="/freshka/_shared.css">
 <style>
+html{overflow-x:clip}
+/* ---- акварельні плями замість рамок ---- */
+.wash{position:relative;isolation:isolate}
+.wash::before,.wash::after{content:"";position:absolute;z-index:-1;pointer-events:none;background:var(--w,var(--mint-soft));mix-blend-mode:multiply}
+.wash::before{inset:-4% -3%;border-radius:48% 52% 44% 56%/56% 44% 58% 42%;opacity:.75}
+.wash::after{inset:2% -6% -6% 4%;border-radius:55% 45% 52% 48%/42% 58% 45% 55%;opacity:.45;transform:rotate(-6deg)}
+.wash.amber{--w:var(--amber-soft)}.wash.plum{--w:var(--plum-tint)}.wash.sky{--w:#CFE0DD}.wash.rose{--w:#F1D3CF}.wash.sunk{--w:#DECFB6}
+.blob{position:absolute;z-index:-1;pointer-events:none;border-radius:48% 52% 44% 56%/56% 44% 58% 42%;mix-blend-mode:multiply;opacity:.55}
+
+.rv{opacity:0;transform:translateY(22px);transition:opacity .7s ease,transform .7s ease}
+.rv.in{opacity:1;transform:none}
+@media(prefers-reduced-motion:reduce){.rv{opacity:1;transform:none}}
+
+.hint{display:inline-flex;align-items:flex-start;gap:8px;line-height:1.35;font-weight:700;color:var(--ink-soft);font-size:16px}
+.hint .dot{flex:none;margin-top:6px;width:10px;height:10px;border-radius:50%;background:var(--amber);animation:pulse 1.6s ease-in-out infinite}
+@keyframes pulse{0%,100%{transform:scale(1);opacity:1}50%{transform:scale(1.5);opacity:.5}}
+.sbtn{appearance:none;display:inline-flex;align-items:center;gap:10px;height:48px;padding:0 20px 0 12px;border:0;border-radius:20px;background:var(--card);box-shadow:var(--shadow);font:600 16px/1 var(--body);color:var(--ink);cursor:pointer;transition:transform .15s,box-shadow .15s}
+.sbtn img{width:30px;height:30px;object-fit:contain}
+.sbtn:hover{transform:translateY(-2px);box-shadow:var(--shadow-lift)}
+.sbtn:active{transform:translateY(1px) scale(.98)}
+.sbtn:focus-visible{outline:3px solid var(--teal);outline-offset:3px}
+.sbtn.on{background:var(--amber-soft)}
+.lead.tight{max-width:26em}
+
+/* ---- герой ---- */
 .hero{display:grid;gap:36px;padding:28px 0 0;align-items:center}
 @media(min-width:900px){.hero{grid-template-columns:1fr 1.05fr;gap:40px;padding:36px 0 0}}
 .hero .text{display:grid;gap:22px;justify-items:start}
 .stores{display:flex;flex-wrap:wrap;gap:8px}
-
 .kitchen{position:relative;width:100%;max-width:560px;margin:0 auto;aspect-ratio:1/1}
-.kitchen .wall{position:absolute;inset:0 0 18% 0;background:var(--mint-soft);border:1.5px solid var(--line);border-radius:var(--r-lg) var(--r-lg) 0 0;overflow:hidden}
-.kitchen .wall::after{content:"";position:absolute;inset:0;opacity:.35;background-image:radial-gradient(circle at 20% 30%,rgba(255,255,255,.7) 0 6%,transparent 7%),radial-gradient(circle at 70% 60%,rgba(255,255,255,.6) 0 8%,transparent 9%),radial-gradient(circle at 45% 85%,rgba(255,255,255,.5) 0 5%,transparent 6%)}
-.kitchen .floor{position:absolute;left:0;right:0;bottom:0;height:19%;background:var(--sunk);border:1.5px solid var(--line);border-top:0;border-radius:0 0 var(--r-lg) var(--r-lg);box-shadow:var(--shadow)}
+.kitchen .wall{position:absolute;inset:0 2% 16% 2%;background:var(--mint-soft);border-radius:46% 54% 40% 60%/52% 38% 62% 48%;opacity:.8;mix-blend-mode:multiply}
+.kitchen .wall2{position:absolute;inset:8% -2% 20% 6%;background:#DCE8D3;border-radius:58% 42% 50% 50%/40% 60% 44% 56%;opacity:.6;mix-blend-mode:multiply;transform:rotate(5deg)}
+.kitchen .floor{position:absolute;left:4%;right:0;bottom:2%;height:18%;background:#DECFB6;border-radius:50%/60%;opacity:.7;mix-blend-mode:multiply}
 .kitchen img{position:absolute}
 .kitchen .window{left:5%;top:7%;width:30%}
-.kitchen .lamp{right:11%;top:-3%;width:14%}
+.kitchen .lamp{right:11%;top:-3%;width:14%;transform-origin:top center;animation:sway 5s ease-in-out infinite}
 .kitchen .calendar{left:39%;top:9%;width:11%}
-.kitchen .phone{position:absolute;left:50%;top:18%;transform:translateX(-50%);width:41%;border:1.5px solid var(--line);border-radius:26px;padding:7px;background:var(--card);box-shadow:var(--shadow-lift)}
-.kitchen .phone img{position:static;display:block;width:100%;height:auto;border-radius:19px;border:1.5px solid var(--line)}
-.kitchen .mascot{right:0;bottom:6%;width:34%;transform:rotate(-3deg)}
+.kitchen .phone{position:absolute;left:50%;top:18%;transform:translateX(-50%);width:41%;border-radius:26px;padding:7px;background:var(--card);box-shadow:var(--shadow-lift)}
+.kitchen .phone img{position:static;display:block;width:100%;height:auto;border-radius:19px}
+.kitchen .mascot{right:0;bottom:6%;width:34%;transform-origin:bottom center;animation:breathe 4s ease-in-out infinite}
 .kitchen .cat{left:1%;bottom:4%;width:30%}
-.kitchen .food{width:11%;filter:drop-shadow(0 3px 4px rgba(90,70,50,.25))}
-.kitchen .f1{left:11%;top:53%;transform:rotate(-10deg)}
-.kitchen .f2{left:21%;top:62%;transform:rotate(6deg)}
-.kitchen .f3{right:7%;top:38%;transform:rotate(12deg)}
-.kitchen .f4{left:3%;top:42%;transform:rotate(-4deg)}
+.kitchen .food{width:11%;filter:drop-shadow(0 3px 4px rgba(90,70,50,.25));animation:bob 3.6s ease-in-out infinite}
+.kitchen .f1{left:11%;top:53%;--r:-10deg}
+.kitchen .f2{left:21%;top:62%;--r:6deg;animation-delay:-1.2s}
+.kitchen .f3{right:7%;top:38%;--r:12deg;animation-delay:-2.1s}
+.kitchen .f4{left:3%;top:42%;--r:-4deg;animation-delay:-.7s}
+@keyframes bob{0%,100%{transform:rotate(var(--r)) translateY(0)}50%{transform:rotate(calc(var(--r) + 4deg)) translateY(-7px)}}
+@keyframes sway{0%,100%{transform:rotate(-2deg)}50%{transform:rotate(2deg)}}
+@keyframes breathe{0%,100%{transform:rotate(-3deg) scale(1)}50%{transform:rotate(-1deg) scale(1.02)}}
 
-.show{display:grid;gap:18px}
-@media(min-width:720px){.show{grid-template-columns:1fr 1fr}}
-.show .card{display:grid;grid-template-rows:auto 1fr;gap:16px;padding:22px 22px 24px}
-.show .card h3{font-size:22px}
-.demo{display:grid;place-items:center;min-height:200px;border-radius:var(--r-md);background:var(--sunk);border:1.5px solid var(--line);overflow:hidden;padding:18px}
-.demo.scene{padding:0;background:var(--mint-soft)}
-.demo.scene img{width:100%;height:100%;object-fit:cover;object-position:center 40%}
-.states,.amount{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;width:100%;align-items:end}
-.states figure,.amount figure{margin:0;display:grid;gap:10px;justify-items:center}
-.states .pic{position:relative;width:min(110px,22vw)}
-.states .pic>img{width:100%}
-.states .face{position:absolute;right:-10px;bottom:-6px;width:40%}
-.amount img{width:min(110px,22vw)}
-.shelf{width:100%;max-width:360px;display:grid;gap:6px}
-.shelf .row{display:grid;grid-template-columns:repeat(4,1fr);gap:6px;padding:10px 12px;border-radius:14px;background:var(--card);border:1.5px solid var(--line)}
-.shelf .row.back{transform:scale(.9);transform-origin:bottom center;border-style:dashed}
-.shelf .row img{width:100%;max-width:64px;margin:0 auto}
-.shelf .edge-line{height:6px;border-radius:3px;background:var(--mint);border:1.5px solid var(--line)}
+/* ---- не список ---- */
+.vs{display:grid;gap:28px;align-items:center}
+@media(min-width:800px){.vs{grid-template-columns:.8fr 1.2fr;gap:48px}}
+.vs .label{font-family:var(--serif);font-weight:700;font-size:22px;margin-bottom:14px}
+.list{display:grid;gap:10px;max-width:300px}
+.list span{display:block;padding:10px 16px;border-radius:14px;background:var(--sunk);color:var(--ink-soft);font-weight:600;text-decoration:line-through;text-decoration-thickness:2px;text-decoration-color:var(--terra)}
+.list span:nth-child(2){width:84%}.list span:nth-child(3){width:92%}.list span:nth-child(4){width:70%}
+.scene{position:relative}
+.scene img{width:100%;border-radius:46% 54% 42% 58%/40% 44% 56% 60%;box-shadow:var(--shadow-lift);object-fit:cover;aspect-ratio:1.1}
+.scene .face{position:absolute;width:15%;right:-2%;top:-4%;animation:bob 3s ease-in-out infinite;--r:8deg}
+.scene .face2{position:absolute;width:14%;left:-3%;bottom:8%;animation:bob 3.4s ease-in-out infinite;--r:-6deg;animation-delay:-1.5s}
 
-.fresh-table{display:grid;grid-template-columns:repeat(3,1fr);gap:10px 14px;max-width:720px;margin:0 auto;align-items:center}
-.fresh-table .head{display:grid;justify-items:center;gap:8px;padding-bottom:8px}
-.fresh-table .head img{width:56px}
-.fresh-table .cell{display:grid;place-items:center;padding:8px;border-radius:16px}
-.fresh-table .cell img{width:min(96px,22vw)}
-.fresh-table .c1{background:#DFEBD9}.fresh-table .c2{background:#F6E3B4}.fresh-table .c3{background:#DBD8C2}
-.fresh-foot{display:flex;flex-wrap:wrap;gap:12px 28px;justify-content:center;margin-top:28px}
+/* ---- молоко ---- */
+.pour{display:grid;gap:24px;align-items:center}
+@media(min-width:860px){.pour{grid-template-columns:1fr 1fr;gap:40px}}
+.stage{position:relative;isolation:isolate;height:clamp(300px,52vw,400px);touch-action:none;user-select:none;-webkit-user-select:none}
+.stage .blob{inset:6% 4% 8% 4%;background:#CFE0DD}
+.stage .blob.b2{inset:16% 14% 2% 18%;background:var(--plum-tint);transform:rotate(-8deg)}
+.stage canvas{position:absolute;left:50%;top:50%;width:clamp(220px,40vw,300px);height:clamp(220px,40vw,300px);margin:calc(clamp(220px,40vw,300px) / -2) 0 0 calc(clamp(220px,40vw,300px) / -2);cursor:grab;transform-origin:50% 88%;filter:drop-shadow(0 10px 12px rgba(90,70,50,.28));will-change:transform}
+.stage canvas.held{cursor:grabbing}
+.stage .mascot{position:absolute;right:-4%;bottom:0;width:30%;pointer-events:none}
+.levels{display:flex;gap:8px;flex-wrap:wrap}
+.levels .chip{cursor:pointer;border:0;opacity:.6;transition:opacity .2s,transform .2s}
+.levels .chip.on{opacity:1;transform:scale(1.06)}
+.levels .chip:focus-visible{outline:3px solid var(--teal);outline-offset:3px}
 
-.stats{display:grid;grid-template-columns:repeat(2,1fr);gap:18px 24px;margin:0 auto;max-width:900px}
-@media(min-width:720px){.stats{grid-template-columns:repeat(4,1fr)}}
-.stat{display:grid;gap:6px;justify-items:center;text-align:center;padding:22px 12px 20px;background:var(--card);border:1.5px solid var(--line);border-radius:var(--r-md);box-shadow:var(--shadow)}
-.stat span:last-child{font-weight:700;font-size:16px}
+/* ---- псується ---- */
+.age{display:grid;gap:28px;align-items:center}
+@media(min-width:860px){.age{grid-template-columns:1.1fr .9fr;gap:40px}}
+.age .big{position:relative;width:min(260px,60vw);margin:0 auto}
+.age .big img{position:absolute;inset:0;width:100%;transition:opacity .5s}
+.age .big img:first-child{position:relative}
+.age .big .face{position:absolute;width:38%;left:auto;right:-14%;bottom:-6%;top:auto;animation:bob 3s ease-in-out infinite;--r:6deg}
+.st img{opacity:0}.st img.on{opacity:1}
+.days{display:grid;gap:14px}
+.days input{width:100%;accent-color:var(--amber);height:36px}
+.days .chips{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+.others{display:grid;grid-template-columns:repeat(5,1fr);gap:6px;margin-top:6px}
+.others .st{position:relative;aspect-ratio:1}
+.others .st img{position:absolute;inset:0;width:100%;transition:opacity .5s}
+
+/* ---- малюнки ---- */
+.nums{display:flex;flex-wrap:wrap;gap:10px 40px;justify-content:center;align-items:baseline;margin:0 auto 28px}
+.nums div{display:flex;align-items:baseline;gap:10px;font-weight:700}
+.nums .num{font-size:clamp(38px,5vw,60px)}
 .lib-rows{overflow:hidden;padding:4px 0}
-.lib-head{padding-bottom:28px}
 .marquee{width:100%;overflow:hidden;position:relative}
 .marquee .track{display:flex;gap:14px;width:max-content;animation:slide 90s linear infinite}
 .marquee.rev .track{animation-direction:reverse}
@@ -78,55 +118,81 @@
 .marquee:hover .track{animation-play-state:paused}
 @keyframes slide{from{transform:translateX(0)}to{transform:translateX(-50%)}}
 @media(prefers-reduced-motion:reduce){.marquee .track{animation:none;flex-wrap:wrap;width:auto}}
-.forms{display:grid;gap:18px;padding:40px 0 80px}
+.forms{display:grid;gap:20px 40px;padding:36px 0 0}
 @media(min-width:860px){.forms{grid-template-columns:1fr 1fr}}
-.forms .card{padding:22px}
-.forms .card h3{margin-bottom:14px}
-.forms .row{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;align-items:end}
-.forms .row+.row{margin-top:8px}
-.forms .row img{width:100%;max-width:92px;margin:0 auto}
+.forms h3{margin-bottom:10px;text-align:center}
+.forms .row{display:flex;justify-content:center;align-items:flex-end;flex-wrap:wrap;gap:4px}
+.forms .row img{width:clamp(60px,10vw,92px);transition:transform .3s}
+.forms .row img:nth-child(odd){transform:rotate(-5deg)}.forms .row img:nth-child(even){transform:rotate(4deg) translateY(-4px)}
+.forms .row img:hover{transform:scale(1.15) rotate(0)}
 
-.swatches{display:flex;flex-wrap:wrap;gap:14px;justify-content:center;margin:0 0 28px}
-.swatches button{width:40px;height:40px;border-radius:50%;border:1.5px solid var(--line);cursor:pointer;padding:0;box-shadow:var(--shadow);position:relative}
-.swatches button.on::after{content:"";position:absolute;inset:-7px;border-radius:50%;border:2.5px solid var(--line)}
+/* ---- конструктор ---- */
+.build{display:grid;gap:28px;align-items:center}
+@media(min-width:860px){.build{grid-template-columns:1fr 1fr;gap:48px}}
+.ctrl{display:grid;gap:18px;justify-items:start}
+.ctrl .row{display:flex;flex-wrap:wrap;gap:10px}
+.ctrl .seg{flex-wrap:wrap;max-width:100%}
+.ctrl .seg button{padding:10px 12px}
+.swatches{display:flex;flex-wrap:wrap;gap:12px}
+.swatches button{width:38px;height:38px;border-radius:50%;border:0;cursor:pointer;padding:0;box-shadow:var(--shadow);position:relative;transition:transform .15s}
+.swatches button:hover{transform:scale(1.12)}
+.swatches button.on::after{content:"";position:absolute;inset:-6px;border-radius:50%;border:2.5px solid var(--line)}
 .swatches button:focus-visible{outline:3px solid var(--teal);outline-offset:4px}
-.fridges{display:flex;justify-content:center;align-items:flex-end;gap:clamp(10px,3vw,30px);flex-wrap:wrap;padding:10px 0 0}
-.fridges img{height:clamp(96px,16vw,190px);width:auto;filter:drop-shadow(0 6px 10px rgba(90,70,50,.25))}
-.fridges img:nth-child(2){transform:rotate(-2deg)}.fridges img:nth-child(4){transform:rotate(2deg)}
-.builder{display:flex;justify-content:center;gap:14px;margin-top:32px;flex-wrap:wrap}
+.fr-stage{display:grid;place-items:end center;min-height:440px;position:relative;isolation:isolate;padding-bottom:10px}
+.fr-stage .blob{inset:4% 8% 0 8%;background:#DECFB6}
+.fridge{--fc:#C3DCCB;width:min(240px,62vw);display:grid;gap:6px;filter:drop-shadow(0 12px 14px rgba(90,70,50,.28));transition:width .4s}
+.fridge .box{background:linear-gradient(100deg,color-mix(in srgb,var(--fc) 85%,white) 0,var(--fc) 55%,color-mix(in srgb,var(--fc) 86%,black) 100%);border:2px solid var(--line);border-radius:18px;position:relative;overflow:hidden;transition:height .45s cubic-bezier(.4,0,.2,1),background .3s}
+.fridge .box::after{content:"";position:absolute;top:14%;bottom:14%;right:8%;width:5px;border-radius:3px;background:var(--line);opacity:.8}
+.fridge .cab{height:var(--h,300px);display:flex;flex-direction:column;padding:10px 12px 12px}
+.fridge .frz{height:90px;display:flex;flex-direction:column;padding:10px 12px}
+.fridge .frz.hidden{display:none}
+.fridge .shelf{flex:1;display:flex;align-items:flex-end;justify-content:space-evenly;padding:0 4px 2px;border-bottom:3px solid color-mix(in srgb,var(--line) 70%,var(--fc));position:relative;min-height:0;transition:flex .35s;animation:drop .4s ease-out}
+.fridge .shelf:last-child{border-bottom-color:transparent}
+.fridge .shelf img{height:78%;max-height:64px;width:auto;object-fit:contain;filter:drop-shadow(0 2px 2px rgba(0,0,0,.18));transition:transform .3s}
+.fridge .shelf.gone{animation:lift .3s ease-in forwards}
+@keyframes drop{from{opacity:0;transform:translateY(-14px)}to{opacity:1;transform:none}}
+@keyframes lift{to{opacity:0;transform:translateY(-14px);flex:0.0001}}
+.fridge .frz .shelf{border-bottom:0}
+.fridge .frz .shelf img{filter:drop-shadow(0 2px 2px rgba(0,0,0,.18)) hue-rotate(10deg) saturate(.8)}
+.fridge .frz::before{content:"";position:absolute;inset:0;background:repeating-linear-gradient(135deg,rgba(255,255,255,.35) 0 2px,transparent 2px 9px);pointer-events:none}
 
-.ways{display:grid;grid-template-columns:repeat(2,1fr);gap:14px}
-@media(min-width:720px){.ways{grid-template-columns:repeat(4,1fr)}}
-.ways .tile{padding-top:26px}
-.ways .mini{display:grid;grid-template-columns:repeat(3,1fr);gap:4px;width:84px;height:72px}
-.ways .mini img{width:100%;height:100%;object-fit:contain}
-.barcode{width:84px;height:72px;display:grid;place-items:center}
-.barcode i{display:block;width:72px;height:50px;border-radius:4px;background:repeating-linear-gradient(90deg,var(--ink) 0 2px,transparent 2px 5px,var(--ink) 5px 6px,transparent 6px 9px,var(--ink) 9px 12px,transparent 12px 14px)}
-
-.gone-grid{display:grid;gap:28px;align-items:center}
-@media(min-width:860px){.gone-grid{grid-template-columns:1fr 1fr;gap:48px}}
-.gone-btns{display:flex;flex-wrap:wrap;gap:12px}
-.month{display:grid;gap:14px;padding:22px}
-.month .bar{display:flex;height:34px;border-radius:17px;overflow:hidden;border:1.5px solid var(--line)}
-.month .bar i{display:block;height:100%}
-.month .bar .ok{background:var(--green);flex:38}
-.month .bar .no{background:var(--terra);flex:5}
+/* ---- зʼїли ---- */
+.gone{display:grid;gap:28px;align-items:center}
+@media(min-width:860px){.gone{grid-template-columns:1fr 1fr;gap:48px}}
+.gone .text{display:grid;gap:18px;justify-items:start}
+.gone .btns{display:flex;flex-wrap:wrap;gap:12px}
+.gone .play{position:relative;isolation:isolate;display:grid;place-items:center;min-height:300px}
+.gone .play .blob{inset:10% 10% 12% 10%;background:var(--amber-soft)}
+.gone .item{width:min(200px,45vw);transition:transform .5s cubic-bezier(.5,0,.8,.4),opacity .4s}
+.gone .item.ate{transform:translate(-60px,-120px) rotate(-20deg) scale(.5);opacity:0}
+.gone .item.bin{transform:translate(60px,120px) rotate(25deg) scale(.5);opacity:0}
+.gone .item.away{transform:translateX(260px) rotate(10deg);opacity:0}
+.gone .item.fresh{transition:none;transform:scale(.6);opacity:0}
+.month{display:grid;gap:12px;width:100%;max-width:360px}
+.month .bar{display:flex;height:28px;border-radius:14px;overflow:hidden;background:var(--card);box-shadow:inset 0 2px 4px rgba(90,70,50,.15)}
+.month .bar i{display:block;height:100%;transition:flex .5s}
+.month .bar .ok{background:var(--green)}
+.month .bar .no{background:var(--terra)}
 .month .legend{display:flex;justify-content:space-between;gap:16px;font-weight:700}
 .month .legend b{font-family:var(--serif);font-size:26px;margin-right:8px}
 .month .legend span:last-child{text-align:right}
 
-.more{display:grid;gap:18px}
-@media(min-width:760px){.more{grid-template-columns:repeat(3,1fr)}}
-.more .card{display:grid;gap:12px;justify-items:start;padding:22px;align-content:start}
-.more .card img{height:84px;width:auto}
-.more h3{font-size:21px}
-.more p{color:var(--ink-soft);font-size:16px;line-height:1.45}
+/* ---- і ще ---- */
+.more{display:flex;flex-wrap:wrap;justify-content:center;gap:28px 36px}
+.more .it{display:grid;justify-items:center;gap:8px;text-align:center;width:124px;font-weight:700;font-size:15px;line-height:1.3}
+.more .it .pic{width:84px;height:84px;display:grid;place-items:center;position:relative}
+.more .it .pic::before{content:"";position:absolute;inset:4px;border-radius:48% 52% 44% 56%/56% 44% 58% 42%;background:var(--w,var(--mint-soft));mix-blend-mode:multiply;transition:transform .3s}
+.more .it:hover .pic::before{transform:scale(1.15) rotate(10deg)}
+.more .it img{position:relative;height:60px;width:auto}
+.more .mini{position:relative;display:grid;grid-template-columns:repeat(3,1fr);gap:2px;width:66px}
+.more .mini img{height:auto;width:100%}
+.barcode{position:relative;width:60px;height:40px;border-radius:4px;background:repeating-linear-gradient(90deg,var(--ink) 0 2px,transparent 2px 5px,var(--ink) 5px 6px,transparent 6px 9px,var(--ink) 9px 12px,transparent 12px 14px)}
 
-.cta{position:relative;display:grid;gap:18px;justify-items:start;padding:36px 28px}
-@media(min-width:860px){.cta{padding:48px 44px;padding-right:40%}}
+/* ---- кінець ---- */
+.cta{position:relative;display:grid;gap:18px;justify-items:start;padding:40px 24px}
+@media(min-width:860px){.cta{padding:56px 44px;padding-right:40%}}
 .cta .mascot{display:none}
 @media(min-width:860px){.cta .mascot{display:block;position:absolute;right:28px;bottom:-14px;width:min(320px,32%)}}
-.cta-wrap{padding-top:72px}
 .section.tight{padding-top:40px}
 .gap48{height:48px}
 </style>
@@ -145,16 +211,17 @@
   <header class="hero">
     <div class="text">
       <div class="stores"><span class="tag">Зараз у Telegram</span><span class="tag amber">Скоро в App Store і Google Play</span></div>
-      <h1>Твій холодильник як картинка</h1>
-      <p class="lead">Полиці, продукти на них і те, що ось‑ось зіпсується. Видно, не відкриваючи дверцят</p>
+      <h1>Холодильник, який видно</h1>
+      <p class="lead">Полиці й продукти намальовані. Що ось‑ось зіпсується, видно одразу</p>
       <div class="actions">
         <a class="btn amber" href="https://t.me/freshkapp_bot/fridge">Відкрити в Telegram</a>
-        <a class="btn paper" href="#show">Що вміє</a>
+        <a class="btn paper" href="#pour">Спробувати тут</a>
       </div>
     </div>
 
     <div class="kitchen" aria-hidden="true">
       <div class="wall"></div>
+      <div class="wall2"></div>
       <div class="floor"></div>
       <img class="window" src="/freshka/img/room-window.webp" alt="">
       <img class="lamp" src="/freshka/img/room-lamp.webp" alt="">
@@ -168,50 +235,46 @@
       <img class="mascot" src="/freshka/img/mascot-joy.webp" alt="">
     </div>
   </header>
+
+  <section class="section">
+    <div class="vs">
+      <div class="rv">
+        <h2>Не список, а картинка</h2>
+        <p class="label soft" style="margin-top:22px">В інших застосунках</p>
+        <div class="list" aria-hidden="true">
+          <span>Молоко 1 л, до 12.11</span>
+          <span>Помідори 500 г</span>
+          <span>Сир чеддер, до 20.11</span>
+          <span>Яйця 10 шт</span>
+        </div>
+      </div>
+      <div class="rv scene wash">
+        <img src="/freshka/img/fridge-crop.jpg" alt="Холодильник у Фрешці: продукти на полицях, у дверцятах і в шухляді" width="540" height="470">
+        <img class="face" src="/freshka/img/ui-fresh-face-good.webp" alt="">
+        <img class="face2" src="/freshka/img/ui-fresh-face-soon.webp" alt="">
+      </div>
+    </div>
+  </section>
 </div>
 
-<div class="gap48"></div>
 <span class="edge paper-to-sunk"></span>
-<section class="band" id="show">
+<section class="band" id="pour">
   <div class="wrap section tight">
-    <div class="section-head">
-      <h2>Що видно одразу</h2>
-      <p class="lead">Чотири речі, через які Фрешка не список. Усе видно по малюнку, без дат і таблиць</p>
-    </div>
-    <div class="show">
-      <div class="card">
-        <h3>Що є і де стоїть</h3>
-        <div class="demo scene"><img src="/freshka/img/fridge-crop.jpg" alt="Холодильник у застосунку: продукти на полицях, у дверцятах і в шухляді" width="540" height="470"></div>
-      </div>
-      <div class="card">
-        <h3>Що скоро зіпсується</h3>
-        <div class="demo">
-          <div class="states">
-            <figure><div class="pic"><img src="/freshka/img/lib/apple.webp" alt=""><img class="face" src="/freshka/img/ui-fresh-face-good.webp" alt=""></div><span class="chip fresh">ще 6 днів</span></figure>
-            <figure><div class="pic"><img src="/freshka/img/lib/apple-wilting.webp" alt=""><img class="face" src="/freshka/img/ui-fresh-face-soon.webp" alt=""></div><span class="chip soon">завтра</span></figure>
-            <figure><div class="pic"><img src="/freshka/img/lib/apple-spoiled.webp" alt=""><img class="face" src="/freshka/img/ui-fresh-face-gone.webp" alt=""></div><span class="chip gone">зіпсувалося</span></figure>
-          </div>
+    <div class="pour">
+      <div class="rv">
+        <h2>Молоко хлюпає</h2>
+        <p class="lead tight" style="margin-top:14px">Затисни пляшку й потягни. У застосунку так рухається все, що береш у руку</p>
+        <div class="levels" style="margin-top:22px" role="group" aria-label="Скільки молока">
+          <button class="chip teal on" data-level="milk-bottle">повна</button>
+          <button class="chip teal" data-level="milk-bottle-half">половина</button>
+          <button class="chip teal" data-level="milk-bottle-low">на денці</button>
         </div>
+        <p class="hint" style="margin-top:22px"><span class="dot"></span>Тягни пляшку</p>
       </div>
-      <div class="card">
-        <h3>Скільки лишилося</h3>
-        <div class="demo">
-          <div class="amount">
-            <figure><img src="/freshka/img/lib/milk-bottle.webp" alt=""><span class="chip teal">повна</span></figure>
-            <figure><img src="/freshka/img/lib/milk-bottle-half.webp" alt=""><span class="chip teal">половина</span></figure>
-            <figure><img src="/freshka/img/lib/milk-bottle-low.webp" alt=""><span class="chip teal">на денці</span></figure>
-          </div>
-        </div>
-      </div>
-      <div class="card">
-        <h3>Що заховалося позаду</h3>
-        <div class="demo">
-          <div class="shelf" aria-label="Полиця згори: задній ряд і передній ряд">
-            <div class="row back"><img src="/freshka/img/lib/tomato-jar.webp" alt=""><img src="/freshka/img/lib/dish-amber-box.webp" alt=""><img src="/freshka/img/lib/kefir.webp" alt=""><img src="/freshka/img/lib/olives.webp" alt=""></div>
-            <div class="row"><img src="/freshka/img/lib/tomato-pile-three.webp" alt=""><img src="/freshka/img/lib/cheddar.webp" alt=""><img src="/freshka/img/lib/egg.webp" alt=""><img src="/freshka/img/lib/butter.webp" alt=""></div>
-            <div class="edge-line"></div>
-          </div>
-        </div>
+      <div class="stage rv" id="stage">
+        <span class="blob"></span><span class="blob b2"></span>
+        <canvas id="milk" width="256" height="256" aria-label="Пляшка молока, яку можна потягнути"></canvas>
+        <img class="mascot" src="/freshka/img/mascot-points.webp" alt="">
       </div>
     </div>
   </div>
@@ -220,53 +283,42 @@
 
 <div class="wrap">
   <section class="section">
-    <div class="section-head center">
-      <h2>Свіжість видно на малюнку</h2>
-      <p class="lead">Продукт вʼяне, темніє і вкривається цвіллю разом зі справжнім. Для 63 продуктів намальовані всі три стани</p>
-    </div>
-    <div class="fresh-table">
-      <div class="head"><img src="/freshka/img/ui-fresh-face-good.webp" alt=""><span class="chip fresh">Свіже</span></div>
-      <div class="head"><img src="/freshka/img/ui-fresh-face-soon.webp" alt=""><span class="chip soon">Скоро</span></div>
-      <div class="head"><img src="/freshka/img/ui-fresh-face-gone.webp" alt=""><span class="chip gone">Зіпсувалося</span></div>
-      <div class="cell c1"><img src="/freshka/img/lib/banana.webp" alt="Свіжий банан"></div>
-      <div class="cell c2"><img src="/freshka/img/lib/banana-wilting.webp" alt="Банан, що темніє"></div>
-      <div class="cell c3"><img src="/freshka/img/lib/banana-spoiled.webp" alt="Зіпсований банан"></div>
-      <div class="cell c1"><img src="/freshka/img/lib/avocado.webp" alt="Свіже авокадо"></div>
-      <div class="cell c2"><img src="/freshka/img/lib/avocado-wilting.webp" alt="Авокадо, що мʼякшає"></div>
-      <div class="cell c3"><img src="/freshka/img/lib/avocado-spoiled.webp" alt="Зіпсоване авокадо"></div>
-      <div class="cell c1"><img src="/freshka/img/lib/strawberry.webp" alt="Свіжа полуниця"></div>
-      <div class="cell c2"><img src="/freshka/img/lib/strawberry-wilting.webp" alt="Полуниця, що вʼяне"></div>
-      <div class="cell c3"><img src="/freshka/img/lib/strawberry-spoiled.webp" alt="Зіпсована полуниця"></div>
-      <div class="cell c1"><img src="/freshka/img/lib/cheddar.webp" alt="Свіжий сир"></div>
-      <div class="cell c2"><img src="/freshka/img/lib/cheddar-wilting.webp" alt="Сир, що підсихає"></div>
-      <div class="cell c3"><img src="/freshka/img/lib/cheddar-spoiled.webp" alt="Запліснявілий сир"></div>
-      <div class="cell c1"><img src="/freshka/img/lib/baguette.webp" alt="Свіжий багет"></div>
-      <div class="cell c2"><img src="/freshka/img/lib/baguette-wilting.webp" alt="Черствий багет"></div>
-      <div class="cell c3"><img src="/freshka/img/lib/baguette-spoiled.webp" alt="Запліснявілий багет"></div>
-      <div class="cell c1"><img src="/freshka/img/lib/broccoli.webp" alt="Свіжа броколі"></div>
-      <div class="cell c2"><img src="/freshka/img/lib/broccoli-wilting.webp" alt="Броколі, що жовтіє"></div>
-      <div class="cell c3"><img src="/freshka/img/lib/broccoli-spoiled.webp" alt="Зіпсована броколі"></div>
-    </div>
-    <div class="fresh-foot">
-      <span class="chip fresh">Зелене світіння</span>
-      <span class="chip soon">Бурштиновий ореол</span>
-      <span class="chip gone">Лінії запаху</span>
+    <div class="age">
+      <div class="rv big wash amber st" id="apple">
+        <img src="/freshka/img/lib/apple.webp" alt="Яблуко" class="on" data-s="0">
+        <img src="/freshka/img/lib/apple-wilting.webp" alt="" data-s="1">
+        <img src="/freshka/img/lib/apple-spoiled.webp" alt="" data-s="2">
+        <img class="face" id="face" src="/freshka/img/ui-fresh-face-good.webp" alt="">
+      </div>
+      <div class="rv days">
+        <h2>Псується на очах</h2>
+        <p class="lead tight">Продукт вʼяне й темніє разом зі справжнім. Для 63 продуктів намальовані всі три стани</p>
+        <label class="hint" for="day"><span class="dot"></span>Потягни дні</label>
+        <input id="day" type="range" min="0" max="9" value="0" step="1" aria-label="Скільки днів минуло">
+        <div class="chips"><span class="chip fresh" id="dayChip">сьогодні купили</span></div>
+        <div class="others" aria-hidden="true">
+          <div class="st"><img class="on" src="/freshka/img/lib/banana.webp" alt=""><img src="/freshka/img/lib/banana-wilting.webp" alt=""><img src="/freshka/img/lib/banana-spoiled.webp" alt=""></div>
+          <div class="st"><img class="on" src="/freshka/img/lib/avocado.webp" alt=""><img src="/freshka/img/lib/avocado-wilting.webp" alt=""><img src="/freshka/img/lib/avocado-spoiled.webp" alt=""></div>
+          <div class="st"><img class="on" src="/freshka/img/lib/strawberry.webp" alt=""><img src="/freshka/img/lib/strawberry-wilting.webp" alt=""><img src="/freshka/img/lib/strawberry-spoiled.webp" alt=""></div>
+          <div class="st"><img class="on" src="/freshka/img/lib/cheddar.webp" alt=""><img src="/freshka/img/lib/cheddar-wilting.webp" alt=""><img src="/freshka/img/lib/cheddar-spoiled.webp" alt=""></div>
+          <div class="st"><img class="on" src="/freshka/img/lib/baguette.webp" alt=""><img src="/freshka/img/lib/baguette-wilting.webp" alt=""><img src="/freshka/img/lib/baguette-spoiled.webp" alt=""></div>
+        </div>
+      </div>
     </div>
   </section>
 </div>
 
 <span class="edge paper-to-sunk"></span>
 <section class="band" id="library">
-  <div class="wrap section tight lib-head">
-    <div class="section-head center">
-      <h2>926 малюнків, зроблених для Фрешки</h2>
-      <p class="lead">Усі продукти намальовані однією рукою: туш, акварель і крем-папір. Кожен є в пакеті, банці, мисці чи купкою, тож на полиці стоїть саме те, що в тебе</p>
+  <div class="wrap section tight">
+    <div class="section-head center rv" style="margin-bottom:24px">
+      <h2>926 малюнків однією рукою</h2>
     </div>
-    <div class="stats">
-      <div class="stat"><span class="num">926</span><span>малюнків</span></div>
-      <div class="stat"><span class="num">146</span><span>продуктів і страв</span></div>
-      <div class="stat"><span class="num">63</span><span>псуються на очах</span></div>
-      <div class="stat"><span class="num">13</span><span>видів тари</span></div>
+    <div class="nums rv">
+      <div><span class="num">146</span>продуктів</div>
+      <div><span class="num">63</span>псуються на очах</div>
+      <div><span class="num">13</span>видів тари</div>
+      <div><span class="num">7</span>кольорів холодильника</div>
     </div>
   </div>
   <div class="lib-rows" aria-hidden="true">
@@ -274,35 +326,27 @@
     <div class="marquee rev"><div class="track" data-row="1"></div></div>
     <div class="marquee"><div class="track" data-row="2"></div></div>
   </div>
-  <div class="wrap">
+  <div class="wrap" style="padding-bottom:64px">
     <div class="forms">
-      <div class="card">
-        <h3>Один продукт, усі його форми</h3>
+      <div class="rv">
+        <h3>Один помідор, усі його форми</h3>
         <div class="row">
           <img src="/freshka/img/lib/tomato.webp" alt="Один помідор">
           <img src="/freshka/img/lib/tomato-pile-three.webp" alt="Три помідори">
           <img src="/freshka/img/lib/tomato-bag.webp" alt="Помідори в пакеті">
           <img src="/freshka/img/lib/tomato-box.webp" alt="Помідори в контейнері">
-        </div>
-        <div class="row">
           <img src="/freshka/img/lib/tomato-jar.webp" alt="Помідори в банці">
           <img src="/freshka/img/lib/tomato-paste.webp" alt="Томатна паста">
-          <img src="/freshka/img/lib/tomato-bag-one.webp" alt="Один помідор у пакеті">
-          <img src="/freshka/img/lib/tomato-pile-four.webp" alt="Чотири помідори">
         </div>
       </div>
-      <div class="card">
+      <div class="rv">
         <h3>Своя страва в будь-якому посуді</h3>
         <div class="row">
           <img src="/freshka/img/lib/dish-amber-pot.webp" alt="Страва в каструлі">
           <img src="/freshka/img/lib/dish-amber-bowl.webp" alt="Страва в мисці">
           <img src="/freshka/img/lib/dish-amber-box.webp" alt="Страва в контейнері">
-          <img src="/freshka/img/lib/dish-amber-jar.webp" alt="Страва в банці">
-        </div>
-        <div class="row">
-          <img src="/freshka/img/lib/dish-amber-box.webp" alt="Повний контейнер">
           <img src="/freshka/img/lib/dish-amber-box-half.webp" alt="Пів контейнера">
-          <img src="/freshka/img/lib/dish-amber-box-low.webp" alt="Контейнер майже порожній">
+          <img src="/freshka/img/lib/dish-amber-jar.webp" alt="Страва в банці">
           <img src="/freshka/img/lib/drink-amber-jug-half.webp" alt="Компот у глечику">
         </div>
       </div>
@@ -313,52 +357,63 @@
 
 <div class="wrap">
   <section class="section" id="fridge">
-    <div class="section-head center">
-      <h2>Холодильник як твій</h2>
-      <p class="lead">Пʼять будов і сім кольорів. Полиці й шухляди додаються, прибираються і міняють висоту</p>
-    </div>
-    <div class="swatches" role="group" aria-label="Колір холодильника">
-      <button class="on" data-colour="mint" style="background:#C3DCCB" aria-label="Мʼятний"></button>
-      <button data-colour="white" style="background:#F1EEE6" aria-label="Білий"></button>
-      <button data-colour="sky" style="background:#BFD6E6" aria-label="Небесний"></button>
-      <button data-colour="rose" style="background:#EFC6CC" aria-label="Рожевий"></button>
-      <button data-colour="red" style="background:#C9574A" aria-label="Червоний"></button>
-      <button data-colour="lavender" style="background:#CFC4E3" aria-label="Лавандовий"></button>
-      <button data-colour="butter" style="background:#F3DFA0" aria-label="Вершковий"></button>
-    </div>
-    <div class="fridges" id="fridges">
-      <img data-lay="one-door" src="/freshka/img/fridges/mint-one-door.webp" alt="Однодверний">
-      <img data-lay="top-freezer" src="/freshka/img/fridges/mint-top-freezer.webp" alt="Морозилка згори">
-      <img data-lay="bottom-freezer" src="/freshka/img/fridges/mint-bottom-freezer.webp" alt="Морозилка знизу">
-      <img data-lay="side-by-side" src="/freshka/img/fridges/mint-side-by-side.webp" alt="Двоє дверей поруч">
-      <img data-lay="four-door" src="/freshka/img/fridges/mint-four-door.webp" alt="Четверо дверей">
-    </div>
-    <div class="builder" aria-hidden="true">
-      <span class="picbtn"><img src="/freshka/img/ui-builder-plus.png" alt="">Додати полицю</span>
-      <span class="picbtn"><img src="/freshka/img/ui-builder-height.png" alt="">Змінити висоту</span>
-      <span class="picbtn"><img src="/freshka/img/ui-start-photo.webp" alt="">Зібрати з фото</span>
+    <div class="build">
+      <div class="fr-stage rv">
+        <span class="blob"></span>
+        <div class="fridge" id="fr" style="--fc:#C3DCCB">
+          <div class="box frz top hidden" id="frzTop"></div>
+          <div class="box cab" id="cab"></div>
+          <div class="box frz bottom" id="frzBot"></div>
+        </div>
+      </div>
+      <div class="ctrl rv">
+        <h2>Збери свій холодильник</h2>
+        <div class="seg" role="group" aria-label="Будова">
+          <button class="on" data-lay="bottom">Морозилка знизу</button>
+          <button data-lay="top">Згори</button>
+          <button data-lay="none">Без морозилки</button>
+        </div>
+        <div class="row">
+          <button class="sbtn" id="addShelf"><img src="/freshka/img/ui-builder-plus.png" alt="">Додати полицю</button>
+          <button class="sbtn" id="delShelf"><img src="/freshka/img/ui-builder-cross.webp" alt="">Прибрати</button>
+          <button class="sbtn" id="height"><img src="/freshka/img/ui-builder-height.png" alt="">Змінити висоту</button>
+        </div>
+        <div class="swatches" role="group" aria-label="Колір">
+          <button class="on" data-c="#C3DCCB" style="background:#C3DCCB" aria-label="Мʼятний"></button>
+          <button data-c="#F1EEE6" style="background:#F1EEE6" aria-label="Білий"></button>
+          <button data-c="#BFD6E6" style="background:#BFD6E6" aria-label="Небесний"></button>
+          <button data-c="#EFC6CC" style="background:#EFC6CC" aria-label="Рожевий"></button>
+          <button data-c="#C9574A" style="background:#C9574A" aria-label="Червоний"></button>
+          <button data-c="#CFC4E3" style="background:#CFC4E3" aria-label="Лавандовий"></button>
+          <button data-c="#F3DFA0" style="background:#F3DFA0" aria-label="Вершковий"></button>
+        </div>
+        <p class="hint"><span class="dot"></span>Або сфотографуй свій, Фрешка збере сама</p>
+      </div>
     </div>
   </section>
 </div>
 
 <span class="edge paper-to-sunk"></span>
-<section class="band" id="add">
+<section class="band">
   <div class="wrap section tight">
-    <div class="section-head center">
-      <h2>Додати за секунди</h2>
-      <p class="lead">Чотири способи. Додане лежить під холодильником, поки не поставиш його на місце</p>
-    </div>
-    <div class="ways">
-      <div class="tile">
-        <div class="mini" aria-hidden="true">
-          <img src="/freshka/img/lib/egg.webp" alt=""><img src="/freshka/img/lib/kefir.webp" alt=""><img src="/freshka/img/lib/cucumber.webp" alt="">
-          <img src="/freshka/img/lib/butter.webp" alt=""><img src="/freshka/img/lib/salami.webp" alt=""><img src="/freshka/img/lib/lemon.webp" alt="">
+    <div class="gone">
+      <div class="text rv">
+        <h2>Зʼїли чи викинули</h2>
+        <p class="lead tight">Тисни. Фрешка рахує і в кінці місяця показує, скільки врятовано</p>
+        <div class="btns">
+          <button class="sbtn" data-take="ate"><img src="/freshka/img/ui-take-ate.webp" alt="">Зʼїли</button>
+          <button class="sbtn" data-take="bin"><img src="/freshka/img/ui-take-threw-out.webp" alt="">Викинули</button>
+          <button class="sbtn" data-take="away"><img src="/freshka/img/ui-take-away.webp" alt="">Забрали</button>
         </div>
-        Плиткою з каталогу
+        <div class="month" aria-live="polite">
+          <div class="bar"><i class="ok" id="okBar" style="flex:38"></i><i class="no" id="noBar" style="flex:5"></i></div>
+          <div class="legend"><span><b id="okN">38</b>зʼїли вчасно</span><span><b id="noN">5</b>викинули</span></div>
+        </div>
       </div>
-      <div class="tile"><div class="barcode" aria-hidden="true"><i></i></div>Штрихкодом</div>
-      <div class="tile"><img src="/freshka/img/ui-start-photo.webp" alt="">Фото продукту чи чека</div>
-      <div class="tile"><img src="/freshka/img/ui-builder-pencil.webp" alt="">Вручну</div>
+      <div class="play rv">
+        <span class="blob"></span>
+        <img class="item" id="item" src="/freshka/img/lib/croissant.webp" alt="">
+      </div>
     </div>
   </div>
 </section>
@@ -366,52 +421,20 @@
 
 <div class="wrap">
   <section class="section">
-    <div class="gone-grid">
-      <div>
-        <div class="section-head" style="margin-bottom:22px">
-          <h2>Коли щось зникає з холодильника</h2>
-          <p class="lead">Три кнопки. Фрешка рахує, що врятовано, а що ні, і в кінці місяця показує підсумок</p>
-        </div>
-        <div class="gone-btns" aria-hidden="true">
-          <span class="picbtn"><img src="/freshka/img/ui-take-ate.webp" alt="">Зʼїли</span>
-          <span class="picbtn"><img src="/freshka/img/ui-take-threw-out.webp" alt="">Викинули</span>
-          <span class="picbtn"><img src="/freshka/img/ui-take-away.webp" alt="">Забрали</span>
-        </div>
-      </div>
-      <div class="card month" aria-label="Підсумок місяця">
-        <h3>Листопад</h3>
-        <div class="bar"><i class="ok"></i><i class="no"></i></div>
-        <div class="legend"><span><b>38</b>зʼїли вчасно</span><span><b>5</b>викинули</span></div>
-      </div>
+    <div class="more rv">
+      <div class="it"><div class="pic"><div class="mini" aria-hidden="true"><img src="/freshka/img/lib/egg.webp" alt=""><img src="/freshka/img/lib/kefir.webp" alt=""><img src="/freshka/img/lib/cucumber.webp" alt=""><img src="/freshka/img/lib/butter.webp" alt=""><img src="/freshka/img/lib/salami.webp" alt=""><img src="/freshka/img/lib/lemon.webp" alt=""></div></div>Додати з каталогу</div>
+      <div class="it" style="--w:var(--amber-soft)"><div class="pic"><span class="barcode" aria-hidden="true"></span></div>Штрихкодом</div>
+      <div class="it" style="--w:#CFE0DD"><div class="pic"><img src="/freshka/img/ui-start-photo.webp" alt=""></div>Фото продукту чи чека</div>
+      <div class="it" style="--w:var(--plum-tint)"><div class="pic"><img src="/freshka/img/ui-start-join.webp" alt=""></div>Спільний з родиною</div>
+      <div class="it" style="--w:#F1D3CF"><div class="pic"><img src="/freshka/img/ui-fresh-face-soon.webp" alt=""></div>Нагадування ввечері</div>
+      <div class="it" style="--w:#DECFB6"><div class="pic"><img src="/freshka/img/ui-fridge-new.webp" alt=""></div>Без акаунта й інтернету</div>
     </div>
   </section>
 
-  <div class="wave line"></div>
-
-  <section class="section">
-    <div class="more">
-      <div class="card">
-        <img src="/freshka/img/ui-start-join.webp" alt="">
-        <h3>Спільний холодильник</h3>
-        <p>Для пари, родини чи сусідів. Запрошення кодом, і всі бачать, що чиє і що закінчилося</p>
-      </div>
-      <div class="card">
-        <img src="/freshka/img/ui-fresh-face-soon.webp" alt="">
-        <h3>Нагадування ввечері</h3>
-        <p>Одне повідомлення на день про те, що зʼїсти першим. Час обираєш ти</p>
-      </div>
-      <div class="card">
-        <img src="/freshka/img/ui-fridge-new.webp" alt="">
-        <h3>Без акаунта й без інтернету</h3>
-        <p>Холодильник живе на телефоні. Вхід потрібен лише для спільного холодильника й підписки</p>
-      </div>
-    </div>
-  </section>
-
-  <section class="cta-wrap">
-    <div class="card cta">
-      <h2>Спробуй уже зараз</h2>
-      <p class="lead">Поки Фрешка їде в App Store і Google Play, її можна відкрити в Telegram. Холодильник збережеться і переїде в застосунок разом з тобою</p>
+  <section class="section" style="padding-top:0">
+    <div class="cta wash sky rv">
+      <h2>Спробуй у Telegram</h2>
+      <p class="lead">Холодильник збережеться і переїде в застосунок разом з тобою</p>
       <div class="actions">
         <a class="btn amber" href="https://t.me/freshkapp_bot/fridge">Відкрити в Telegram</a>
         <a class="btn paper" href="/freshka/support/">Підтримка</a>
@@ -434,18 +457,238 @@
 
 <script>
 (function(){
+  var reduce=matchMedia("(prefers-reduced-motion:reduce)").matches;
+  var $=function(s,r){return (r||document).querySelector(s)};
+  var $$=function(s,r){return Array.prototype.slice.call((r||document).querySelectorAll(s))};
+
+  /* поява при прокручуванні */
+  if("IntersectionObserver" in window){
+    var io=new IntersectionObserver(function(es){es.forEach(function(e){if(e.isIntersecting){e.target.classList.add("in");io.unobserve(e.target)}})},{rootMargin:"0px 0px -8% 0px"});
+    $$(".rv").forEach(function(el){io.observe(el)});
+  }else $$(".rv").forEach(function(el){el.classList.add("in")});
+
+  /* марки малюнків */
   var names="apple apricot aubergine avocado bacon baguette banana barley beans beer beetroot blueberries bottle broccoli buckwheat bun butter cabbage cake camembert can candies capelin carp carrot cauliflower caviar cheddar cheesecake cherries chicken chocolate cookies corn courgette cream croissant cucumber cutlets deruny dessert dill donut drumsticks eclair egg fish frankfurters garlic ginger grapefruit grapes hake halibut ham herbs herring holubtsi hummus jelly kefir ketchup kholodets kiwi kvass lavash lemon lemonade lime liver loaf mackerel mango marmalade mayonnaise meat melon millet mince mlyntsi mozzarella mushroom mussels mustard nuggets octopus olives olivier onion orange oysters parsley pasta pate peach pear pelmeni persimmon pie pineapple pizza plum pomegranate pork porridge pot potato pumpkin radish raspberries rice ryazhenka salami salmon salo sardelky sardines sauce sauerkraut sausage shashlik shrimp sorrel spinach sprats squid strawberry suluguni sushi syrnyky tangerine tofu tomato trout tuna turkey turnip tushonka varenyky veal water watermelon wine yeast yoghurt zefir".split(" ");
   var rows=[[],[],[]];
   names.forEach(function(n,i){rows[i%3].push(n)});
-  document.querySelectorAll(".marquee .track").forEach(function(t){
+  $$(".marquee .track").forEach(function(t){
     var list=rows[+t.dataset.row], html="";
     list.concat(list).forEach(function(n){html+='<img loading="lazy" src="/freshka/img/lib/'+n+'.webp" alt="" width="72" height="72">'});
     t.innerHTML=html;
   });
-  var sw=document.querySelectorAll(".swatches button"), imgs=document.querySelectorAll("#fridges img");
-  sw.forEach(function(b){b.addEventListener("click",function(){
-    sw.forEach(function(x){x.classList.toggle("on",x===b)});
-    imgs.forEach(function(im){im.src="/freshka/img/fridges/"+b.dataset.colour+"-"+im.dataset.lay+".webp"});
+
+  /* ---- молоко: фізика з domain/slosh застосунку ---- */
+  var GRAVITY=14000,GIVE=.45,TILT_K=67,TILT_D=2.8,PULL_MOST=.6,PULL_KNEE=4000,MAX_TILT=.85,
+      WAVE_K=200,WAVE_D=3,WAVE_PER_LAG=4200,MAX_WAVE=10,WAVE_SHAPE=1.5*Math.PI,WAVE_ROLL=2.4,
+      KEEPS=.15,FULL_FALL=18,REACH_SHARE=1/3,LEAST_WEIGHT=.25,STEP=1/240,LONGEST=1/30,
+      LEAN_PER_PULL=3.4e-6,MAX_LEAN=.06,LEAN_K=260,LEAN_D=33,
+      WOB_K=191,WOB_D=7.7,WOB_PER_PULL=.0075,WOB_KNEE=10000,MAX_WOB=.3,
+      STR_K=355,STR_D=10.6,STR_PER_PULL=.0045,MAX_STR=.08,WINDOW=.05;
+  function clamp(v,a,b){return v<a?a:v>b?b:v}
+  function softly(v,m){return m>0?m*Math.tanh(v/m):0}
+  function felt(p){return p/(1+Math.abs(p)/WOB_KNEE)}
+  var liq={tilt:0,tiltV:0,wave:0,waveV:0,lean:0,leanV:0}, wob={turn:0,turnV:0,stretch:0,stretchV:0};
+  function liquidStep(ax,ay,sec){
+    var left=clamp(sec,0,LONGEST);
+    var weight=Math.max(LEAST_WEIGHT,1-(ay*GIVE)/GRAVITY);
+    var pull=(-PULL_MOST*ax)/(Math.abs(ax)+PULL_KNEE);
+    var target=clamp(pull/weight,-PULL_MOST,PULL_MOST);
+    var leanT=clamp(-ax*LEAN_PER_PULL,-MAX_LEAN,MAX_LEAN);
+    while(left>0){
+      var dt=Math.min(left,STEP);left-=dt;
+      var lag=target-liq.tilt;
+      liq.tiltV+=(TILT_K*lag-TILT_D*liq.tiltV)*dt; liq.tilt+=liq.tiltV*dt;
+      if(Math.abs(liq.tilt)>2*MAX_TILT){liq.tilt=clamp(liq.tilt,-2*MAX_TILT,2*MAX_TILT);liq.tiltV=0}
+      liq.waveV+=(WAVE_PER_LAG*lag-WAVE_K*liq.wave-WAVE_D*liq.waveV)*dt; liq.wave+=liq.waveV*dt;
+      if(Math.abs(liq.wave)>2*MAX_WAVE){liq.wave=clamp(liq.wave,-2*MAX_WAVE,2*MAX_WAVE);liq.waveV=0}
+      var v=liq.leanV+(-LEAN_K*(liq.lean-leanT)-LEAN_D*liq.leanV)*dt; liq.lean=clamp(liq.lean+v*dt,-MAX_LEAN,MAX_LEAN); liq.leanV=v;
+    }
+  }
+  function wobbleStep(ax,ay,sec){
+    var left=clamp(sec,0,LONGEST), pt=-felt(ax)*WOB_PER_PULL, ps=-felt(ay)*STR_PER_PULL;
+    while(left>0){
+      var dt=Math.min(left,STEP);left-=dt;
+      wob.turnV+=(pt-WOB_K*wob.turn-WOB_D*wob.turnV)*dt; wob.turn+=wob.turnV*dt;
+      if(Math.abs(wob.turn)>2*MAX_WOB){wob.turn=clamp(wob.turn,-2*MAX_WOB,2*MAX_WOB);wob.turnV=0}
+      wob.stretchV+=(ps-STR_K*wob.stretch-STR_D*wob.stretchV)*dt; wob.stretch+=wob.stretchV*dt;
+      if(Math.abs(wob.stretch)>2*MAX_STR){wob.stretch=clamp(wob.stretch,-2*MAX_STR,2*MAX_STR);wob.stretchV=0}
+    }
+  }
+  var hand={samples:[]};
+  function handStep(x,y,sec){
+    var s=hand.samples, last=s[s.length-1];
+    if(!last){hand.samples=[{t:0,x:x,y:y,vx:0,vy:0}];return {ax:0,ay:0}}
+    var t=last.t+clamp(sec,0,LONGEST), from=0;
+    while(from+1<s.length&&t-s[from+1].t>=WINDOW)from++;
+    var kept=s.slice(from), old=kept[0], span=Math.max(t-old.t,WINDOW);
+    var vx=(x-old.x)/span, vy=(y-old.y)/span, ax=(vx-old.vx)/span, ay=(vy-old.vy)/span;
+    kept.push({t:t,x:x,y:y,vx:vx,vy:vy}); hand.samples=kept;
+    return {ax:ax,ay:ay};
+  }
+
+  var cv=$("#milk"), ctx=cv.getContext("2d"), stage=$("#stage");
+  var SIZE=256, layers=null, cache={};
+  function loadImg(src){return new Promise(function(res,rej){var im=new Image();im.onload=function(){res(im)};im.onerror=rej;im.src=src})}
+  function make(w,h){var c=document.createElement("canvas");c.width=w;c.height=h;return c}
+  function prepare(name){
+    if(cache[name])return cache[name];
+    return cache[name]=Promise.all([loadImg("/freshka/img/slosh/"+name+".png"),loadImg("/freshka/img/slosh/"+name+"-under.png"),loadImg("/freshka/img/slosh/"+name+"-masks.png")]).then(function(ims){
+      var pic=ims[0],und=ims[1],msk=ims[2];
+      var c=make(SIZE,SIZE),g=c.getContext("2d");
+      g.drawImage(pic,0,0,SIZE,SIZE); var P=g.getImageData(0,0,SIZE,SIZE);
+      g.clearRect(0,0,SIZE,SIZE); g.drawImage(und,0,0,SIZE,SIZE); var U=g.getImageData(0,0,SIZE,SIZE);
+      g.clearRect(0,0,SIZE,SIZE); g.drawImage(msk,0,0,SIZE,SIZE); var M=g.getImageData(0,0,SIZE,SIZE);
+      var L=g.createImageData(SIZE,SIZE), B=g.createImageData(SIZE,SIZE), F=g.createImageData(SIZE,SIZE);
+      var cols=[], deepest=0, rooms=[];
+      for(var x=0;x<SIZE;x++){
+        var top=-1,bottom=-1,ceil=-1;
+        for(var y=0;y<SIZE;y++){
+          var i=(y*SIZE+x)*4, r=M.data[i]>127, gch=M.data[i+1]>127, b=M.data[i+2]/255;
+          if(ceil<0&&gch)ceil=y;
+          if(r){if(top<0)top=y;bottom=y}
+          if(r){for(var k=0;k<4;k++)L.data[i+k]=P.data[i+k]}
+          /* під жидиною: фон посудини поверх малюнка; інакше сам малюнок */
+          if(r&&U.data[i+3]>0){
+            var ua=U.data[i+3]/255, pa=P.data[i+3]/255, oa=ua+pa*(1-ua);
+            for(k=0;k<3;k++)B.data[i+k]=oa>0?(U.data[i+k]*ua+P.data[i+k]*pa*(1-ua))/oa:0;
+            B.data[i+3]=oa*255;
+          }else{for(k=0;k<4;k++)B.data[i+k]=P.data[i+k]}
+          if(b>0){for(k=0;k<3;k++)F.data[i+k]=P.data[i+k];F.data[i+3]=P.data[i+3]*b}
+        }
+        var room=top<0?0:clamp(top-(ceil<0?top:ceil),0,255);
+        if(top>=0){rooms.push(room);deepest=Math.max(deepest,bottom-top+1)}
+        cols.push({top:top,bottom:bottom+1,room:room});
+      }
+      rooms.sort(function(a,b){return a-b});
+      var full=rooms.length>0&&rooms[Math.floor(.25*(rooms.length-1))]<4;
+      if(full)cols.forEach(function(c){c.room=Math.min(c.room,10)});
+      function toCanvas(d){var c=make(SIZE,SIZE);c.getContext("2d").putImageData(d,0,0);return c}
+      var out={L:toCanvas(L),B:toCanvas(B),F:toCanvas(F),cols:cols,reach:deepest*REACH_SHARE,full:full,halfWidth:46,middle:128};
+      return out;
+    });
+  }
+  function draw(){
+    if(!layers)return;
+    var tilt=softly(liq.tilt+softly(wob.turn,MAX_WOB),MAX_TILT), slope=Math.tan(tilt), wave=softly(liq.wave,MAX_WAVE), roll=WAVE_ROLL*tilt;
+    ctx.clearRect(0,0,SIZE,SIZE);
+    ctx.drawImage(layers.B,0,0);
+    var cols=layers.cols, hw=layers.halfWidth, mid=layers.middle, reach=layers.reach;
+    for(var x=0;x<SIZE;x++){
+      var c=cols[x]; if(c.top<0)continue;
+      var depth=c.bottom-c.top; if(depth<1)continue;
+      var u=clamp((x+.5-mid)/hw,-1,1);
+      var rise=softly(slope*u*hw+wave*Math.sin(WAVE_SHAPE*u-roll),reach);
+      var fall=depth*(1-KEEPS); if(layers.full)fall=Math.min(fall,FULL_FALL);
+      rise=clamp(rise,-fall,c.room);
+      var nd=depth+rise;
+      ctx.drawImage(layers.L,x,c.top,1,depth,x,c.bottom-nd,1,nd);
+    }
+    ctx.drawImage(layers.F,0,0);
+  }
+  var held=false, pos={x:0,y:0}, home={x:0,y:0}, vel={x:0,y:0}, grab={x:0,y:0}, lastT=-1, pointer={x:0,y:0}, idle=0, sleeping=true;
+  function cssSize(){return cv.getBoundingClientRect().width||260}
+  function apply(){
+    var st=softly(wob.stretch,MAX_STR), turn=softly(wob.turn,MAX_WOB);
+    cv.style.transform="translate("+pos.x+"px,"+pos.y+"px) rotate("+turn+"rad) scale("+(1/(1+st))+","+(1+st)+") skewX("+(-liq.lean)+"rad)";
+  }
+  function frame(now){
+    var sec=lastT<0?0:(now-lastT)/1000; lastT=now;
+    if(held){pos.x=pointer.x-grab.x;pos.y=pointer.y-grab.y;vel.x=vel.y=0}
+    else{
+      /* пружина додому */
+      var k=60,d=9,dt=Math.min(sec,.033);
+      vel.x+=(-k*(pos.x-home.x)-d*vel.x)*dt; vel.y+=(-k*(pos.y-home.y)-d*vel.y)*dt;
+      pos.x+=vel.x*dt; pos.y+=vel.y*dt;
+      if(Math.abs(pos.x)<.05&&Math.abs(pos.y)<.05&&Math.abs(vel.x)<.5&&Math.abs(vel.y)<.5){pos.x=pos.y=0;vel.x=vel.y=0}
+    }
+    var per=SIZE/cssSize(), a=handStep(pos.x*per,pos.y*per,sec);
+    wobbleStep(a.ax,a.ay,sec); liquidStep(a.ax,a.ay,sec);
+    draw(); apply();
+    var still=!held&&pos.x===0&&pos.y===0&&Math.abs(liq.tilt)<1e-3&&Math.abs(liq.tiltV)<1e-3&&Math.abs(liq.wave)<.02&&Math.abs(wob.turn)<1e-3&&Math.abs(wob.turnV)<1e-3;
+    if(still){idle+=sec}else idle=0;
+    if(idle>1.5){sleeping=true;lastT=-1;liq={tilt:0,tiltV:0,wave:0,waveV:0,lean:0,leanV:0};wob={turn:0,turnV:0,stretch:0,stretchV:0};draw();apply();return}
+    requestAnimationFrame(frame);
+  }
+  function wake(){if(sleeping){sleeping=false;idle=0;lastT=-1;hand.samples=[];requestAnimationFrame(frame)}}
+  function setLevel(name){
+    prepare(name).then(function(l){layers=l;draw()});
+  }
+  setLevel("milk-bottle");
+  $$(".levels .chip").forEach(function(b){b.addEventListener("click",function(){
+    $$(".levels .chip").forEach(function(x){x.classList.toggle("on",x===b)}); setLevel(b.dataset.level); wake();
+  })});
+  cv.addEventListener("pointerdown",function(e){
+    held=true; cv.classList.add("held"); try{cv.setPointerCapture(e.pointerId)}catch(_){}
+    pointer.x=e.clientX; pointer.y=e.clientY; grab.x=pointer.x-pos.x; grab.y=pointer.y-pos.y; wake(); e.preventDefault();
+  });
+  cv.addEventListener("pointermove",function(e){if(held){pointer.x=e.clientX;pointer.y=e.clientY}});
+  function drop(){held=false;cv.classList.remove("held")}
+  cv.addEventListener("pointerup",drop); cv.addEventListener("pointercancel",drop); cv.addEventListener("lostpointercapture",drop);
+  /* показати саме, коли допрокрутили */
+  var shown=false;
+  if(!reduce&&"IntersectionObserver" in window){
+    new IntersectionObserver(function(es,o){if(es[0].isIntersecting&&!shown){shown=true;o.disconnect();
+      prepare("milk-bottle").then(function(){ if(held)return; wake(); var t0=performance.now();
+        (function tick(){var t=(performance.now()-t0)/1000; if(held||t>1.4)return;
+          var x=t<.35?(t/.35)*70:t<.6?70:t<.95?70-((t-.6)/.35)*70:0;
+          pos.x=x;pos.y=t<.6?-Math.sin(t/.6*Math.PI)*18:0; vel.x=vel.y=0; held=false; requestAnimationFrame(tick)})();
+      });
+    }},{threshold:.6}).observe(stage);
+  }
+
+  /* ---- псується на очах ---- */
+  var day=$("#day"), chip=$("#dayChip"), face=$("#face"), touched=false;
+  var faces=["good","soon","gone"], chipCls=["chip fresh","chip soon","chip gone"];
+  function stageOf(d){return d<4?0:d<8?1:2}
+  function setDay(d){
+    var s=stageOf(d);
+    $$(".st").forEach(function(el){$$("img[data-s],img:not(.face)",el).forEach(function(im,i){if(!im.classList.contains("face"))im.classList.toggle("on",i===s)})});
+    face.src="/freshka/img/ui-fresh-face-"+faces[s]+".webp";
+    chip.className=chipCls[s];
+    chip.textContent=d===0?"сьогодні купили":d<4?"ще "+(7-d)+" дн"+(7-d===1?"ь":7-d<5?"і":"ів"):d<7?"скоро зіпсується":d<8?"завтра":"зіпсувалося";
+  }
+  day.addEventListener("input",function(){touched=true;setDay(+day.value)});
+  setDay(0);
+  if(!reduce&&"IntersectionObserver" in window){
+    var timer=null;
+    new IntersectionObserver(function(es){
+      if(es[0].isIntersecting&&!touched&&!timer){timer=setInterval(function(){if(touched){clearInterval(timer);return}var v=(+day.value+1)%10;day.value=v;setDay(v)},900)}
+      else if(!es[0].isIntersecting&&timer){clearInterval(timer);timer=null}
+    },{threshold:.5}).observe($("#apple"));
+  }
+
+  /* ---- конструктор ---- */
+  var pool=["egg","kefir","cheddar","butter","tomato-pile-three","cucumber","olives","salami","lemon","milk-bottle","apple","broccoli","yoghurt","strawberry","carrot","sauce","grapes"].map(function(n){return "/freshka/img/lib/"+n+".webp"});
+  var frozen=["pelmeni","varenyky","frankfurters"].map(function(n){return "/freshka/img/lib/"+n+".webp"});
+  var cab=$("#cab"), frzTop=$("#frzTop"), frzBot=$("#frzBot"), fr=$("#fr"), heights=[300,360,250], hi=0, shelves=0;
+  function shelf(srcs){var d=document.createElement("div");d.className="shelf";srcs.forEach(function(s){var im=new Image();im.src=s;im.alt="";d.appendChild(im)});return d}
+  function fill(box,list){box.innerHTML="";box.appendChild(shelf(list))}
+  fill(frzTop,frozen); fill(frzBot,frozen);
+  function addShelf(){if(shelves>=6)return;var n=shelves++;cab.appendChild(shelf(pool.slice((n*3)%pool.length,(n*3)%pool.length+3)));}
+  for(var i=0;i<3;i++)addShelf();
+  $("#addShelf").addEventListener("click",addShelf);
+  $("#delShelf").addEventListener("click",function(){if(shelves<=1)return;var last=cab.lastElementChild;shelves--;last.classList.add("gone");setTimeout(function(){last.remove()},reduce?0:280)});
+  $("#height").addEventListener("click",function(){hi=(hi+1)%heights.length;cab.style.setProperty("--h",heights[hi]+"px")});
+  $$(".seg [data-lay]").forEach(function(b){b.addEventListener("click",function(){
+    $$(".seg [data-lay]").forEach(function(x){x.classList.toggle("on",x===b)});
+    frzTop.classList.toggle("hidden",b.dataset.lay!=="top"); frzBot.classList.toggle("hidden",b.dataset.lay!=="bottom");
+  })});
+  $$(".swatches button").forEach(function(b){b.addEventListener("click",function(){
+    $$(".swatches button").forEach(function(x){x.classList.toggle("on",x===b)}); fr.style.setProperty("--fc",b.dataset.c);
+  })});
+
+  /* ---- зʼїли чи викинули ---- */
+  var item=$("#item"), ok=38, no=5, okN=$("#okN"), noN=$("#noN"), okBar=$("#okBar"), noBar=$("#noBar"), busy=false;
+  var foods=["croissant","yoghurt","banana","cheddar","salami","pie","apple","kefir"], fi=0;
+  $$("[data-take]").forEach(function(b){b.addEventListener("click",function(){
+    if(busy)return; busy=true; var t=b.dataset.take;
+    item.classList.add(t);
+    if(t==="ate"){ok++;okN.textContent=ok;okBar.style.flex=ok}
+    if(t==="bin"){no++;noN.textContent=no;noBar.style.flex=no}
+    setTimeout(function(){
+      fi=(fi+1)%foods.length; item.src="/freshka/img/lib/"+foods[fi]+".webp";
+      item.className="item fresh"; void item.offsetWidth; item.className="item"; busy=false;
+    },reduce?0:520);
   })});
 })();
 </script>

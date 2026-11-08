@@ -3,188 +3,259 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<meta name="description" content="Які дані збирає Фрешка, навіщо і як їх видалити">
+<meta name="description" content="Які дані збирає Фрешка, навіщо, кому вони передаються і як їх видалити">
 <link rel="icon" href="/img/freshka-icon.png">
-<title>Політика конфіденційності, Privacy Policy</title>
+<title>Конфіденційність Фрешки</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Comfortaa:wght@700&family=Lora:wght@600&family=Nunito:wght@600;800&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Comfortaa:wght@700&family=Lora:wght@700&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="/freshka/_shared.css">
-<style>
-.legal{padding:24px 0 8px;max-width:760px}
-.legal h1{margin-bottom:10px}
-.legal h2{font-size:clamp(22px,2.6vw,28px);margin:40px 0 12px}
-.legal p,.legal li{margin:0 0 14px}
-.legal ul,.legal ol{padding-left:22px;margin:0 0 14px}
-.legal .muted{color:var(--ink-soft);font-size:16px}
-.legal hr{border:0;border-top:1.5px solid var(--line);margin:56px 0 8px}
-.legal .tw{overflow-x:auto;margin:0 0 14px}
-.legal table{border-collapse:collapse;width:100%;font-size:16px}
-.legal td,.legal th{border-top:1.5px solid var(--sunk);padding:10px 8px;text-align:left;vertical-align:top}
-.jump{display:flex;flex-wrap:wrap;gap:12px;margin:0 0 8px}
-</style>
+<link rel="stylesheet" href="/freshka/_doc.css">
 </head>
 <body>
 <div class="wrap">
   <nav class="nav">
     <a class="brand" href="/freshka/"><img src="/img/freshka-icon.png" alt="">Фрешка</a>
-    <a class="home" href="/">Глупоня</a>
+    <div class="links">
+      <a href="/freshka/support/">Підтримка</a>
+      <a href="/">Глупоня</a>
+    </div>
   </nav>
-  <main class="legal">
-    <div class="jump"><a class="tag" href="#en">English</a><a class="tag" href="/freshka/terms/">Умови</a></div>
 
-<h1>Політика конфіденційності</h1>
-<p class="muted">Фрешка (Freshka), iOS та Android. Чинна з 5 листопада 2026 року.</p>
+  <header class="hero">
+    <div class="text">
+      <span class="tag plum">Політика конфіденційності</span>
+      <h1>Що Фрешка знає про тебе</h1>
+      <p class="lead">Коротко: холодильник живе на твоєму телефоні. На сервер потрапляє лише те, що потрібно для акаунта, спільного холодильника й вечірнього нагадування. Ми нічого не продаємо, не показуємо рекламу й не ставимо трекерів.</p>
+      <p class="soft date">Фрешка (Freshka), iOS та Android. Чинна з 5 листопада 2026 року.</p>
+      <div class="actions"><a class="btn paper" href="#en">In English</a><a class="btn paper" href="/freshka/terms/">Умови</a></div>
+    </div>
+    <img class="mascot" src="/freshka/img/mascot-thinks.png" alt="" width="243" height="292">
+  </header>
 
-<p>Ця політика пояснює, які дані збирає застосунок «Фрешка», навіщо, кому вони передаються і як їх видалити. Питання та запити щодо даних надсилай на <a href="mailto:hello@gluponya.tv">hello@gluponya.tv</a>.</p>
+  <nav class="toc card">
+    <b>Зміст</b>
+    <ol>
+      <li><a href="#local">Без акаунта</a></li>
+      <li><a href="#account">З акаунтом</a></li>
+      <li><a href="#why">Навіщо і на якій підставі</a></li>
+      <li><a href="#photo">Фото, які читає ШІ</a></li>
+      <li><a href="#barcode">Пошук за штрихкодом</a></li>
+      <li><a href="#feedback">Відгуки</a></li>
+      <li><a href="#pay">Підписка</a></li>
+      <li><a href="#where">Кому передаються дані</a></li>
+      <li><a href="#delete">Як довго і як видалити</a></li>
+      <li><a href="#rights">Твої права</a></li>
+      <li><a href="#kids">Діти</a></li>
+      <li><a href="#changes">Зміни</a></li>
+    </ol>
+  </nav>
 
-<h2>Без акаунта</h2>
-<p>Застосунком можна користуватися без входу. Тоді все, що ти додаєш (холодильники, продукти, дати, історія), зберігається лише на телефоні й нікуди не надсилається. Винятки описані нижче: пошук штрихкоду та фото, яке читає ШІ.</p>
+  <article class="doc">
+    <section>
+      <p>Ця політика пояснює, які дані збирає застосунок «Фрешка», навіщо, кому вони передаються і як їх видалити. Питання та запити щодо даних надсилай на <a href="mailto:hello@gluponya.tv">hello@gluponya.tv</a>.</p>
+    </section>
 
-<h2>З акаунтом</h2>
-<p>Якщо ти входиш (кодом на пошту або через Google на Android), ми зберігаємо на сервері:</p>
-<ul>
-<li>адресу пошти та, якщо входиш через Google, ідентифікатор акаунта Google;</li>
-<li>імʼя й аватар, які ти вказуєш у профілі;</li>
-<li>вміст холодильників: продукти, кількість, дати, місця на полицях, історію (зʼїли, викинули) і статистику;</li>
-<li>учасників спільних холодильників і коди запрошень;</li>
-<li>мову застосунку, часовий пояс і час вечірнього нагадування;</li>
-<li>токен для push-сповіщень;</li>
-<li>стан підписки та кількість використаних безкоштовних фото.</li>
-</ul>
-<p>Ці дані потрібні, щоб холодильник був на кількох телефонах, щоб ним можна було ділитися і щоб надходили нагадування про продукти, що псуються. Ми не продаємо дані, не показуємо рекламу й не використовуємо аналітику чи трекінг.</p>
+    <section id="local">
+      <h2>Без акаунта</h2>
+      <p>Застосунком можна користуватися без входу. Тоді все, що ти додаєш (холодильники, продукти, дати, історія), зберігається лише на телефоні й нікуди не надсилається. Винятки описані нижче: пошук штрихкоду та фото, яке читає ШІ.</p>
+    </section>
 
-<h2>Навіщо і на якій підставі</h2>
-<ul>
-<li>Акаунт, синхронізація, спільні холодильники, нагадування й підписка: це виконання нашої угоди з тобою.</li>
-<li>Фото, які читає ШІ: твоя згода. Відкликати її можна будь-коли: «Налаштування» → «Я» → «Надсилати фото ШІ».</li>
-<li>Відгуки й захист від зловживань: наш законний інтерес відповідати тобі й тримати застосунок справним.</li>
-</ul>
+    <section id="account">
+      <h2>З акаунтом</h2>
+      <p>Якщо ти входиш (кодом на пошту або через Google на Android), ми зберігаємо на сервері:</p>
+      <ul>
+        <li>адресу пошти та, якщо входиш через Google, ідентифікатор акаунта Google;</li>
+        <li>імʼя й аватар, які ти вказуєш у профілі;</li>
+        <li>вміст холодильників: продукти, кількість, дати, місця на полицях, історію (зʼїли, викинули) і статистику;</li>
+        <li>учасників спільних холодильників і коди запрошень;</li>
+        <li>мову застосунку, часовий пояс і час вечірнього нагадування;</li>
+        <li>токен для push-сповіщень;</li>
+        <li>стан підписки та кількість використаних безкоштовних фото.</li>
+      </ul>
+      <p>Ці дані потрібні, щоб холодильник був на кількох телефонах, щоб ним можна було ділитися і щоб надходили нагадування про продукти, що псуються. Ми не продаємо дані, не показуємо рекламу й не використовуємо аналітику чи трекінг.</p>
+    </section>
 
-<h2>Фото, які читає ШІ</h2>
-<p>Коли ти додаєш продукти з фото (продукт, пакет або чек), фотографуєш холодильник, щоб зібрати його будову, або фотографуєш упаковку для спільного каталогу, фото надсилається моделі Qwen (Alibaba Cloud) через сервіс OpenRouter. Перед першим таким фото застосунок питає твою згоду. Разом із фото не надсилаються ні імʼя, ні пошта, ні інші дані акаунта.</p>
-<ul>
-<li>Фото продуктів, чеків і холодильника ми не зберігаємо: після розпізнавання вони не лишаються на сервері.</li>
-<li>Фото упаковки в розділі «Каталог» зберігається разом зі сторінкою товару в спільному каталозі штрихкодів, який бачать усі користувачі. Не фотографуй там нічого особистого.</li>
-</ul>
+    <section id="why">
+      <h2>Навіщо і на якій підставі</h2>
+      <ul>
+        <li>Акаунт, синхронізація, спільні холодильники, нагадування й підписка: це виконання нашої угоди з тобою.</li>
+        <li>Фото, які читає ШІ: твоя згода. Відкликати її можна будь-коли: «Налаштування» → «Я» → «Надсилати фото ШІ».</li>
+        <li>Відгуки й захист від зловживань: наш законний інтерес відповідати тобі й тримати застосунок справним.</li>
+      </ul>
+    </section>
 
-<h2>Пошук за штрихкодом</h2>
-<p>Відсканований штрихкод надсилається на наш сервер. Якщо товару немає в каталозі, сервер шукає його в Open Food Facts і перекладає назву через DeepL. Передається лише штрихкод і назва товару.</p>
+    <section id="photo">
+      <h2>Фото, які читає ШІ</h2>
+      <p>Коли ти додаєш продукти з фото (продукт, пакет або чек), фотографуєш холодильник, щоб зібрати його будову, або фотографуєш упаковку для спільного каталогу, фото надсилається моделі Qwen (Alibaba Cloud) через сервіс OpenRouter. Перед першим таким фото застосунок питає твою згоду. Разом із фото не надсилаються ні імʼя, ні пошта, ні інші дані акаунта.</p>
+      <ul>
+        <li>Фото продуктів, чеків і холодильника ми не зберігаємо: після розпізнавання вони не лишаються на сервері.</li>
+        <li>Фото упаковки в розділі «Каталог» зберігається разом зі сторінкою товару в спільному каталозі штрихкодів, який бачать усі користувачі. Не фотографуй там нічого особистого.</li>
+      </ul>
+    </section>
 
-<h2>Відгуки</h2>
-<p>Якщо ти пишеш нам через «Написати нам», ми отримуємо текст, а також пошту для відповіді, знімок екрана й дані про телефон (модель, система, версія застосунку, мова), якщо ти їх додаєш. Повідомлення надходить розробнику в Telegram, а відповідь надсилається поштою Gmail.</p>
+    <section id="barcode">
+      <h2>Пошук за штрихкодом</h2>
+      <p>Відсканований штрихкод надсилається на наш сервер. Якщо товару немає в каталозі, сервер шукає його в Open Food Facts і перекладає назву через DeepL. Передається лише штрихкод і назва товару.</p>
+    </section>
 
-<h2>Підписка</h2>
-<p>Оплату приймає App Store або Google Play: дані картки ми не бачимо. Покупки перевіряє сервіс RevenueCat, який отримує ідентифікатор твого акаунта у Фрешці та інформацію про покупку від магазину.</p>
+    <section id="feedback">
+      <h2>Відгуки</h2>
+      <p>Якщо ти пишеш нам через «Написати нам», ми отримуємо текст, а також пошту для відповіді, знімок екрана й дані про телефон (модель, система, версія застосунку, мова), якщо ти їх додаєш. Повідомлення надходить розробнику в Telegram, а відповідь надсилається поштою.</p>
+    </section>
 
-<h2>Кому передаються дані</h2>
-<div class="tw"><table>
-<tr><th>Сервіс</th><th>Навіщо</th></tr>
-<tr><td>Supabase (сервери в Ірландії, ЄС)</td><td>база даних, вхід, зберігання файлів</td></tr>
-<tr><td>OpenRouter, Alibaba Cloud (Qwen)</td><td>розпізнавання фото</td></tr>
-<tr><td>Expo (Expo Push Service), Apple, Google (FCM)</td><td>push-сповіщення</td></tr>
-<tr><td>Google</td><td>вхід через Google (Android)</td></tr>
-<tr><td>Open Food Facts, DeepL</td><td>пошук і переклад товарів за штрихкодом</td></tr>
-<tr><td>RevenueCat, Apple, Google</td><td>оплата й перевірка підписки</td></tr>
-<tr><td>Google (Gmail)</td><td>листи з кодом входу й відповіді на відгуки</td></tr>
-<tr><td>Telegram</td><td>доставка відгуків розробнику</td></tr>
-</table></div>
-<p>Частина цих сервісів працює поза ЄС і Україною, зокрема у США та Китаї. Передавання потрібне, щоб виконати те, про що ти просиш, а фото надсилаються лише з твоєї згоди.</p>
+    <section id="pay">
+      <h2>Підписка</h2>
+      <p>Оплату приймає App Store або Google Play: дані картки ми не бачимо. Покупки перевіряє сервіс RevenueCat, який отримує ідентифікатор твого акаунта у Фрешці та інформацію про покупку від магазину.</p>
+    </section>
 
-<h2 id="delete">Як довго і як видалити</h2>
-<p>Дані зберігаються, доки існує твій акаунт. Видалити акаунт можна в застосунку: «Налаштування» → «Я» → «Видалити акаунт». Тоді профіль, холодильники, яких більше ніхто не використовує, токени сповіщень, відгуки й адреса в списку учасників «Каталогу» видаляються з сервера. Копії відгуків у Telegram і листування в Gmail видаляються на запит. Сторінки товарів, які ти додав(-ла) до спільного каталогу, лишаються без привʼязки до тебе. Дані на телефоні видаляються разом із застосунком. Також можна написати на <a href="mailto:hello@gluponya.tv">hello@gluponya.tv</a>, щоб отримати копію своїх даних або видалити їх.</p>
+    <section id="where">
+      <h2>Кому передаються дані</h2>
+      <table>
+        <tr><th>Сервіс</th><th>Навіщо</th></tr>
+        <tr><td>Supabase (сервери в Ірландії, ЄС)</td><td>база даних, вхід, зберігання файлів</td></tr>
+        <tr><td>OpenRouter, Alibaba Cloud (Qwen)</td><td>розпізнавання фото</td></tr>
+        <tr><td>Expo (Expo Push Service), Apple, Google (FCM)</td><td>push-сповіщення</td></tr>
+        <tr><td>Google</td><td>вхід через Google (Android)</td></tr>
+        <tr><td>Open Food Facts, DeepL</td><td>пошук і переклад товарів за штрихкодом</td></tr>
+        <tr><td>RevenueCat, Apple, Google</td><td>оплата й перевірка підписки</td></tr>
+        <tr><td>Google (Gmail), Spacemail</td><td>листи з кодом входу й відповіді на відгуки</td></tr>
+        <tr><td>Telegram</td><td>доставка відгуків розробнику</td></tr>
+      </table>
+      <p>Частина цих сервісів працює поза ЄС і Україною, зокрема у США та Китаї. Передавання потрібне, щоб виконати те, про що ти просиш, а фото надсилаються лише з твоєї згоди.</p>
+    </section>
 
-<p>Відгуки без акаунта зберігаються, доки потрібні, щоб відповісти й виправити те, про що в них ідеться. Щоб видалити їх раніше, напиши на цю ж пошту.</p>
+    <section id="delete">
+      <h2>Як довго і як видалити</h2>
+      <p>Дані зберігаються, доки існує твій акаунт. Видалити акаунт можна в застосунку: «Налаштування» → «Я» → «Видалити акаунт». Тоді профіль, холодильники, яких більше ніхто не використовує, токени сповіщень, відгуки й адреса в списку учасників «Каталогу» видаляються з сервера. Копії відгуків у Telegram і листування поштою видаляються на запит. Сторінки товарів, які ти додав(-ла) до спільного каталогу, лишаються без привʼязки до тебе. Дані на телефоні видаляються разом із застосунком.</p>
+      <p>Також можна написати на <a href="mailto:hello@gluponya.tv">hello@gluponya.tv</a>, щоб отримати копію своїх даних або видалити їх. Відгуки без акаунта зберігаються, доки потрібні, щоб відповісти й виправити те, про що в них ідеться. Щоб видалити їх раніше, напиши на цю ж пошту.</p>
+    </section>
 
-<h2>Твої права</h2>
-<p>Ти можеш дізнатися, які дані ми маємо, отримати їх копію, виправити чи видалити їх, обмежити обробку або заперечити проти неї й відкликати згоду. Для цього напиши на <a href="mailto:hello@gluponya.tv">hello@gluponya.tv</a>. Поскаржитися можна Уповноваженому Верховної Ради України з прав людини або органу захисту даних у своїй країні ЄС.</p>
+    <section id="rights">
+      <h2>Твої права</h2>
+      <p>Ти можеш дізнатися, які дані ми маємо, отримати їх копію, виправити чи видалити їх, обмежити обробку або заперечити проти неї й відкликати згоду. Для цього напиши на <a href="mailto:hello@gluponya.tv">hello@gluponya.tv</a>. Поскаржитися можна Уповноваженому Верховної Ради України з прав людини або органу захисту даних у своїй країні ЄС.</p>
+    </section>
 
-<h2>Діти</h2>
-<p>Застосунок не призначений для дітей до 13 років, і ми свідомо не збираємо їхніх даних.</p>
+    <section id="kids">
+      <h2>Діти</h2>
+      <p>Застосунок не призначений для дітей до 13 років, і ми свідомо не збираємо їхніх даних.</p>
+    </section>
 
-<h2>Зміни</h2>
-<p>Якщо політика зміниться, нова версія зʼявиться на цій сторінці з новою датою.</p>
+    <section id="changes">
+      <h2>Зміни</h2>
+      <p>Якщо політика зміниться, нова версія зʼявиться на цій сторінці з новою датою.</p>
+    </section>
+  </article>
 
-<hr>
+  <div class="wave line lang-break"></div>
 
-<h1 id="en">Privacy Policy</h1>
-<p class="muted">Freshka (Фрешка), iOS and Android. Effective 5 November 2026.</p>
+  <article class="doc" id="en" lang="en">
+    <header class="doc-head">
+      <h1>Privacy Policy</h1>
+      <p class="soft date">Freshka (Фрешка), iOS and Android. Effective 5 November 2026.</p>
+    </header>
 
-<p>This policy explains what data the Freshka app collects, why, who it is shared with, and how to delete it. Questions and data requests: <a href="mailto:hello@gluponya.tv">hello@gluponya.tv</a>.</p>
+    <section>
+      <p>This policy explains what data the Freshka app collects, why, who it is shared with, and how to delete it. Questions and data requests: <a href="mailto:hello@gluponya.tv">hello@gluponya.tv</a>.</p>
+    </section>
 
-<h2>Without an account</h2>
-<p>You can use the app without signing in. Everything you add (fridges, food, dates, history) then stays on your phone and is not sent anywhere, except for the barcode lookup and AI-read photos described below.</p>
+    <section>
+      <h2>Without an account</h2>
+      <p>You can use the app without signing in. Everything you add (fridges, food, dates, history) then stays on your phone and is not sent anywhere, except for the barcode lookup and AI-read photos described below.</p>
+    </section>
 
-<h2>With an account</h2>
-<p>If you sign in (with an email code, or with Google on Android), we store on our server:</p>
-<ul>
-<li>your email address and, for Google sign-in, your Google account identifier;</li>
-<li>the name and avatar you set in your profile;</li>
-<li>the contents of your fridges: food, amounts, dates, places on shelves, history (eaten, thrown out) and statistics;</li>
-<li>the members of shared fridges and invite codes;</li>
-<li>your app language, time zone and evening reminder time;</li>
-<li>a push notification token;</li>
-<li>your subscription status and the number of free photos used.</li>
-</ul>
-<p>This data is needed to keep a fridge on several phones, to share it, and to remind you of food going off. We do not sell data, show ads, or use analytics or tracking.</p>
+    <section>
+      <h2>With an account</h2>
+      <p>If you sign in (with an email code, or with Google on Android), we store on our server:</p>
+      <ul>
+        <li>your email address and, for Google sign-in, your Google account identifier;</li>
+        <li>the name and avatar you set in your profile;</li>
+        <li>the contents of your fridges: food, amounts, dates, places on shelves, history (eaten, thrown out) and statistics;</li>
+        <li>the members of shared fridges and invite codes;</li>
+        <li>your app language, time zone and evening reminder time;</li>
+        <li>a push notification token;</li>
+        <li>your subscription status and the number of free photos used.</li>
+      </ul>
+      <p>This data is needed to keep a fridge on several phones, to share it, and to remind you of food going off. We do not sell data, show ads, or use analytics or tracking.</p>
+    </section>
 
-<h2>Why, and on what basis</h2>
-<ul>
-<li>The account, sync, shared fridges, reminders and the subscription: this is carrying out our agreement with you.</li>
-<li>Photos read by AI: your consent. You can withdraw it at any time: «Налаштування» → «Я» → «Надсилати фото ШІ» (Settings → Me → Send photos to AI).</li>
-<li>Feedback and protection against abuse: our legitimate interest in answering you and keeping the app working.</li>
-</ul>
+    <section>
+      <h2>Why, and on what basis</h2>
+      <ul>
+        <li>The account, sync, shared fridges, reminders and the subscription: this is carrying out our agreement with you.</li>
+        <li>Photos read by AI: your consent. You can withdraw it at any time: Settings → Me → “Send photos to AI” («Налаштування» → «Я» → «Надсилати фото ШІ»).</li>
+        <li>Feedback and protection against abuse: our legitimate interest in answering you and keeping the app working.</li>
+      </ul>
+    </section>
 
-<h2>Photos read by AI</h2>
-<p>When you add food from a photo (one item, a bag or a receipt), photograph your fridge to set up its layout, or photograph a pack for the shared catalogue, the photo is sent to the Qwen model (Alibaba Cloud) through OpenRouter. The app asks for your consent before the first such photo. Your name, email and other account data are not sent with it.</p>
-<ul>
-<li>Photos of food, receipts and fridges are not stored: they do not stay on the server once read.</li>
-<li>A pack photographed in «Каталог» (Catalogue) is stored with the product's page in the shared barcode catalogue, which every user sees. Do not photograph anything personal there.</li>
-</ul>
+    <section>
+      <h2>Photos read by AI</h2>
+      <p>When you add food from a photo (one item, a bag or a receipt), photograph your fridge to set up its layout, or photograph a pack for the shared catalogue, the photo is sent to the Qwen model (Alibaba Cloud) through OpenRouter. The app asks for your consent before the first such photo. Your name, email and other account data are not sent with it.</p>
+      <ul>
+        <li>Photos of food, receipts and fridges are not stored: they do not stay on the server once read.</li>
+        <li>A pack photographed in the Catalogue («Каталог») is stored with the product's page in the shared barcode catalogue, which every user sees. Do not photograph anything personal there.</li>
+      </ul>
+    </section>
 
-<h2>Barcode lookup</h2>
-<p>A scanned barcode is sent to our server. If the product is not in the catalogue, the server looks it up on Open Food Facts and translates its name with DeepL. Only the barcode and the product name are sent.</p>
+    <section>
+      <h2>Barcode lookup</h2>
+      <p>A scanned barcode is sent to our server. If the product is not in the catalogue, the server looks it up on Open Food Facts and translates its name with DeepL. Only the barcode and the product name are sent.</p>
+    </section>
 
-<h2>Feedback</h2>
-<p>If you write to us through «Написати нам» (Contact us), we receive the text, plus a reply email, a screenshot and phone details (model, system, app version, language) if you add them. The message reaches the developer in Telegram; the reply is sent through Gmail.</p>
+    <section>
+      <h2>Feedback</h2>
+      <p>If you write to us through “Contact us” («Написати нам»), we receive the text, plus a reply email, a screenshot and phone details (model, system, app version, language) if you add them. The message reaches the developer in Telegram; the reply is sent by email.</p>
+    </section>
 
-<h2>Subscription</h2>
-<p>Payment is taken by the App Store or Google Play; we never see card details. Purchases are verified by RevenueCat, which receives your Freshka account identifier and the purchase information from the store.</p>
+    <section>
+      <h2>Subscription</h2>
+      <p>Payment is taken by the App Store or Google Play; we never see card details. Purchases are verified by RevenueCat, which receives your Freshka account identifier and the purchase information from the store.</p>
+    </section>
 
-<h2>Who data is shared with</h2>
-<div class="tw"><table>
-<tr><th>Service</th><th>Purpose</th></tr>
-<tr><td>Supabase (servers in Ireland, EU)</td><td>database, sign-in, file storage</td></tr>
-<tr><td>OpenRouter, Alibaba Cloud (Qwen)</td><td>reading photos</td></tr>
-<tr><td>Expo (Expo Push Service), Apple, Google (FCM)</td><td>push notifications</td></tr>
-<tr><td>Google</td><td>Google sign-in (Android)</td></tr>
-<tr><td>Open Food Facts, DeepL</td><td>barcode lookup and translation</td></tr>
-<tr><td>RevenueCat, Apple, Google</td><td>payment and subscription checks</td></tr>
-<tr><td>Google (Gmail)</td><td>sign-in code emails and replies to feedback</td></tr>
-<tr><td>Telegram</td><td>delivering feedback to the developer</td></tr>
-</table></div>
-<p>Some of these services work outside the EU and Ukraine, including in the USA and China. The transfer is needed to do what you ask for, and photos are sent only with your consent.</p>
+    <section>
+      <h2>Who data is shared with</h2>
+      <table>
+        <tr><th>Service</th><th>Purpose</th></tr>
+        <tr><td>Supabase (servers in Ireland, EU)</td><td>database, sign-in, file storage</td></tr>
+        <tr><td>OpenRouter, Alibaba Cloud (Qwen)</td><td>reading photos</td></tr>
+        <tr><td>Expo (Expo Push Service), Apple, Google (FCM)</td><td>push notifications</td></tr>
+        <tr><td>Google</td><td>Google sign-in (Android)</td></tr>
+        <tr><td>Open Food Facts, DeepL</td><td>barcode lookup and translation</td></tr>
+        <tr><td>RevenueCat, Apple, Google</td><td>payment and subscription checks</td></tr>
+        <tr><td>Google (Gmail), Spacemail</td><td>sign-in code emails and replies to feedback</td></tr>
+        <tr><td>Telegram</td><td>delivering feedback to the developer</td></tr>
+      </table>
+      <p>Some of these services work outside the EU and Ukraine, including in the USA and China. The transfer is needed to do what you ask for, and photos are sent only with your consent.</p>
+    </section>
 
-<h2 id="delete-en">Retention and deletion</h2>
-<p>Data is kept while your account exists. You can delete your account in the app: «Налаштування» → «Я» → «Видалити акаунт» (Settings → Me → Delete account). Your profile, fridges no one else uses, notification tokens, feedback and your address on the list of «Каталог» (Catalogue) members are then deleted from the server. Copies of feedback in Telegram and correspondence in Gmail are deleted on request. Product pages you added to the shared catalogue stay, no longer linked to you. Data on your phone is removed with the app. You can also write to <a href="mailto:hello@gluponya.tv">hello@gluponya.tv</a> for a copy of your data or to have it deleted.</p>
+    <section>
+      <h2>Retention and deletion</h2>
+      <p>Data is kept while your account exists. You can delete your account in the app: Settings → Me → “Delete account” («Налаштування» → «Я» → «Видалити акаунт»). Your profile, fridges no one else uses, notification tokens, feedback and your address on the list of Catalogue members are then deleted from the server. Copies of feedback in Telegram and email correspondence are deleted on request. Product pages you added to the shared catalogue stay, no longer linked to you. Data on your phone is removed with the app.</p>
+      <p>You can also write to <a href="mailto:hello@gluponya.tv">hello@gluponya.tv</a> for a copy of your data or to have it deleted. Feedback sent without an account is kept for as long as it is needed to reply and to fix what it is about. To have it deleted sooner, write to the same address.</p>
+    </section>
 
-<p>Feedback sent without an account is kept for as long as it is needed to reply and to fix what it is about. To have it deleted sooner, write to the same address.</p>
+    <section>
+      <h2>Your rights</h2>
+      <p>You can find out what data we hold, get a copy, correct or delete it, restrict or object to its processing, and withdraw consent. To do so, write to <a href="mailto:hello@gluponya.tv">hello@gluponya.tv</a>. You can complain to the Ukrainian Parliament Commissioner for Human Rights or to the data protection authority in your EU country.</p>
+    </section>
 
-<h2>Your rights</h2>
-<p>You can find out what data we hold, get a copy, correct or delete it, restrict or object to its processing, and withdraw consent. To do so, write to <a href="mailto:hello@gluponya.tv">hello@gluponya.tv</a>. You can complain to the Ukrainian Parliament Commissioner for Human Rights or to the data protection authority in your EU country.</p>
+    <section>
+      <h2>Children</h2>
+      <p>The app is not meant for children under 13, and we do not knowingly collect their data.</p>
+    </section>
 
-<h2>Children</h2>
-<p>The app is not meant for children under 13, and we do not knowingly collect their data.</p>
+    <section>
+      <h2>Changes</h2>
+      <p>If this policy changes, the new version will appear on this page with a new date.</p>
+    </section>
+  </article>
 
-<h2>Changes</h2>
-<p>If this policy changes, the new version will appear on this page with a new date.</p>
-  </main>
   <footer class="foot">
+    <a class="brand" href="/"><img src="/img/freshka-icon.png" alt="">Фрешка</a>
     <div class="row">
       <a href="/">Глупоня</a>
-      <a href="/freshka/">Фрешка</a>
+      <a href="/freshka/">Про Фрешку</a>
       <a href="/freshka/support/">Підтримка</a>
-      <a href="/freshka/privacy/">Конфіденційність</a>
       <a href="/freshka/terms/">Умови</a>
       <a href="mailto:hello@gluponya.tv">hello@gluponya.tv</a>
     </div>

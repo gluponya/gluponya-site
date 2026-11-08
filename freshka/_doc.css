@@ -1,0 +1,28 @@
+/* Документи Фрешки: політика, умови */
+.hero{display:grid;gap:24px;padding:28px 0 40px;align-items:center}
+@media(min-width:800px){.hero{grid-template-columns:1fr 240px;gap:48px;padding:40px 0 48px}}
+.hero .text{display:grid;gap:18px;justify-items:start}
+.hero .mascot{width:min(200px,50vw);margin:0 auto}
+.hero .date{font-size:15px}
+.toc{display:grid;gap:12px;padding:22px 26px;margin-bottom:32px;max-width:760px}
+.toc b{font-weight:700}
+.toc ol{margin:0;padding-left:22px;columns:1;column-gap:32px;font-size:16px;line-height:1.5}
+@media(min-width:720px){.toc ol{columns:2}}
+.toc a{text-decoration:none;font-weight:600;color:var(--ink)}
+.toc a:hover{text-decoration:underline}
+.doc{display:grid;gap:14px;max-width:760px}
+.doc section{background:var(--card);border:1.5px solid var(--line);border-radius:var(--r-lg);box-shadow:var(--shadow);padding:26px 26px 28px;display:grid;gap:12px;scroll-margin-top:16px}
+@media(min-width:720px){.doc section{padding:32px 36px}}
+.doc h2{font-size:clamp(22px,2.4vw,27px)}
+.doc p,.doc li{font-size:17px;line-height:1.55}
+.doc ul{margin:0;padding-left:22px;display:grid;gap:8px}
+.doc li b{font-weight:700}
+.doc table{border-collapse:collapse;width:100%;font-size:15px;line-height:1.4}
+.doc th,.doc td{text-align:left;vertical-align:top;padding:9px 10px;border-bottom:1.5px solid var(--sunk)}
+.doc th{font-weight:700;color:var(--ink-soft);font-size:14px}
+.doc tr:last-child td{border-bottom:0}
+@media(max-width:560px){.doc table,.doc thead,.doc tbody,.doc tr,.doc th,.doc td{display:block}.doc tr{padding:10px 0;border-bottom:1.5px solid var(--sunk)}.doc th{display:none}.doc td{padding:2px 0;border:0}.doc td:first-child{font-weight:700}}
+.lang-break{margin:56px 0 40px}
+.doc-head{display:grid;gap:8px;margin-bottom:6px}
+.doc-head h1{font-size:clamp(30px,4vw,44px)}
+.hero .actions .btn{padding:12px 20px;font-size:15px}

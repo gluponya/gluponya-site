@@ -1,0 +1,105 @@
+<!doctype html>
+<html lang="uk">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="description" content="Фрешка показує холодильник як картинку: полиці, продукти на них і те, що скоро зіпсується">
+<link rel="icon" href="/img/freshka-icon.png">
+<title>Фрешка</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Comfortaa:wght@700&family=Lora:wght@600&family=Nunito:wght@600;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/freshka/_shared.css">
+<style>
+.hero{display:grid;gap:32px;padding:24px 0 56px;align-items:center}
+@media(min-width:860px){.hero{grid-template-columns:1.1fr .9fr;gap:48px;padding:40px 0 80px}}
+.hero .text{display:grid;gap:24px}
+.hero .pic{position:relative;display:flex;justify-content:center;padding-bottom:24px}
+.phone{width:min(280px,70vw);border:1.5px solid var(--line);border-radius:36px;padding:10px;background:var(--card);box-shadow:var(--shadow)}
+.phone img{border-radius:28px;border:1.5px solid var(--line)}
+.mascot{position:absolute;left:calc(50% + 30px);bottom:0;width:min(170px,36vw);transform:rotate(-4deg)}
+.soon{margin:0;font-size:16px}
+.grid{display:grid;gap:18px}
+@media(min-width:720px){.grid{grid-template-columns:1fr 1fr}}
+.grid .card{display:grid;gap:10px;align-content:start}
+.grid .card p{margin:0}
+.section{padding:40px 0}
+.section h2{margin-bottom:20px}
+.not{display:grid;gap:12px;margin:0;padding:0;list-style:none}
+.not li{padding:14px 18px;background:var(--sunk);border-radius:20px}
+.cta{display:grid;gap:18px;justify-items:start}
+.cta h2{margin:0}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <nav class="nav">
+    <a class="brand" href="/freshka/"><img src="/img/freshka-icon.png" alt="">Фрешка</a>
+    <a class="home" href="/">Глупоня</a>
+  </nav>
+
+  <header class="hero">
+    <div class="text">
+      <div><span class="tag">Додаток для iPhone і Android</span></div>
+      <h1>Твій холодильник як картинка</h1>
+      <p class="lead">Побач, що лежить у холодильнику, не відкриваючи дверцят. Фрешка малює полиці, продукти на них і те, що ось-ось зіпсується.</p>
+      <div class="actions">
+        <a class="btn amber" href="https://t.me/freshkapp_bot/fridge">Відкрити в Telegram</a>
+        <a class="btn paper" href="/freshka/support/">Підтримка</a>
+      </div>
+      <p class="soft soon">В App Store і Google Play скоро</p>
+    </div>
+    <div class="pic">
+      <div class="phone"><img src="/img/scr-freshka.jpg" alt="Екран Фрешки: відкритий холодильник з продуктами на полицях" width="540" height="1090"></div>
+      <img class="mascot" src="/img/freshka-joy.png" alt="" width="262" height="344">
+    </div>
+  </header>
+
+  <section class="section">
+    <h2>Чому не список</h2>
+    <p class="lead">Холодильник за зачиненими дверцятами працює як склад: усе, що стоїть не в першому ряду, перестає існувати. Контейнер зʼїжджає вглиб полиці, а згадують про нього за два тижні, за запахом. Памʼять на їжу зорова, тож Фрешка показує не список, а картинку: що стоїть позаду, що лежить одне на одному і що скоро зіпсується.</p>
+  </section>
+
+  <section class="section">
+    <h2>Як це працює</h2>
+    <div class="grid">
+      <div class="card"><h3>Свій холодильник</h3><p>Обери готовий і підлаштуй під свій: додай або прибери полиці, зміни їх висоту.</p></div>
+      <div class="card"><h3>Додавання за секунди</h3><p>Плиткою з каталогу, штрихкодом, фото або вручну. Додане лежить у «Не розкладено», поки ти не поставиш його на місце.</p></div>
+      <div class="card"><h3>Усе на своїх місцях</h3><p>Перетягни продукт на полицю, у дверцята чи шухляду, саме туди, де він стоїть насправді.</p></div>
+      <div class="card"><h3>Полиця згори</h3><p>Натисни на полицю, і вона відкриється зверху. Видно, що заховалося в задньому ряду.</p></div>
+      <div class="card"><h3>Свіжість на картинці</h3><p>Продукт світиться, тьмяніє або тягне запахом, і зрозуміло, що зʼїсти першим.</p></div>
+      <div class="card"><h3>Нагадування</h3><p>Увечері Фрешка пише, що ось-ось зіпсується, щоб ти встиг.</p></div>
+      <div class="card"><h3>Спільний холодильник</h3><p>Для пари, родини чи сусідів: видно, що чиє і що закінчилося.</p></div>
+      <div class="card"><h3>Підсумки</h3><p>За місяць: скільки врятовано, а скільки викинуто. І поради, як зберігати те, що викидаєш найчастіше.</p></div>
+    </div>
+  </section>
+
+  <section class="section">
+    <h2>Чого Фрешка не робить</h2>
+    <ul class="not">
+      <li>Не рахує калорії і не складає меню на тиждень.</li>
+      <li>Не вимагає точності. Зʼїв половину й не відмітив, нічого страшного.</li>
+      <li>Не вимагає акаунта. Працює без інтернету, вхід потрібен лише для спільного холодильника й підписки.</li>
+    </ul>
+  </section>
+
+  <section class="section">
+    <div class="card cta">
+      <h2>Спробуй уже зараз</h2>
+      <p class="lead">Поки Фрешка їде в App Store і Google Play, її можна відкрити в Telegram.</p>
+      <div class="actions">
+        <a class="btn amber" href="https://t.me/freshkapp_bot/fridge">Відкрити в Telegram</a>
+      </div>
+    </div>
+  </section>
+
+  <footer class="foot">
+    <div class="row">
+      <a href="/">Глупоня</a>
+      <a href="/freshka/support/">Підтримка</a>
+      <a href="mailto:hello@gluponya.tv">hello@gluponya.tv</a>
+    </div>
+  </footer>
+</div>
+</body>
+</html>

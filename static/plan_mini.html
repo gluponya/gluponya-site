@@ -1,0 +1,245 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<script src="/st/mock_hub.js"></script>
+<title>План на стрим (компактный)</title>
+<link rel="stylesheet" href="/static/hub.css">
+<style>
+  /* Компактный план на стрим (раскладка 22.10, 23.10 — в ширину камеры). OBS: Браузер, URL http://127.0.0.1:8765/static/plan_mini.html,
+     ширина источника = ширине камеры (сейчас 577), высота 600, правый верхний угол. ?w=N — другая ширина карточки (300–800),
+     источник в OBS тогда той же ширины. Обычно видно три строки: заголовок, сегменты прогресса и «сейчас: …».
+     Список целиком раскрывается поверх чата на несколько секунд: когда пункт закрыли, добавили новый или кто-то написал !план.
+     Данные — тот же static/today.json, что у большой плашки. ?preview — шахматный фон и тест, ?open — всегда раскрыт.
+     29.10: если раскрытый список не достаёт до сообщений чата под ним, он так и стоит раскрытым. Где верх сообщений,
+     чат сообщает Глупостанции (/hub/overlay/chat_top). Раскладка в OBS по умолчанию: план y=23 в масштабе 535/577,
+     чат y=244 в масштабе 1; поменяли — ?py=23&ps=0.927&cy=244&cs=1. */
+  html, body { margin: 0; height: 100%; overflow: hidden; background: transparent; }
+  body.preview { background: repeating-conic-gradient(#241020 0 25%, #2c1428 0 50%) 0 0/40px 40px; }
+  #fit { position: absolute; left: 0; top: 0; width: 577px; transform-origin: 0 0; }
+  .card { width: 577px; background: var(--card); border: 3px solid transparent; border-radius: 20px; padding: 20px 24px 22px;
+          display: flex; flex-direction: column; gap: 10px; color: var(--cream);
+          transition: border-color .35s ease, box-shadow .35s ease; }
+  .card.hidden { display: none; }
+  .card.open { border-color: var(--pink); box-shadow: 0 16px 36px rgba(10,2,10,.6); }
+  .top { display: flex; justify-content: space-between; align-items: baseline; gap: 12px; }
+  .kick { font: 900 20px/1 var(--display); color: var(--pink); letter-spacing: .06em; text-transform: uppercase; }
+  .cnt { font: 900 22px/1 var(--display); color: var(--mint); font-variant-numeric: tabular-nums; }
+  .cnt.bump { animation: bump .6s cubic-bezier(.2,1.6,.4,1); }
+  @keyframes bump { 35% { transform: scale(1.4) rotate(-6deg); } }
+  .sub { font: 900 26px/1.15 var(--body); }
+  .sub:empty { display: none; }
+  .seg { display: flex; gap: 6px; }
+  .seg span { flex: 1 1 0; height: 6px; border-radius: 999px; background: color-mix(in srgb, var(--line) 80%, transparent); transition: background .4s; }
+  .seg span.d { background: var(--mint); }
+  .seg span.c { background: var(--pink); }
+  .now { display: flex; align-items: center; gap: 10px; font: 800 21px/1.25 var(--body); color: var(--muted); }
+  .now i { width: 10px; height: 10px; border-radius: 50%; background: var(--pink); flex: none; }
+  .now b { color: var(--cream); font-weight: 800; }
+  .now.all i { background: var(--mint); }
+  /* раскрытый список */
+  ul { list-style: none; margin: 4px 0 0; padding: 0; display: none; flex-direction: column; gap: 6px; }
+  .card.open ul { display: flex; animation: drop .45s cubic-bezier(.2,1.2,.4,1) both; }
+  .card.open .now { display: none; }
+  @keyframes drop { from { opacity: 0; transform: translateY(-10px); } }
+  li { display: flex; align-items: center; gap: 12px; font: 800 21px/1.25 var(--body); color: var(--cream);
+       padding: 5px 10px; margin: 0 -10px; border-radius: 12px; }
+  .box { width: 28px; height: 28px; border-radius: 8px; flex: none; box-sizing: border-box; display: grid; place-items: center;
+         border: 3px solid color-mix(in srgb, var(--muted) 45%, transparent); }
+  .box svg { width: 18px; height: 18px; display: none; }
+  .box path { fill: none; stroke: var(--plum); stroke-width: 3.5; stroke-linecap: round; stroke-linejoin: round; }
+  li.done { color: var(--muted); }
+  li.done .tx { text-decoration: line-through; text-decoration-thickness: 2px; }
+  li.done .box { background: var(--mint); border: none; }
+  li.done .box svg { display: block; }
+  li.cur .box { border-color: var(--pink); }
+  li .tag { margin-left: auto; font: 900 15px/1 var(--display); letter-spacing: .04em; white-space: nowrap; }
+  li.cur .tag { color: var(--pink); }
+  li.fresh { background: color-mix(in srgb, var(--mint) 16%, transparent); color: var(--cream); font-weight: 900; }
+  li.fresh .tx { text-decoration: none; }
+  li.fresh .tag { color: var(--mint); }
+  li.later { opacity: .8; }
+  .tx { min-width: 0; overflow-wrap: anywhere; }
+  .tx b { color: var(--yellow); }
+  @media (prefers-reduced-motion: reduce) { *, *::before { animation: none !important; transition: none !important; } }
+  /* Скин «Терминал» (07.11): список как вывод программы, галочки [x] */
+  :root[data-skin="terminal"] .card { background-color: color-mix(in srgb, var(--card) 94%, transparent); }
+  :root[data-skin="terminal"] .card.open { box-shadow: 0 0 26px -4px var(--pink) !important; }
+  :root[data-skin="terminal"] .kick { text-shadow: 0 0 10px var(--pink); }
+  :root[data-skin="terminal"] .now i { border-radius: 0; animation: t-blink 1s steps(1) infinite; }
+  :root[data-skin="terminal"] li { border-radius: 2px; }
+  :root[data-skin="terminal"] .box { border-width: 2px; }
+  /* ===== Формы оверлея (07.11): карточка берёт общий набор из hub.css, здесь цвета текста и галочки ===== */
+  :root[data-skin="notebook"] li .tag, :root[data-skin="polaroid"] li .tag, :root[data-skin="vhs"] li .tag, :root[data-skin="receipt"] li .tag { padding: 3px 7px 2px; font-size: 13px; flex: none; }
+  :root[data-skin="polaroid"] li .tag { font-size: 15px; }
+  :root[data-skin="notebook"] .kick { color: var(--pen); } :root[data-skin="notebook"] .cnt { color: var(--ink); }
+  :root[data-skin="notebook"] li, :root[data-skin="notebook"] .now b, :root[data-skin="notebook"] .sub { color: var(--ink); }
+  :root[data-skin="notebook"] .now { color: var(--soft); } :root[data-skin="notebook"] .now i { background: var(--pen); }
+  :root[data-skin="notebook"] .tx b, :root[data-skin="notebook"] li.cur .tag { color: var(--pen); }
+  :root[data-skin="notebook"] li.done { color: #999; }
+  :root[data-skin="notebook"] .box { border: 2px solid var(--ink); } :root[data-skin="notebook"] li.cur .box { border-color: var(--pen); }
+  :root[data-skin="notebook"] li.done .box { background: var(--pen); } :root[data-skin="notebook"] .box path { stroke: #fff; }
+  :root[data-skin="notebook"] .seg span { background: var(--grid); } :root[data-skin="notebook"] .seg span.d { background: var(--pen); } :root[data-skin="notebook"] .seg span.c { background: var(--mark); }
+  :root[data-skin="notebook"] li.fresh { background: color-mix(in srgb, var(--mark) 55%, white); color: var(--ink); } :root[data-skin="notebook"] li.fresh .tag { color: var(--pen); }
+  :root[data-skin="notebook"] .card.open { box-shadow: 0 4px 0 color-mix(in srgb, var(--muted) 60%, transparent) !important; }
+  :root[data-skin="polaroid"] .kick { color: #fff; } :root[data-skin="polaroid"] .cnt { color: var(--pen); }
+  :root[data-skin="polaroid"] li, :root[data-skin="polaroid"] .now b, :root[data-skin="polaroid"] .sub { color: var(--ink); }
+  :root[data-skin="polaroid"] .now { color: var(--soft); } :root[data-skin="polaroid"] .now i { background: var(--pen); }
+  :root[data-skin="polaroid"] .tx b, :root[data-skin="polaroid"] li.cur .tag { color: var(--pen); }
+  :root[data-skin="polaroid"] li.done { color: #999; }
+  :root[data-skin="polaroid"] .box { border: 2px solid var(--ink); } :root[data-skin="polaroid"] li.cur .box { border-color: var(--pen); }
+  :root[data-skin="polaroid"] li.done .box { background: var(--pen); } :root[data-skin="polaroid"] .box path { stroke: #fff; }
+  :root[data-skin="polaroid"] .seg span { background: color-mix(in srgb, var(--muted) 50%, white); } :root[data-skin="polaroid"] .seg span.d { background: var(--pen); } :root[data-skin="polaroid"] .seg span.c { background: var(--mark); }
+  :root[data-skin="polaroid"] li.fresh { background: color-mix(in srgb, var(--pink) 28%, white); color: var(--ink); } :root[data-skin="polaroid"] li.fresh .tag { color: var(--pen); }
+  :root[data-skin="polaroid"] .card.open { box-shadow: 0 8px 22px rgba(0,0,0,.22) !important; }
+  :root[data-skin="vhs"] .kick { color: #fff; } :root[data-skin="vhs"] .cnt { color: var(--yellow); }
+  :root[data-skin="vhs"] .sub { text-transform: uppercase; letter-spacing: .04em; }
+  :root[data-skin="vhs"] .now i { border-radius: 0; background: var(--pink-hot); animation: t-blink 1s steps(1) infinite; }
+  :root[data-skin="vhs"] li { border-radius: 0; } :root[data-skin="vhs"] .box { border: 2px solid #fff; }
+  :root[data-skin="vhs"] li.done .box { background: #fff; } :root[data-skin="vhs"] li.cur .box { border-color: var(--yellow); }
+  :root[data-skin="vhs"] .card.open { box-shadow: none !important; }
+  :root[data-skin="receipt"] .kick, :root[data-skin="receipt"] .cnt, :root[data-skin="receipt"] li, :root[data-skin="receipt"] .now b, :root[data-skin="receipt"] .sub { color: var(--ink); }
+  :root[data-skin="receipt"] .now { color: var(--soft); } :root[data-skin="receipt"] .now i { border-radius: 0; background: var(--ink); }
+  :root[data-skin="receipt"] .tx b, :root[data-skin="receipt"] li.cur .tag { color: var(--pen); }
+  :root[data-skin="receipt"] li { border-radius: 0; border-bottom: 1px dotted #999; margin: 0; padding: 5px 0; } :root[data-skin="receipt"] li.done { color: #888; }
+  :root[data-skin="receipt"] .box { border: 2px solid var(--ink); } :root[data-skin="receipt"] li.cur .box { border-color: var(--pen); }
+  :root[data-skin="receipt"] li.done .box { background: var(--ink); } :root[data-skin="receipt"] .box path { stroke: #fff; }
+  :root[data-skin="receipt"] .seg span { background: #ddd; } :root[data-skin="receipt"] .seg span.d { background: var(--ink); } :root[data-skin="receipt"] .seg span.c { background: var(--pen); }
+  :root[data-skin="receipt"] li.fresh { background: color-mix(in srgb, var(--mark) 35%, white); color: var(--ink); } :root[data-skin="receipt"] li.fresh .tag { color: var(--ink); }
+  :root[data-skin="receipt"] .card.open { box-shadow: none !important; }
+</style>
+<script src="/static/theme.js"></script>
+</head>
+<body>
+<div id="fit">
+  <div class="card hidden" id="card">
+    <div class="top"><span class="kick" id="kick">План на стрим</span><span class="cnt" id="cnt"></span></div>
+    <div class="sub" id="sub"></div>
+    <div class="seg" id="seg"></div>
+    <div class="now" id="now"></div>
+    <ul id="list"></ul>
+  </div>
+</div>
+<script>
+(() => {
+  const P = new URLSearchParams(location.search);
+  const $ = id => document.getElementById(id);
+  const esc = s => String(s ?? '').replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
+  const fmt = s => esc(s).replace(/&lt;(\/?)b&gt;/g, '<$1b>');      // в пунктах можно только <b>…</b>
+  const CHECK = '<svg viewBox="0 0 24 24"><path d="M5 12l5 5 9-10"/></svg>';
+  const card = $('card');
+  // ширина карточки = ширине камеры: ?w=N (по умолчанию 577), источник в OBS той же ширины
+  const CW = Math.max(300, Math.min(800, +P.get('w') || 577));
+  card.style.width = CW + 'px'; $('fit').style.width = CW + 'px';
+  let last = '', prev = null, closeAt = 0, freshKey = '';
+  // раскладка в OBS: верх плана и чата на экране и их масштаб — чтобы понять, налезает ли раскрытый список на чат
+  const num = (k, d) => { const x = parseFloat(P.get(k)); return isFinite(x) ? x : d; };
+  const PY = num('py', 23), PS = num('ps', 535 / 577), CY = num('cy', 244), CS = num('cs', 1), GAP = 10;
+  let openH = 0, chatTop, roomy = false, roomyN = 0;
+
+  // высота раскрытой карточки: меряем копию, чтобы у настоящей не дёргались рамка и анимация
+  function measure() {
+    const m = card.cloneNode(true);
+    m.removeAttribute('id'); m.querySelectorAll('[id]').forEach(e => e.removeAttribute('id'));
+    m.classList.remove('hidden'); m.classList.add('open');
+    m.style.position = 'absolute'; m.style.left = '0'; m.style.top = '0'; m.style.visibility = 'hidden';
+    $('fit').appendChild(m); openH = m.offsetHeight; m.remove();
+  }
+  // помещается ли раскрытый список над сообщениями чата. chatTop: число — верх сообщений, null — чата нет на экране
+  // (помещается), undefined — Глупостанция не ответила (как раньше: раскрываемся только на несколько секунд)
+  function fits() {
+    if (chatTop === undefined) return false;
+    if (chatTop === null) return true;
+    return PY + openH * (innerWidth / CW) * PS + GAP <= CY + chatTop * CS;
+  }
+
+  function fit() { $('fit').style.transform = innerWidth > 0 ? `scale(${innerWidth / CW})` : 'none'; }
+
+  function open(sec, fresh) {
+    closeAt = Math.max(closeAt, Date.now() + sec * 1000);
+    if (fresh !== undefined) freshKey = fresh;
+    card.classList.add('open');
+  }
+
+  function render(d) {
+    fit();
+    const key = JSON.stringify(d); if (key === last) return; last = key;
+    const items = (d.items || []).filter(x => x && x.t);
+    const n = items.filter(x => x.done).length, cur = items.findIndex(x => !x.done);
+    card.classList.toggle('hidden', !items.length && !d.sub);
+    $('kick').textContent = d.title || 'План на стрим';
+    $('sub').innerHTML = fmt(d.sub || '');
+    const shown = items.length ? `${n}/${items.length}` : '';
+    if ($('cnt').textContent !== shown) {
+      $('cnt').textContent = shown;
+      if (prev) { const c = $('cnt'); c.classList.remove('bump'); void c.offsetWidth; c.classList.add('bump'); }
+    }
+    $('seg').innerHTML = items.map((x, i) => `<span class="${x.done ? 'd' : i === cur ? 'c' : ''}"></span>`).join('');
+    $('seg').style.display = items.length ? '' : 'none';
+    const now = $('now');
+    now.classList.toggle('all', items.length > 0 && cur < 0);
+    now.innerHTML = !items.length ? '' : cur < 0 ? '<i></i><b>всё сделали!</b>' : `<i></i><span>сейчас: <b>${fmt(items[cur].t)}</b></span>`;
+    now.style.display = items.length ? '' : 'none';
+
+    // что поменялось с прошлого раза — от этого зависит, раскрывать ли список
+    if (prev) {
+      const wasDone = new Set(prev.items.filter(x => x.done).map(x => x.t));
+      const was = new Set(prev.items.map(x => x.t));
+      const justDone = items.find(x => x.done && !wasDone.has(x.t));
+      if (justDone) open(9, justDone.t);
+      else if (items.some(x => !was.has(x.t))) open(6);
+      if (d.peek && d.peek !== prev.peek) open(10);
+    }
+    prev = { items: items.map(x => ({ t: x.t, done: !!x.done })), peek: d.peek };
+    drawList(items, cur);
+    measure();
+  }
+
+  function drawList(items, cur) {
+    $('list').innerHTML = items.map((x, i) => {
+      const fresh = x.done && x.t === freshKey;
+      const cls = x.done ? 'done' + (fresh ? ' fresh' : '') : i === cur ? 'cur' : 'later';
+      const tag = fresh ? 'ГОТОВО!' : i === cur ? 'ДЕЛАЕМ' : '';
+      return `<li class="${cls}"><span class="box">${CHECK}</span><span class="tx">${fmt(x.t)}</span>${tag ? `<span class="tag">${tag}</span>` : ''}</li>`;
+    }).join('');
+  }
+
+  setInterval(() => {
+    if (P.has('open')) return;
+    // место над чатом: сворачиваемся сразу, раскрываемся, когда место держится секунду (чат не мигает туда-сюда)
+    if (!fits()) { roomy = false; roomyN = 0; } else if (++roomyN >= 2) roomy = true;
+    if (freshKey && Date.now() > closeAt) {
+      freshKey = '';
+      if (prev) { const its = JSON.parse(last).items.filter(x => x && x.t); drawList(its, its.findIndex(x => !x.done)); }
+    }
+    card.classList.toggle('open', roomy || Date.now() <= closeAt);
+  }, 500);
+
+  async function loadChat() {
+    try {
+      const j = await (await fetch('/hub/overlay/chat_top?t=' + Date.now(), { cache: 'no-store', signal: T(4000) })).json();
+      chatTop = typeof j.top === 'number' ? j.top : j.top === null ? null : undefined;
+    } catch (e) { chatTop = undefined; }
+    setTimeout(loadChat, 700);
+  }
+
+  const T = ms => { if (window.AbortSignal && AbortSignal.timeout) return AbortSignal.timeout(ms);
+                    const c = new AbortController(); setTimeout(() => c.abort(), ms); return c.signal; };
+  async function load() {
+    try { render(await (await fetch('/static/today.json?t=' + Date.now(), { cache: 'no-store', signal: T(4000) })).json()); } catch (e) {}
+    setTimeout(load, 2000);
+  }
+  addEventListener('resize', () => { fit(); measure(); }); fit();
+  if (P.has('open')) card.classList.add('open');
+  if (P.has('preview')) {
+    document.body.classList.add('preview');
+    const demo = { title: 'План на стрим', sub: 'ИИ за 100$ собирает аптечку', items: [
+      { t: 'дизайн аптечки', done: true }, { t: 'экран со списком лекарств', done: true },
+      { t: 'напоминания о приёме', done: false }, { t: 'сосать жопу', done: false }, { t: 'не сосать жопу', done: false }] };
+    render(demo);
+    setTimeout(() => { const d2 = JSON.parse(JSON.stringify(demo)); d2.items[2].done = true; render(d2); }, 2500);
+  } else if (/^https?:$/.test(location.protocol)) { load(); loadChat(); }
+})();
+</script>
+</body>
+</html>

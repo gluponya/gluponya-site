@@ -1,0 +1,109 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<script src="/st/mock_hub.js"></script>
+<title>Кот на камере</title>
+<link rel="stylesheet" href="/static/hub.css">
+<style>
+  /* Кот на камере (вместо видео «кот на камере.webm»). OBS: Браузер, URL http://127.0.0.1:8765/static/cat.html, 300×450,
+     в сцене размер 150×225 там же, где стоял старый кот. Уши, щёчки, нос — розовые (--pink), глаза и колокольчик — жёлтые (--yellow),
+     ошейник — мятный (--mint): при «Сменить цвет оверлея» кот перекрашивается вместе со всем. ?preview — шахматный фон. */
+  html, body { margin: 0; width: 100%; height: 100%; overflow: hidden; background: transparent; }
+  body.preview { background: repeating-conic-gradient(#241020 0 25%, #2c1428 0 50%) 0 0/40px 40px; }
+  svg { width: 100%; height: 100%; display: block; overflow: visible; }
+  .fur { fill: #1A0A16; }
+  .pink { fill: var(--pink); transition: fill 1.4s; }
+  .eye { fill: var(--yellow); transition: fill 1.4s; }
+  .collar { fill: none; stroke: var(--mint); stroke-width: 5; stroke-linecap: round; transition: stroke 1.4s; }
+  .bell { fill: var(--yellow); stroke: #1A0A16; stroke-width: 1.2; transition: fill 1.4s; }
+  #tail { transform-origin: 86px 122px; animation: tail 3.2s ease-in-out infinite; }
+  @keyframes tail { 0%, 100% { transform: rotate(-4deg); } 50% { transform: rotate(9deg); } }
+  #eyes { transform-origin: 75px 52px; animation: blink 5s infinite; }
+  @keyframes blink { 0%, 92%, 100% { transform: scaleY(1); } 95% { transform: scaleY(.08); } }
+  #head { transform-origin: 75px 82px; animation: tilt 7s ease-in-out infinite; }
+  @keyframes tilt { 0%, 100% { transform: rotate(0); } 30% { transform: rotate(-4deg); } 60% { transform: rotate(3deg); } }
+  #bellg { transform-origin: 75px 86px; animation: ding 7s ease-in-out infinite; }
+  @keyframes ding { 0%, 100% { transform: rotate(0); } 32% { transform: rotate(14deg); } 62% { transform: rotate(-10deg); } }
+  /* поза «сидит на краю» (по умолчанию): кромка сиденья — линия y=140 из 225, то есть 62% высоты источника.
+     В OBS ставь кота так, чтобы эта линия легла на верхний край плашки/камеры: при размере 150×225 — Y = верх плашки − 140.
+     ?stand — старая поза (стоит, хвост сбоку). ?preview — показывает кромку пунктиром. */
+  .sit, .stand { display: none; }
+  body:not(.standing) .sit, body.standing .stand { display: inline; }
+  #legL { transform-origin: 68px 140px; animation: swingL 2.6s ease-in-out infinite; }
+  #legR { transform-origin: 82px 140px; animation: swingR 2.6s ease-in-out infinite; }
+  @keyframes swingL { 0%, 100% { transform: rotate(7deg); } 50% { transform: rotate(-5deg); } }
+  @keyframes swingR { 0%, 100% { transform: rotate(-5deg); } 50% { transform: rotate(7deg); } }
+  #tailS { transform-origin: 96px 138px; animation: tailS 3.4s ease-in-out infinite; }
+  @keyframes tailS { 0%, 100% { transform: rotate(-6deg); } 50% { transform: rotate(8deg); } }
+  #ledge { display: none; }
+  body.preview #ledge { display: inline; }
+  @media (prefers-reduced-motion: reduce) { * { animation: none !important; } }
+</style>
+<script src="/static/theme.js"></script>
+</head>
+<body>
+<svg viewBox="0 0 150 225" aria-label="кот">
+  <defs>
+    <filter id="glow" x="-30%" y="-30%" width="160%" height="160%">
+      <feDropShadow dx="0" dy="0" stdDeviation="2.2" style="flood-color: var(--pink); flood-opacity: .55" />
+    </filter>
+  </defs>
+  <g filter="url(#glow)">
+    <g class="stand">
+      <path id="tail" d="M86 122 C 104 132, 112 150, 108 170 C 105 185, 112 196, 120 196" fill="none" stroke="#1A0A16" stroke-width="9" stroke-linecap="round" />
+      <ellipse class="fur" cx="75" cy="112" rx="22" ry="30" />
+      <rect class="fur" x="61" y="124" width="10" height="28" rx="5" />
+      <rect class="fur" x="79" y="124" width="10" height="28" rx="5" />
+    </g>
+    <g class="sit">
+      <!-- хвост свисает с края и покачивается -->
+      <path id="tailS" d="M96 138 C 104 150, 100 166, 106 182 C 110 194, 104 204, 96 206" fill="none" stroke="#1A0A16" stroke-width="9" stroke-linecap="round" />
+      <!-- задние лапки торчат из-за края -->
+      <ellipse class="fur" cx="54" cy="146" rx="7" ry="8" />
+      <ellipse class="fur" cx="96" cy="146" rx="7" ry="8" />
+      <!-- попа на кромке: снизу ровно по линии сиденья -->
+      <path class="fur" d="M47 140 C 46 112, 58 86, 75 86 C 92 86, 104 112, 103 140 Z" />
+      <ellipse class="fur" cx="53" cy="133" rx="11" ry="9" />
+      <ellipse class="fur" cx="97" cy="133" rx="11" ry="9" />
+      <!-- передние лапки свешиваются и болтаются -->
+      <g id="legL"><rect class="fur" x="63" y="114" width="11" height="58" rx="5.5" />
+        <path d="M65.5 169 L65.5 172 M68.5 169.5 L68.5 173 M71.5 169 L71.5 172" stroke="#FFF8FB" stroke-opacity=".3" stroke-width=".9" stroke-linecap="round" /></g>
+      <g id="legR"><rect class="fur" x="76" y="114" width="11" height="58" rx="5.5" />
+        <path d="M78.5 169 L78.5 172 M81.5 169.5 L81.5 173 M84.5 169 L84.5 172" stroke="#FFF8FB" stroke-opacity=".3" stroke-width=".9" stroke-linecap="round" /></g>
+    </g>
+    <g id="head">
+      <path class="fur" d="M44 44 L46 7 L68 27 Z" />
+      <path class="fur" d="M106 44 L104 7 L82 27 Z" />
+      <path class="pink" d="M49 36 L50 16 L62 28 Z" />
+      <path class="pink" d="M101 36 L100 16 L88 28 Z" />
+      <ellipse class="fur" cx="75" cy="54" rx="34" ry="30" />
+      <g id="eyes">
+        <ellipse class="eye" cx="62" cy="51" rx="9.5" ry="10.5" />
+        <ellipse class="eye" cx="88" cy="51" rx="9.5" ry="10.5" />
+        <ellipse cx="62" cy="52" rx="3.2" ry="7.4" fill="#1A0A16" />
+        <ellipse cx="88" cy="52" rx="3.2" ry="7.4" fill="#1A0A16" />
+        <circle cx="64.5" cy="47" r="2.1" fill="#FFF8FB" />
+        <circle cx="90.5" cy="47" r="2.1" fill="#FFF8FB" />
+      </g>
+      <ellipse class="pink" cx="53" cy="65" rx="6.5" ry="3.6" opacity=".75" />
+      <ellipse class="pink" cx="97" cy="65" rx="6.5" ry="3.6" opacity=".75" />
+      <path class="pink" d="M71.5 61.5 L78.5 61.5 L75 65.5 Z" />
+      <path d="M75 65.5 Q 72 70, 68.5 68 M75 65.5 Q 78 70, 81.5 68" fill="none" stroke="#FFF8FB" stroke-opacity=".55" stroke-width="1.2" stroke-linecap="round" />
+      <path class="pink" d="M73 68.6 Q 75 74, 77 68.6 Z" />
+      <g stroke="#FFF8FB" stroke-opacity=".35" stroke-width=".9" stroke-linecap="round">
+        <path d="M60 64 L42 61" /><path d="M60 67 L43 68" /><path d="M90 64 L108 61" /><path d="M90 67 L107 68" />
+      </g>
+    </g>
+    <path class="collar" d="M55 80 Q 75 90, 95 80" />
+    <g id="bellg"><circle class="bell" cx="75" cy="89" r="5.2" /><circle cx="75" cy="91" r="1.2" fill="#1A0A16" /></g>
+  </g>
+  <line id="ledge" x1="0" y1="140" x2="150" y2="140" stroke="#78EEC4" stroke-width="1" stroke-dasharray="4 3" />
+</svg>
+<script>
+  const Q = new URLSearchParams(location.search);
+  if (Q.has('preview')) document.body.classList.add('preview');
+  if (Q.has('stand')) document.body.classList.add('standing');
+</script>
+</body>
+</html>

@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<meta name="description" content="Глупоня: студія з Чернігова. Оня придумує застосунки, Клодік пише код, усе в ефірі на Twitch">
+<meta name="description" content="Глупоня — студія з Чернігова. Оня придумує застосунки, Клодік пише код, і все це в ефірі на Twitch">
 <link rel="icon" href="/img/cat-black.png">
 <style>:root{padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}img{max-width:100%}[hidden]{display:none!important}</style>
 <title>Феномен Глупоня</title>
@@ -19,7 +19,7 @@
   --r-sm:10px; --r-md:18px; --r-lg:28px;
   --display:"Rubik","Nunito",system-ui,sans-serif;
   --body:"Nunito","Rubik",system-ui,sans-serif;
-  --gx:max(24px,env(safe-area-inset-left,0px)); --gxr:max(24px,env(safe-area-inset-right,0px));
+  --gx:max(clamp(24px,4vw,96px),env(safe-area-inset-left,0px)); --gxr:max(clamp(24px,4vw,96px),env(safe-area-inset-right,0px));
   color-scheme:dark;
 }
 *{box-sizing:border-box}
@@ -28,7 +28,7 @@ body{margin:0;background:var(--plum);color:var(--cream);font-family:var(--body);
 img{max-width:100%;display:block}
 a{color:var(--pink)}
 a:focus-visible,button:focus-visible{outline:3px solid var(--mint);outline-offset:3px}
-.wrap{width:100%;max-width:1320px;margin:0 auto;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+.wrap{width:100%;max-width:1920px;margin:0 auto;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
 @media(min-width:720px){.wrap{padding-left:var(--gx);padding-right:var(--gxr)}}
 
 body::after{content:"";position:fixed;inset:0;pointer-events:none;z-index:50;opacity:.07;background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='160' height='160'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 1 0 0 0 0 1 0 0 0 0 1 0 0 0 .9 0'/></filter><rect width='100%' height='100%' filter='url(%23n)'/></svg>");mix-blend-mode:soft-light}
@@ -36,8 +36,10 @@ body::after{content:"";position:fixed;inset:0;pointer-events:none;z-index:50;opa
 main,.foot,.nav{position:relative;z-index:1}
 
 .k{font-family:var(--display);font-weight:900;text-transform:uppercase;letter-spacing:.03em;font-size:clamp(13px,1.2vw,16px);color:var(--pink);margin:0}
-.giant{font-family:var(--display);font-weight:900;text-transform:uppercase;line-height:.88;font-size:clamp(44px,9.6vw,150px);margin:0;letter-spacing:-.01em;text-wrap:balance}
+.giant{font-family:var(--display);font-weight:900;text-transform:uppercase;line-height:.88;font-size:clamp(44px,min(9.6vw,10.5svh),150px);overflow-wrap:anywhere;margin:0;letter-spacing:-.01em;text-wrap:balance}
 .h2{font-family:var(--display);font-weight:900;text-transform:uppercase;line-height:.95;font-size:clamp(34px,6vw,92px);margin:0;text-wrap:balance}
+html[data-lang=ru] .giant{font-size:clamp(38px,min(8.4vw,10.5svh),140px)}
+html[data-lang=ru] .h2{font-size:clamp(30px,5.4vw,84px)}
 .h3{font-family:var(--body);font-weight:900;font-size:clamp(30px,4.4vw,64px);line-height:1.02;margin:0}
 .lead{font-size:clamp(18px,1.6vw,22px);line-height:1.45;margin:0;max-width:34em}
 .big-lead{font-family:var(--body);font-weight:800;font-size:clamp(26px,3.6vw,56px);line-height:1.28;margin:0;max-width:20em;text-wrap:balance}
@@ -72,17 +74,24 @@ main,.foot,.nav{position:relative;z-index:1}
 .nav nav a:hover{background:var(--surface)}
 .nav .btn{min-height:44px;padding:10px 18px;font-size:15px;box-shadow:none}
 @media(max-width:700px){.nav nav a:not(.btn){display:none}}
+.nav .lang{display:inline-flex;background:var(--chat);border:2px solid var(--line);border-radius:999px;padding:2px;margin-left:6px}
+.nav .lang button{appearance:none;border:0;background:transparent;color:var(--muted);font-family:var(--display);font-size:13px;letter-spacing:.04em;padding:7px 11px;border-radius:999px;cursor:pointer;transition:background .2s,color .2s}
+.nav .lang button[aria-pressed="true"]{background:var(--pink);color:var(--on-fill)}
 body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset-top,0px);z-index:30;background:var(--plum)}
 
-.hero{min-height:calc(100svh - 70px);display:grid;grid-template-rows:1fr auto;position:relative}
-.hero .mid{display:grid;grid-template-columns:minmax(0,1fr) auto;align-items:center;gap:40px;padding-block:40px}
+.hero{min-height:calc(100svh - 70px);display:grid;grid-template-rows:auto auto;align-content:center;gap:clamp(12px,2.5svh,28px);position:relative;padding-block:8px 60px}
+.hero .mid>*{min-width:0}
+.hero .mid{display:grid;grid-template-columns:minmax(0,1fr) auto;align-items:center;gap:0 40px;padding-block:0}
 .hero .mid .intro{display:grid;gap:22px;justify-items:start}
-.hero .me{width:min(320px,32vw);aspect-ratio:1;object-fit:cover;object-position:50% 30%;border-radius:var(--r-md);border:6px solid var(--cream);box-shadow:var(--shadow);rotate:3deg;animation:fade 1s ease both .6s}
+.intro>*{max-width:100%;min-width:0;box-sizing:border-box}
+.big-lead{overflow-wrap:anywhere}
+.hero .me{width:min(300px,30vw,30svh);aspect-ratio:1;object-fit:cover;object-position:50% 30%;border-radius:var(--r-md);border:6px solid var(--cream);box-shadow:var(--shadow);rotate:3deg;animation:fade 1s ease both .6s}
 @media(max-width:800px){.hero .mid{grid-template-columns:1fr;gap:24px}.hero .me{width:min(220px,55vw);justify-self:end;rotate:-3deg}}
 .hero .mid p{font-size:clamp(22px,2.6vw,38px);font-weight:800;margin:0;max-width:19em;line-height:1.32;text-wrap:pretty;animation:fade 1.2s ease both .3s}
 .hero .mid p b{color:var(--mint);font-weight:900}
 .hero .mid .sticker{font-size:clamp(22px,2.6vw,36px);animation:stick .6s cubic-bezier(.2,.9,.2,1.3) both 1.1s}
-.hero .bottom{padding-bottom:28px;display:flex;flex-direction:column;gap:18px}
+@media(max-width:480px){.hero .intro .sticker{font-size:clamp(17px,5.4vw,22px);white-space:normal;text-align:center}}
+.hero .bottom{padding-bottom:0;display:flex;flex-direction:column;gap:18px}
 .hero .giant .w{display:inline-block;overflow:hidden;vertical-align:bottom;padding-bottom:.06em;margin-bottom:-.06em}
 .hero .giant .w span{display:inline-block;transform:translateY(110%);animation:rise .8s cubic-bezier(.2,.8,.2,1) forwards;animation-delay:var(--d,0s)}
 .hero .giant .mint{color:var(--mint)} .hero .giant .pink{color:var(--pink)}
@@ -92,9 +101,6 @@ body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset
 @keyframes fade{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}
 @keyframes stick{from{transform:rotate(var(--tilt)) scale(0);opacity:0}to{transform:rotate(var(--tilt)) scale(1);opacity:1}}
 
-.state{min-height:100svh;display:grid;grid-template-rows:auto 1fr auto;padding-block:56px 40px;gap:40px}
-.state .big-lead{max-width:18em}
-.state .corner{justify-self:end;max-width:420px;width:100%}
 .chatcard{background:var(--chat);border:2px solid var(--line);border-radius:var(--r-md);padding:22px 24px;display:grid;gap:12px;box-shadow:var(--shadow)}
 .chatcard p{margin:0;font-size:18px;font-weight:800;line-height:1.35}
 .chatcard p b{color:var(--mint);font-weight:900}
@@ -115,40 +121,98 @@ body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset
   .rail .paper{width:100%;min-height:380px;padding:80px 20px 90px}
 }
 
-.apps-sec{height:230vh;position:relative}
-.apps-sec .pin{position:sticky;top:0;height:100svh;overflow:hidden}
-.apps-sec .pin .wrap{height:100%;display:grid;grid-template-columns:minmax(0,1fr) auto minmax(0,1fr);grid-template-rows:auto 1fr auto;gap:16px 24px;padding-block:20px 24px}
-.apps-sec .head{grid-column:1/-1;display:flex;justify-content:space-between;align-items:flex-start;gap:16px;flex-wrap:wrap}
-.apps-sec .titles{align-self:center;position:relative;min-height:1.1em}
-.apps-sec .titles .h3{position:absolute;left:0;top:50%;transform:translateY(-50%) translateX(-20px);opacity:0;transition:opacity .45s ease,transform .45s cubic-bezier(.2,.8,.2,1)}
-.apps-sec .titles .h3.on{opacity:1;transform:translateY(-50%)}
-.apps-sec .device{align-self:center;position:relative;--ph:min(600px,64svh)}
-.apps-sec .tabs{position:absolute;right:0;top:-34px;display:flex;gap:3px}
-.apps-sec .tabs b{width:28px;height:26px;display:grid;place-items:center;background:var(--chat);color:var(--muted);font-family:var(--display);font-size:13px;border-radius:6px;transition:background .3s,color .3s}
-.apps-sec .tabs b.on{background:var(--mint);color:var(--on-fill)}
-.apps-sec .side{align-self:center;display:grid;gap:14px;justify-items:start}
-.apps-sec .side .text{position:relative;min-height:9em;width:100%}
-.apps-sec .side .text p{position:absolute;inset:0;margin:0;opacity:0;transform:translateY(16px);transition:opacity .45s ease,transform .45s ease;font-size:clamp(16px,1.4vw,19px);line-height:1.45}
-.apps-sec .side .text p.on{opacity:1;transform:none}
-.apps-sec .side .meta{display:flex;gap:8px;flex-wrap:wrap;min-height:34px}
-.apps-sec .side .meta .tag{display:none}.apps-sec .side .meta .tag.on{display:inline-flex}
-.apps-sec .foot{grid-column:1/-1;display:flex;justify-content:space-between;align-items:center;gap:16px;flex-wrap:wrap}
-.apps-sec .foot .cta{display:flex;align-items:center;gap:16px;flex-wrap:wrap}
-.apps-sec .foot .cta a,.apps-sec .foot .cta .stores{display:none}.apps-sec .foot .cta a.on{display:inline-flex}.apps-sec .foot .cta .stores.on{display:inline-flex}
-.stores{font-family:var(--display);font-weight:900;text-transform:uppercase;font-size:14px;letter-spacing:.03em;color:var(--yellow)}
-.apps-sec .dotsbar{display:flex;gap:6px}
-.apps-sec .dotsbar i{width:46px;height:6px;border-radius:999px;background:var(--line);transition:background .3s}
-.apps-sec .dotsbar i.on{background:var(--pink)}
-.cases-m{display:none}
-@media(max-width:800px){
-  .apps-sec{height:auto}.apps-sec .pin{display:none}
-  .cases-m{display:grid;gap:40px;padding-block:56px}
-  .case-m{display:grid;gap:18px}
-  .case-m .meta{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
-  .case-m .stage{display:grid;place-items:center;padding-block:10px;--ph:520px}
+.apps .case{min-height:calc(100svh - 70px);display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);align-items:center;gap:24px clamp(24px,4vw,72px);padding-block:clamp(40px,6svh,72px);position:relative}
+.apps .case.first{grid-template-rows:auto 1fr}
+.apps .apps-head{grid-column:1/-1;display:flex;flex-direction:column;gap:12px}
+.apps .apps-head .h2{font-size:clamp(30px,3.4vw,52px)}
+.apps .apps-head .lead{max-width:44em}
+.apps .case.flip .txt{order:2}
+.apps .txt{display:grid;gap:16px;justify-items:start;min-width:0}
+.apps .meta{display:flex;align-items:center;gap:12px;flex-wrap:wrap}
+.apps .meta .num{font-family:var(--display);font-size:clamp(26px,2.6vw,40px);line-height:1;color:var(--line)}
+.apps .tl{font-family:var(--body);font-weight:800;font-size:clamp(22px,2.1vw,32px);line-height:1.22;margin:0;max-width:19em;text-wrap:balance}
+.apps .tl b{color:var(--mint);font-weight:900}
+.apps .txt .lead{font-size:clamp(16px,1.25vw,19px);max-width:36em}
+.apps .feats{list-style:none;margin:0;padding:0;display:grid;gap:8px;width:100%}
+.apps .feats li{display:grid;grid-template-columns:42px minmax(0,1fr);gap:14px;align-items:start;padding:12px 14px;border-radius:var(--r-md);background:var(--surface);opacity:0;transform:translateX(-14px);transition:opacity .5s ease,transform .5s cubic-bezier(.2,.8,.2,1);transition-delay:calc(var(--i)*.12s + .2s)}
+.apps .in .feats li{opacity:1;transform:none}
+.apps .feats .ic{width:42px;height:42px;border-radius:12px;display:grid;place-items:center;background:var(--chat);color:var(--mint)}
+.apps .feats .ic svg{width:22px;height:22px}
+.apps .feats b{display:block;font-family:var(--display);text-transform:uppercase;font-size:14px;letter-spacing:.02em;margin-bottom:2px}
+.apps .feats span{font-size:clamp(14px,1.05vw,16px);line-height:1.4;color:var(--muted)}
+.apps .uniq{display:flex;gap:12px;align-items:flex-start;margin:0;font-size:clamp(15px,1.15vw,17px);line-height:1.4;max-width:32em}
+.apps .uniq .sticker{font-size:13px;flex:none;margin-top:2px}
+.apps .cta{display:flex;align-items:center;gap:14px 18px;flex-wrap:wrap}
+.apps .vis{position:relative;display:grid;place-items:center;--ph:min(540px,62svh);min-height:calc(var(--ph) + 70px);min-width:0}
+.apps .vis .phone{rotate:var(--rot,-3deg);z-index:1}
+.apps .fw{position:absolute;z-index:2;background:var(--cream);color:var(--on-fill);border-radius:14px;box-shadow:var(--shadow);padding:12px 14px;width:max-content;max-width:min(250px,48%);transform:rotate(var(--t,0deg)) scale(.6);opacity:0;transition:transform .6s cubic-bezier(.2,.9,.2,1.25),opacity .4s;transition-delay:var(--d,.4s);font-size:14px;line-height:1.3}
+.apps .in .fw{opacity:1;transform:rotate(var(--t,0deg)) scale(1)}
+.apps .fw.p1{left:0;top:4%}
+.apps .fw.fridge{width:290px;max-width:min(290px,56%)}
+.apps .fridge .fbox{position:relative;width:100%;aspect-ratio:1;background:linear-gradient(#f4f8ff,#e2ecfa);border-radius:12px;overflow:hidden;margin:6px 0 10px;touch-action:none;box-shadow:inset 0 0 0 2px #d3dfee}
+.apps .fbox .sh{position:absolute;left:0;width:100%;transform:translateY(-50%);pointer-events:none}
+.apps .fbox .fi{position:absolute;width:28%;height:auto;transform:translateY(-100%);transition:left .9s cubic-bezier(.2,.9,.2,1.1),top .9s cubic-bezier(.2,.9,.2,1.1),filter .3s,scale .3s;cursor:grab;touch-action:none;-webkit-user-drag:none;user-select:none;filter:drop-shadow(0 3px 2px rgba(20,40,80,.18))}
+.apps .fbox .fi.lift{scale:1.1;filter:drop-shadow(0 14px 10px rgba(20,40,80,.3));z-index:3}
+.apps .fbox .fi.drag{transition:none;cursor:grabbing;z-index:4;scale:1.08}
+.apps .fbox .fi.pop{animation:frpop .45s cubic-bezier(.2,.9,.2,1.3)}
+@keyframes frpop{40%{scale:1.2}}
+.apps .fbox .hand{position:absolute;width:12%;aspect-ratio:1;border-radius:50%;background:rgba(46,12,36,.16);border:2px solid rgba(46,12,36,.5);transform:translate(-50%,-50%);transition:left .9s cubic-bezier(.2,.9,.2,1.1),top .9s cubic-bezier(.2,.9,.2,1.1),opacity .3s;opacity:0;pointer-events:none;z-index:5}
+.apps .tara{display:flex;flex-wrap:wrap;gap:6px}
+.apps .tara button{appearance:none;border:0;background:#eadbe4;color:inherit;font-family:var(--display);text-transform:uppercase;font-size:11px;letter-spacing:.03em;padding:6px 10px;border-radius:999px;cursor:pointer}
+.apps .tara button.on{background:var(--plum);color:var(--cream)}
+.apps .tile img{width:44px;height:44px;object-fit:contain;grid-row:1/3;filter:drop-shadow(0 2px 2px rgba(0,0,0,.2))} .apps .fw.p2{right:0;top:38%} .apps .fw.p3{left:2%;bottom:5%}
+.apps .fw .fk{font-family:var(--display);text-transform:uppercase;font-size:11px;letter-spacing:.04em;color:#7a3d66;margin:0 0 5px}
+.apps .fw .fv{font-size:24px;font-weight:900;line-height:1;margin:0}
+.apps .fw .fs{margin:6px 0 0;font-weight:700}
+.apps .fw .bar{height:8px;border-radius:999px;background:#eadbe4;overflow:hidden;margin:7px 0 3px}
+.apps .fw .bar i{display:block;height:100%;width:0;border-radius:999px;background:var(--mint);transition:width 1s cubic-bezier(.2,.8,.2,1) .5s,background .4s}
+.apps .in .fw .bar i{width:calc(var(--p)*100%)}
+.apps .fw .bar i.warn{background:var(--yellow)} .apps .fw .bar i.hot{background:var(--pink-hot)}
+.apps .fw .row{display:flex;justify-content:space-between;gap:14px;font-weight:800;font-size:13px;margin-top:6px}
+.apps .fw .row em{font-style:normal;color:#7a3d66;white-space:nowrap}
+.apps .mini{appearance:none;border:0;cursor:pointer;font-family:var(--display);text-transform:uppercase;font-size:12px;letter-spacing:.03em;padding:9px 13px;border-radius:999px;background:var(--plum);color:var(--cream);margin-top:10px;transition:transform .15s,background .2s,color .2s;text-align:left}
+.apps .mini:hover{transform:translateY(-1px);background:var(--pink-hot);color:var(--plum)}
+.apps .fw.dark{background:var(--chat);color:var(--cream)} .apps .fw.dark .fk{color:var(--pink)} .apps .fw.dark .fs b{color:var(--yellow)}
+.apps .seg{display:inline-flex;background:#eadbe4;border-radius:999px;padding:2px}
+.apps .seg button{appearance:none;border:0;background:transparent;font-family:var(--display);text-transform:uppercase;font-size:11px;letter-spacing:.03em;padding:6px 11px;border-radius:999px;cursor:pointer;color:var(--plum)}
+.apps .seg button.on{background:var(--plum);color:var(--cream)}
+.apps .shelf{position:relative;height:98px;width:210px;margin-top:10px}
+.apps .shelf .rowb{position:absolute;left:0;right:0;display:flex;gap:6px;transition:transform .6s cubic-bezier(.2,.8,.2,1),top .6s cubic-bezier(.2,.8,.2,1),opacity .5s,filter .5s}
+.apps .shelf .it{flex:1;height:54px;border-radius:8px;display:grid;place-items:end center;font-size:11px;font-weight:900;padding-bottom:5px;color:var(--plum);transition:height .5s;box-shadow:inset 0 -3px 0 rgba(46,12,36,.15)}
+.apps .it.f0{background:var(--mint)} .apps .it.f1{background:var(--yellow)} .apps .it.f2{background:var(--pink-hot)} .apps .it.f3{background:#b6a5ae}
+.apps .shelf.front .back{top:0;transform:scale(.84);opacity:.5;filter:brightness(.85)} .apps .shelf.front .frontr{top:40px}
+.apps .shelf.top .back{top:0;transform:none;opacity:1;filter:none} .apps .shelf.top .frontr{top:52px} .apps .shelf.top .it{height:44px}
+.apps .shelf::after{content:"";position:absolute;left:-6px;right:-6px;bottom:-8px;height:6px;border-radius:3px;background:#eadbe4}
+.apps .tile{display:grid;grid-template-columns:auto 1fr;gap:2px 10px;align-items:center;padding:10px 12px;border-radius:10px;transition:background .6s;min-width:190px}
+.apps .tile i{width:26px;height:36px;border-radius:6px 6px 4px 4px;background:rgba(46,12,36,.22);grid-row:1/3}
+.apps .tile b{font-size:14px} .apps .tile span{font-size:12px;font-weight:800;opacity:.8}
+.apps .tile.f0{background:var(--mint)} .apps .tile.f1{background:var(--yellow)} .apps .tile.f2{background:var(--pink-hot)} .apps .tile.f3{background:#b6a5ae}
+.apps .bc{height:44px;width:190px;border-radius:6px;background:repeating-linear-gradient(90deg,#fff 0 2px,transparent 2px 5px,#fff 5px 6px,transparent 6px 10px,#fff 10px 13px,transparent 13px 16px);position:relative;overflow:hidden;opacity:.9;margin-bottom:4px}
+.apps .laser{position:absolute;left:0;right:0;height:2px;background:var(--pink-hot);box-shadow:0 0 10px 2px var(--pink-hot)}
+.apps .bc .laser{animation:laser 2.2s ease-in-out infinite}
+@keyframes laser{0%,100%{top:4px}50%{top:38px}}
+.apps .box{position:relative;height:66px;width:210px;border-radius:8px;background:#fff;border:2px solid #eadbe4;padding:8px 44px 8px 10px;display:grid;align-content:center;overflow:hidden}
+.apps .box b{font-size:14px;line-height:1.2} .apps .box small{font-weight:700;opacity:.65;font-size:11px}
+.apps .box .dm{position:absolute;right:8px;top:8px;width:26px;height:26px;background:repeating-conic-gradient(var(--plum) 0 25%,#fff 0 50%) 0 0/6px 6px;outline:2px solid var(--plum)}
+.apps .box .laser{display:none} .apps .box.busy .laser{display:block;animation:laser2 .9s ease-in-out}
+@keyframes laser2{from{top:2px}to{top:60px}}
+.apps .pill{display:inline-block;padding:6px 10px;border-radius:999px;font-size:11px;font-weight:900;text-transform:uppercase;font-family:var(--display);margin-top:8px;transition:opacity .3s;letter-spacing:.02em}
+.apps .pill.ok{background:var(--mint)} .apps .pill.bad{background:var(--pink-hot)} .apps .pill.meh{background:var(--yellow)}
+.apps .chips{display:flex;flex-wrap:wrap;gap:6px;max-width:220px}
+.apps .chips span{padding:6px 10px;border-radius:999px;background:#eadbe4;font-weight:900;font-size:12px;transition:background .3s}
+.apps .chips span.on{background:var(--mint)} .apps .chips em{font-style:normal;opacity:.6;margin-left:3px}
+.apps .chk{display:flex;gap:10px;align-items:center;font-weight:800}
+.apps .chk i{width:22px;height:22px;flex:none;border-radius:7px;border:2px solid var(--mint);display:grid;place-items:center;transition:background .3s}
+.apps .chk i.on{background:var(--mint)} .apps .chk i.on::after{content:"";width:5px;height:10px;border:solid var(--plum);border-width:0 3px 3px 0;transform:rotate(45deg) translate(-1px,-1px)}
+.apps .vis .kitty{position:absolute;right:6%;bottom:2%;width:clamp(54px,6vw,86px);z-index:3;filter:drop-shadow(0 10px 14px rgba(0,0,0,.4));rotate:6deg}
+@media(max-width:1000px){
+  .apps .case{grid-template-columns:1fr;min-height:0;padding-block:48px 40px;gap:20px}
+  .apps .case.flip .txt{order:0}
+  .apps .vis{--ph:min(440px,56svh);min-height:calc(var(--ph) + 50px)}
+  .apps .fw{font-size:13px;max-width:min(210px,52%)}.apps .fw.fridge{max-width:min(230px,58%)}
+  .apps .vis .kitty{right:0;bottom:0}
 }
-
-.phone{width:calc(var(--ph,600px)*.5);height:var(--ph,600px);border-radius:calc(var(--ph,600px)*.073);background:#120510;padding:calc(var(--ph,600px)*.02);box-shadow:var(--shadow),0 40px 80px rgba(20,4,15,.5);position:relative;transition:transform .5s cubic-bezier(.2,.8,.2,1)}
+.phone{width:calc(var(--ph,600px)*.4362);height:var(--ph,600px);border-radius:calc(var(--ph,600px)*.073);background:#120510;padding:calc(var(--ph,600px)*.02);box-shadow:var(--shadow),0 40px 80px rgba(20,4,15,.5);position:relative;transition:transform .5s cubic-bezier(.2,.8,.2,1)}
 .phone .scr{width:100%;height:100%;border-radius:calc(var(--ph,600px)*.057);overflow:hidden;background:var(--plum);position:relative;font-size:calc(var(--ph,600px)*.0225)}
 .phone .notch{position:absolute;top:.6em;left:50%;translate:-50% 0;width:6.5em;height:1.8em;border-radius:999px;background:#120510;z-index:2}
 .scr .screen{position:absolute;inset:0;display:flex;flex-direction:column;opacity:0;transition:opacity .4s ease}
@@ -187,7 +251,7 @@ body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset
 .kin .word{font-family:var(--display);font-size:clamp(36px,10.4vw,160px);text-transform:uppercase;line-height:1.08;letter-spacing:-.02em;text-align:center;margin:0;transform-origin:50% 50%;transform:scaleY(var(--sy,1));will-change:transform;white-space:nowrap;overflow:hidden;max-width:100%}
 .kin .word:nth-child(odd){color:var(--cream)}
 
-.how{padding-block:0 64px}
+.how{padding-block:clamp(56px,8vw,96px)}
 .how .grid{display:grid;grid-template-columns:minmax(0,1.3fr) minmax(0,1fr);gap:10px}
 @media(max-width:800px){.how .grid{grid-template-columns:1fr}}
 .how .paper{border-radius:6px;box-shadow:var(--shadow)}
@@ -200,10 +264,19 @@ body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset
 .how .right .item strong{display:block;font-size:20px;font-weight:900;margin-bottom:4px}
 .how .right .item p{margin:0;font-size:16px;line-height:1.4}
 .how .left .stack{display:flex;flex-wrap:wrap;gap:12px}
+.kl{display:flex;align-items:flex-end;gap:12px;max-width:420px}
+.kl .face{flex:none;width:52px;height:52px;border-radius:50%;background:var(--plum);color:var(--mint);font-family:var(--display);font-size:24px;display:grid;place-items:center;box-shadow:var(--shadow)}
+.kl .bub{position:relative;background:var(--plum);color:var(--cream);border-radius:18px 18px 18px 4px;padding:12px 16px;min-height:3.2em;min-width:0;box-shadow:var(--shadow);font-size:17px;line-height:1.4;font-weight:700}
+.kl .bub small{display:block;font-family:var(--display);font-size:12px;text-transform:uppercase;letter-spacing:.04em;color:var(--mint);margin-bottom:2px}
+.kl .bub .c{display:inline-block;width:.45em;height:1em;background:var(--mint);vertical-align:-.15em;margin-left:.1em;animation:blink2 .7s steps(1) infinite}
+.kl.idle .bub .c{opacity:0}
+
 .how .left .stack .sticker{font-size:clamp(20px,2.2vw,30px)}
 
 .sec{padding-block:clamp(56px,8vw,96px)}
-.story{display:grid;gap:clamp(40px,6vw,72px)}
+.sec:not(.band){min-height:calc(100svh - 70px);display:grid;align-content:center}
+@media(min-width:1000px) and (prefers-reduced-motion:no-preference){html{scroll-snap-type:y proximity}.hero,.sec:not(.band),.how,.apps .case{scroll-snap-align:start;scroll-margin-top:70px}}
+.story{gap:clamp(40px,6vw,72px)}
 .story-grid{display:grid;grid-template-columns:minmax(0,.8fr) minmax(0,1.2fr);gap:clamp(24px,4vw,56px);align-items:center}
 @media(max-width:800px){.story-grid{grid-template-columns:1fr}}
 .story-photo{margin:0;position:relative;justify-self:center;width:min(100%,420px)}
@@ -212,32 +285,77 @@ body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset
 .story-text{display:grid;gap:18px}
 .story-text .lead{max-width:30em}
 .story-text .stack{display:flex;flex-wrap:wrap;gap:12px;margin-top:8px}
-.cats{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px}
-@media(max-width:800px){.cats{grid-template-columns:1fr}}
-.cat{background:var(--surface);border-radius:var(--r-md);padding:22px;display:grid;gap:12px;justify-items:start;box-shadow:var(--shadow)}
-.cat img{width:120px;height:120px;object-fit:cover;object-position:50% 20%;border-radius:999px;border:4px solid var(--cream);background:var(--chat)}
-.cat h3{margin:0;font-family:var(--display);text-transform:uppercase;font-size:clamp(24px,2.4vw,32px);line-height:1;color:var(--mint)}
-.cat p{margin:0;font-size:17px;line-height:1.45}
-.catpics{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:16px}
-@media(max-width:800px){.catpics{grid-template-columns:1fr 1fr}}
-.catpics img{width:100%;aspect-ratio:1;object-fit:cover;border-radius:var(--r-md);border:6px solid var(--cream);box-shadow:var(--shadow);rotate:var(--tilt,0deg)}
 .clips{display:grid;gap:16px}
 .clips-row{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:16px}
-@media(max-width:800px){.clips-row{grid-template-columns:1fr 1fr}}
+@media(max-width:1000px){.clips-row{grid-template-columns:1fr 1fr}}
 .clips-row figure{margin:0;position:relative}
 .clips-row video{display:block;width:100%;aspect-ratio:4/3;object-fit:cover;border-radius:var(--r-md);border:6px solid var(--cream);box-shadow:var(--shadow);background:var(--chat)}
 .clips-row .sticker{position:absolute;left:14px;bottom:14px;font-size:clamp(18px,1.8vw,24px)}
 
 .sec-head{display:flex;flex-direction:column;gap:14px;margin-bottom:clamp(28px,4vw,48px)}
+.station .st-show{position:relative;display:grid;grid-template-columns:minmax(0,1.25fr) minmax(0,.9fr);gap:18px;align-items:end;margin-bottom:clamp(32px,5vw,56px)}
+.station .st-show figure{margin:0;position:relative;min-width:0}
+.station .st-show figure img{display:block;width:100%;height:auto}
+.station .st-screen img{border-radius:var(--r-md);border:6px solid var(--cream);box-shadow:var(--shadow);rotate:-1.5deg}
+.station .st-pult{background:#1a0a16;border-radius:var(--r-md);padding:10px 10px 0;box-shadow:var(--shadow);rotate:1.5deg;overflow:hidden}
+.station .st-pult .win{display:flex;gap:6px;padding:4px 4px 10px}.station .st-pult .win i{width:10px;height:10px;border-radius:50%;background:var(--line)}
+.station .st-pult img{border-radius:10px 10px 0 0;aspect-ratio:16/10;object-fit:cover;object-position:0 0}
+.station .st-show .tag{position:absolute;left:14px;top:14px;z-index:3;box-shadow:var(--shadow)}
+.station .st-pult .tag{top:auto;bottom:14px;left:auto;right:14px}
+.station img.st-strip{display:block;position:absolute;left:3%;bottom:-7%;width:min(44%,500px);filter:drop-shadow(0 14px 24px rgba(0,0,0,.45));rotate:-2deg;z-index:2}
+.station img.st-cat{display:block;position:absolute;right:-1%;top:-13%;width:clamp(64px,7vw,110px);filter:drop-shadow(0 12px 18px rgba(0,0,0,.4));z-index:2}
+@media(max-width:800px){.station .st-show{grid-template-columns:1fr;gap:28px}.station img.st-strip{position:static;width:100%;rotate:0deg}.station img.st-cat{display:none}}
+.station .st-why{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px;margin-bottom:clamp(48px,7vw,88px)}
+@media(max-width:900px){.station .st-why{grid-template-columns:1fr}}
+.station .st-why article{border-radius:6px;box-shadow:var(--shadow);padding:clamp(22px,2.6vw,34px);display:grid;gap:12px;align-content:start}
+.station .st-why .k{color:var(--mint)}
+.station .st-why h3{margin:0;font-family:var(--display);text-transform:uppercase;font-size:clamp(22px,2vw,30px);line-height:1}
+.station .st-why p:not(.k){margin:0;font-size:17px;line-height:1.45}
+.station .st-demo{display:grid;gap:18px;margin:0 0 clamp(48px,7vw,88px)}
+.station .st-stage{position:relative;border-radius:var(--r-md);overflow:hidden;box-shadow:var(--shadow);background:#0c0a08;aspect-ratio:16/9;border:3px solid var(--line)}
+.station .st-stage iframe{position:absolute;inset:0;width:100%;height:100%;border:0;display:block}
+.station .st-stage .tag{position:absolute;left:14px;top:14px;z-index:2}
+.station .st-usp{display:grid;gap:10px;margin:0 0 20px;max-width:34em}
+.station .st-usp .big-lead{margin:0;font-size:clamp(24px,2.7vw,42px)}
+.station .st-ctl{position:relative;z-index:2;display:flex;flex-wrap:wrap;gap:16px 32px;align-items:start;background:var(--chat);border:2px solid var(--line);border-radius:var(--r-md);padding:18px 22px}
+.station .st-ctl .grp{display:grid;gap:9px;align-content:start}
+.station .st-ctl .grp.tools{margin-left:auto;display:flex;flex-wrap:wrap;gap:8px;align-self:end}
+.station .st-ctl .lbl{font-family:var(--display);text-transform:uppercase;font-size:13px;letter-spacing:.06em;color:var(--pink)}
+.station .st-ctl .bts{display:flex;flex-wrap:wrap;gap:8px}
+.station .st-ctl .bts button,.station .st-ctl .tg{font-family:var(--display);text-transform:uppercase;font-size:13px;letter-spacing:.03em;padding:9px 14px;border-radius:999px;background:var(--surface);border:2px solid var(--line);color:var(--cream);cursor:pointer;transition:background .2s,color .2s,border-color .2s,transform .15s}
+.station .st-ctl .bts button:hover,.station .st-ctl .tg:hover{border-color:var(--pink-hot);transform:translateY(-1px)}
+.station .st-ctl .bts button.on{background:var(--pink-hot);border-color:var(--pink-hot);color:var(--plum)}
+.station .st-ctl .bts button:active{transform:scale(.96)}
+.station .st-ctl .bts.alerts button.fire{background:var(--yellow);border-color:var(--yellow);color:var(--plum)}
+.station .st-ctl .sw button{width:36px;height:36px;padding:0;border-radius:50%;background:var(--c);border-color:transparent;box-shadow:0 0 0 2px var(--chat)}
+.station .st-ctl .sw button.on{box-shadow:0 0 0 2px var(--chat),0 0 0 5px var(--cream)}
+.station .st-ctl .sw button.brand{background:conic-gradient(var(--pink),var(--mint),var(--yellow),var(--pink))}
+.station .st-ctl .tg{display:inline-flex;align-items:center;gap:8px}
+.station .st-ctl .tg::before{content:"";width:9px;height:9px;border-radius:50%;background:var(--muted);transition:background .2s}
+.station .st-ctl .tg[aria-pressed="true"]::before{background:var(--mint);box-shadow:0 0 10px var(--mint)}
+.station .st-note{margin:0;font-size:clamp(15px,1.1vw,17px);line-height:1.45;color:var(--muted);max-width:60em}
+@media(max-width:800px){.station .st-demo{gap:14px}.station .st-stage{border-radius:14px;margin:0 -8px}.station .st-ctl{padding:14px 14px;gap:14px 20px}.station .st-ctl .bts button,.station .st-ctl .tg{font-size:12px;padding:8px 12px}.station .st-ctl .grp.tools{margin-left:0}}
+.st-tarot .stage{position:relative}
+.st-tarot .stage .spark{position:absolute;left:50%;top:50%;width:10px;height:10px;border-radius:50%;pointer-events:none;z-index:3}
+.st-tarot .card3.legend .face,.st-tarot .card3.myth .face{animation:tPulse 2.2s ease-in-out 1s infinite}
+@keyframes tPulse{0%,100%{filter:brightness(1)}50%{filter:brightness(1.14)}}
+.station .st-tarot{padding-top:clamp(40px,6vw,72px);border-top:2px solid var(--line)}
+.station .st-cta{margin-top:clamp(48px,7vw,88px);display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:20px}
+.station .st-cta .big-lead{max-width:14em}
+
 .media{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px}
-@media(max-width:900px){.media{grid-template-columns:1fr}}
-.mcard{background:var(--surface);border-radius:var(--r-md);padding:26px 24px;display:grid;gap:14px;align-content:start;justify-items:start;box-shadow:var(--shadow)}
+@media(max-width:1100px){.media{grid-template-columns:1fr 1fr}}
+@media(max-width:720px){.media{grid-template-columns:1fr}}
+.mcard{background:var(--surface);border-radius:var(--r-md);padding:26px 24px;display:grid;gap:14px;align-content:start;justify-items:start;box-shadow:var(--shadow);min-width:0}
+.mcard .tag{white-space:nowrap}
+.mcard .btn{max-width:100%;white-space:normal;text-align:center;overflow-wrap:anywhere}
 .mcard h3{margin:0;font-family:var(--display);text-transform:uppercase;font-size:clamp(26px,2.6vw,36px);line-height:1}
 .mcard p{margin:0;font-size:17px;line-height:1.45}
 .mcard .btn{margin-top:auto}
 .quotes{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px}
 .quotes .chatcard{rotate:var(--tilt,0deg)}
-@media(max-width:900px){.quotes{grid-template-columns:1fr}}
+@media(max-width:1100px){.quotes{grid-template-columns:1fr 1fr}}
+@media(max-width:720px){.quotes{grid-template-columns:1fr}}
 .quotes .chatcard p{font-size:19px}
 .quotes .chatcard small{color:var(--muted);font-size:13px}
 .band .inner{border-radius:6px;padding:clamp(32px,5vw,64px);display:grid;grid-template-columns:minmax(0,1.2fr) minmax(0,.8fr);gap:40px;align-items:center;box-shadow:var(--shadow)}
@@ -245,7 +363,7 @@ body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset
 .band .copy{display:flex;flex-direction:column;gap:20px}
 .band .copy .lead{color:var(--on-fill)}
 .faces{display:flex;justify-content:center;align-items:center}
-.faces img{width:28%;aspect-ratio:1;border-radius:999px;object-fit:cover;box-shadow:var(--shadow);margin-left:-6%;border:4px solid var(--cream);transition:transform .3s ease}
+.faces img{width:24%;aspect-ratio:1;object-fit:contain;margin-left:-4%;filter:drop-shadow(0 10px 18px rgba(20,4,15,.35));transition:transform .3s ease}
 .faces img:first-child{margin-left:0}
 .faces img:hover{transform:translateY(-10px) rotate(-6deg);z-index:1}
 
@@ -256,6 +374,30 @@ body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset
 .ticker span:nth-child(3n+1){color:var(--pink)} .ticker span:nth-child(3n+2){color:var(--mint)} .ticker span:nth-child(3n){color:var(--yellow)}
 @keyframes scroll{to{transform:translateX(-50%)}}
 
+.st-tarot .inner{display:grid;grid-template-columns:auto minmax(0,1fr);gap:clamp(28px,5vw,72px);align-items:center;justify-content:center}
+.st-tarot .stage{perspective:1300px;touch-action:none;cursor:grab;user-select:none;-webkit-user-select:none;display:grid;place-items:center;padding:28px}
+.st-tarot .stage:active{cursor:grabbing}
+.st-tarot .card3{position:relative;height:min(560px,66svh);aspect-ratio:360/620;transform-style:preserve-3d;will-change:transform}
+.st-tarot .face{position:absolute;inset:0;border-radius:18px;overflow:hidden;backface-visibility:hidden;-webkit-backface-visibility:hidden;background:#F6EBD3;box-shadow:0 30px 60px rgba(0,0,0,.45)}
+.st-tarot .face img{width:100%;height:100%;object-fit:cover;display:block;pointer-events:none;-webkit-user-drag:none}
+.st-tarot .face.back{transform:rotateY(180deg)}
+.st-tarot .face{backface-visibility:visible;-webkit-backface-visibility:visible}
+.st-tarot .face.back{display:none}
+.st-tarot .card3.bk .face.front{transform:scaleX(-1)}
+.st-tarot .glare{position:absolute;inset:0;pointer-events:none;mix-blend-mode:soft-light;opacity:.85}
+.st-tarot .holo{position:absolute;inset:0;pointer-events:none;mix-blend-mode:color-dodge;opacity:0}
+.st-tarot .card3.legend .holo,.st-tarot .card3.myth .holo{opacity:.32}
+.st-tarot .info{display:grid;gap:16px;justify-items:start;max-width:30em}
+.st-tarot .info .num{font-family:var(--display);font-size:14px;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);min-height:1em;margin:0}
+.st-tarot .info .title{font-family:var(--display);font-size:clamp(30px,4vw,56px);line-height:1;text-transform:uppercase;margin:0;letter-spacing:.02em;min-height:1em}
+.st-tarot .info .title span{display:inline-block;animation:tl .5s cubic-bezier(.2,.9,.2,1.3) both;animation-delay:calc(var(--n)*40ms)}
+@keyframes tl{from{opacity:0;transform:translateY(14px) rotate(-6deg)}to{opacity:1;transform:none}}
+.st-tarot .info .rar{display:inline-flex;font-family:var(--display);font-size:13px;text-transform:uppercase;letter-spacing:.04em;padding:7px 12px;border-radius:999px;color:#fff}
+.st-tarot .info .say{font-size:clamp(18px,1.6vw,22px);line-height:1.4;margin:0;font-weight:800;min-height:2.8em}
+.st-tarot .info .say.ty::after{content:"";display:inline-block;width:.45em;height:1em;background:var(--mint);vertical-align:-.15em;margin-left:.1em;animation:blink2 .7s steps(1) infinite}
+.st-tarot .info .hint{font-size:15px;color:var(--muted);margin:0}
+.st-tarot .info .actions{margin-top:6px}
+@media(max-width:900px){.st-tarot .inner{grid-template-columns:1fr;justify-items:center;text-align:center}.st-tarot .info{justify-items:center}.st-tarot .card3{height:min(480px,60svh)}}
 .foot{padding-block:56px 24px;border-top:2px solid var(--line)}
 .foot .grid{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:40px;align-items:start}
 @media(max-width:800px){.foot .grid{grid-template-columns:1fr}}
@@ -288,13 +430,6 @@ body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset
 .js .quotes .chatcard{opacity:0;transform:translateY(30px) rotate(var(--tilt,0deg)) scale(.92);transition:opacity .5s ease,transform .6s cubic-bezier(.2,.9,.2,1.3);transition-delay:calc(var(--n,0)*70ms)}
 .js .quotes.in .chatcard{opacity:1;transform:translateY(0) rotate(var(--tilt,0deg)) scale(1)}
 .quotes .chatcard:hover{transform:translateY(-6px) rotate(0deg) scale(1.03)!important;transition-delay:0s}
-.js .cats .cat{opacity:0;transform:translateY(30px);transition:opacity .5s ease,transform .6s cubic-bezier(.2,.9,.2,1.3);transition-delay:calc(var(--n,0)*120ms)}
-.js .cats.in .cat{opacity:1;transform:none}
-.cat img{transition:transform .4s cubic-bezier(.2,.9,.2,1.4)}
-.cat:hover img{transform:rotate(-8deg) scale(1.12) translateY(-6px)}
-.js .catpics img{opacity:0;transform:translateY(40px) rotate(var(--tilt,0deg)) scale(.9);transition:opacity .5s ease,transform .6s cubic-bezier(.2,.9,.2,1.3);transition-delay:calc(var(--n,0)*90ms)}
-.js .catpics.in img{opacity:1;transform:translateY(0) rotate(var(--tilt,0deg)) scale(1)}
-.catpics img:hover{transform:rotate(0deg) scale(1.05)!important;transition-delay:0s;z-index:2;position:relative}
 .clips-row figure{transition:transform .4s cubic-bezier(.2,.9,.2,1.3)}
 .clips-row figure:nth-child(odd){rotate:-1.5deg}.clips-row figure:nth-child(even){rotate:1.5deg}
 .clips-row figure:hover{transform:scale(1.05) translateY(-6px);rotate:0deg;z-index:2}
@@ -309,7 +444,7 @@ body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset
 .faces img:hover{transform:translateY(-10px) rotate(-8deg) scale(1.1)}
 .sec-head .k::before{content:"";display:inline-block;width:.6em;height:.6em;border-radius:999px;background:var(--pink);margin-right:.5em;vertical-align:middle;animation:blink 1.4s ease-in-out infinite}
 @keyframes blink{0%,100%{opacity:1;scale:1}50%{opacity:.3;scale:.7}}
-@media(prefers-reduced-motion:reduce){.js .quotes .chatcard,.js .cats .cat,.js .catpics img,.js .clips-row figure,.js .h2 .w span{opacity:1;transform:none;translate:0 0}}
+@media(prefers-reduced-motion:reduce){.js .quotes .chatcard,.js .clips-row figure,.js .h2 .w span{opacity:1;transform:none;translate:0 0}}
 /* v13: typed hero, running cats, 3d phone + swipe, typed chat, live chat */
 .hero .mid,.hero .bottom{position:relative;z-index:1}
 .giant.typed{position:relative}
@@ -325,29 +460,18 @@ body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset
 .hero .rc.b{width:44px;animation-duration:23s,.36s;animation-delay:-11s,0s;animation-direction:reverse,alternate;transform:scaleX(-1)}
 @keyframes runx{from{left:-10%}to{left:104%}}
 @keyframes hop{from{translate:0 0}to{translate:0 -7px}}
-.apps-sec .device{perspective:1400px}
-.apps-sec .titles .h3{cursor:pointer}
-#phone{transform:rotateX(var(--rx,0deg)) rotateY(var(--ry,0deg)) rotate(var(--rz,-4deg));touch-action:pan-y;cursor:grab;user-select:none;-webkit-user-select:none;will-change:transform}
-#phone.drag{transition:none;cursor:grabbing}
-#phone .scr{box-shadow:inset 0 0 0 1px rgba(255,255,255,.05)}
-#phone .scr .screen{opacity:1;z-index:auto;transform:translateX(calc(var(--k,0)*100% + var(--dx,0px)));transition:transform .55s cubic-bezier(.2,.8,.2,1)}
-#phone.drag .scr .screen{transition:none}
-#phone .scr .screen .shot{pointer-events:none;-webkit-user-drag:none}
 .chatcard p.ty::after{content:"";display:inline-block;width:.45em;height:1em;background:var(--mint);vertical-align:-.15em;margin-left:.1em;animation:blink2 .7s steps(1) infinite}
-.live{grid-column:2;justify-self:end;width:min(320px,32vw);z-index:30;display:flex;flex-direction:column;align-items:flex-end;gap:8px;pointer-events:none}
-.live.fx{position:fixed;right:max(12px,env(safe-area-inset-right,0px));bottom:max(12px,env(safe-area-inset-bottom,0px));width:300px}
-.live.fx:not(.open) .msgs{display:none}
-.live .lh{pointer-events:auto;display:inline-flex;align-items:center;gap:8px;background:var(--chat);border:2px solid var(--line);border-radius:999px;padding:7px 14px 7px 11px;font-family:var(--display);font-size:13px;text-transform:uppercase;letter-spacing:.03em;color:var(--cream);cursor:pointer;box-shadow:var(--shadow)}
+.live{position:fixed;right:max(14px,env(safe-area-inset-right,0px));bottom:max(14px,env(safe-area-inset-bottom,0px));width:300px;z-index:30;display:flex;flex-direction:column;align-items:flex-end;gap:8px;pointer-events:none}
+.live .lh{pointer-events:auto;text-decoration:none;color:var(--cream);cursor:pointer;display:inline-flex;align-items:center;gap:8px;background:var(--chat);border:2px solid var(--line);border-radius:999px;padding:7px 14px 7px 11px;font-family:var(--display);font-size:13px;text-transform:uppercase;letter-spacing:.03em;color:var(--cream);cursor:pointer;box-shadow:var(--shadow)}
 .live .lh i{width:9px;height:9px;border-radius:50%;background:#ff4f4f;box-shadow:0 0 0 3px rgba(255,79,79,.25);animation:blink 1.4s ease-in-out infinite}
 .live .lh b{color:var(--muted);font-family:var(--body);font-weight:900;font-variant-numeric:tabular-nums}
-.live .msgs{width:100%;display:flex;flex-direction:column;justify-content:flex-end;gap:6px;height:min(30vh,260px);overflow:hidden;-webkit-mask-image:linear-gradient(to bottom,transparent,#000 25%);mask-image:linear-gradient(to bottom,transparent,#000 25%)}
+.live .msgs{width:100%;display:flex;flex-direction:column;justify-content:flex-end;gap:6px;height:min(30svh,290px);overflow:hidden;-webkit-mask-image:linear-gradient(to bottom,transparent,#000 25%);mask-image:linear-gradient(to bottom,transparent,#000 25%)}
 .live .m{background:rgba(30,8,24,.88);border:2px solid var(--line);border-radius:14px;padding:8px 12px;font-size:14px;line-height:1.35;font-weight:700;color:var(--cream);animation:pop .45s cubic-bezier(.2,.9,.2,1.3) both;backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);overflow-wrap:anywhere}
 .live .m .bd{display:inline-block;width:14px;height:14px;border-radius:4px;vertical-align:-2px;margin-right:5px}
 .live .m .bd.mod{background:var(--mint)} .live .m .bd.vip{background:var(--yellow)} .live .m .bd.sub{background:var(--twitch)}
 .live .m .u{font-family:var(--display);font-size:12.5px;margin-right:6px;color:var(--pink)}
 .live .m .u.mod{color:var(--mint)} .live .m .u.vip{color:var(--yellow)}
-.live .m img{display:inline-block;width:24px;height:24px;vertical-align:-7px;border-radius:50%;margin-left:3px}
-.live.off .msgs{display:none}
+.live .m img{display:inline-block;width:24px;height:24px;vertical-align:-7px;margin-left:3px}
 @keyframes pop{from{opacity:0;transform:translateY(14px) scale(.92)}to{opacity:1;transform:none}}
 @media(max-width:800px){.live{display:none}}
 .hero .mid{grid-template-rows:auto auto}
@@ -374,10 +498,12 @@ body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset
     <a class="plate" href="#top" aria-label="Глупоня, на початок сторінки"><span>феномен</span><span>Глупоня</span></a>
     <nav aria-label="Розділи">
       <a href="#apps">Застосунки</a>
+      <a href="#station">Глупостанція</a>
       <a href="#me">Про мене</a>
       <a href="#content">Стріми</a>
       <a href="#chat">Чат</a>
       <a href="#contacts">Контакти</a>
+      <div class="lang" role="group" aria-label="Мова"><button type="button" data-lang="uk" aria-pressed="true">UA</button><button type="button" data-lang="ru" aria-pressed="false">RU</button></div>
       <a class="btn twitch" href="https://twitch.tv/gluponya">
         <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M4 2 2 6v14h5v3h3l3-3h4l5-5V2H4zm16 12-3 3h-5l-3 3v-3H5V4h15v10zM15 7h2v5h-2V7zm-5 0h2v5h-2V7z"/></svg>
         Стрім
@@ -390,12 +516,12 @@ body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset
 <section class="hero wrap" id="top" data-shape="cat">
   <div class="mid">
     <div class="intro">
-      <p>Я Оня. Придумую застосунки і доводжу їх до релізу. Код за мене пише <b>Клодік</b>. І все це на стрімі, з котами перед камерою</p>
+      <p>Я Оня. Вигадую застосунки, малюю їм екрани і не відпускаю, поки не вийде реліз</p>
       <span class="sticker" style="--tilt:-6deg">продукт мій, код Клодіка</span>
     </div>
     <img class="me" src="img/onya-frogs.jpg" alt="Оня з жабками на обличчі, селфі">
     <aside class="live" id="live" aria-label="Чат зі стріму">
-      <button class="lh" id="livebtn" type="button"><i></i>чат зі стріму <b id="livecnt"></b></button>
+      <a class="lh" id="livebtn" href="https://twitch.tv/gluponya" title="Відкрити чат на Twitch"><i></i>чат зі стріму <b id="livecnt"></b></a>
       <div class="msgs" id="livemsgs" aria-live="off"></div>
     </aside>
   </div>
@@ -405,82 +531,115 @@ body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset
       <span class="live-t" id="h1t" aria-hidden="true"></span>
     </h1>
     <div class="row">
-      <p class="note">Студія з Чернігова. Я продакт і дизайнер, Клодік мій кодер. Робимо все в ефірі, з котами і чатом</p>
+      <p class="note">Глупоня — це я, Клодік і чат. Сидимо в Чернігові. З жовтня 2026 встигли три застосунки і свою програму для стрімів</p>
       <div class="actions"><a class="btn mint" href="#apps">Застосунки</a><a class="btn ghost" href="#how">Як це працює</a></div>
     </div>
   </div>
   <div class="run" aria-hidden="true"><img class="rc a" src="img/cat-black.png" alt=""><img class="rc b" src="img/cat-black.png" alt=""></div>
 </section>
 
-<section class="apps-sec" id="apps" data-shape="cat">
-  <div class="pin">
-    <div class="wrap">
-      <div class="head">
-        <div><p class="k">Застосунки</p><h2 class="h2">Три застосунки,<br>три сезони стрімів</h2></div>
-        <p class="note" style="max-width:22em">Кожен виріс із того, що мене бісило в побуті. Гортайте, покажу всі три</p>
-      </div>
-      <div class="titles">
-        <h3 class="h3 on" data-i="0">Грошик</h3>
-        <h3 class="h3" data-i="1">Фрешка</h3>
-        <h3 class="h3" data-i="2">Аптечка</h3>
-      </div>
-      <div class="device">
-        <div class="tabs" aria-hidden="true"><b class="on">1</b><b>2</b><b>3</b></div>
-        <div class="phone" id="phone">
-          <div class="scr">
-            <div class="notch"></div>
-            <div class="screen on" data-i="0" aria-label="Екран Грошика: головна"><img class="shot" src="img/scr-groshik.jpg" alt=""></div>
-            <div class="screen" data-i="1" aria-label="Екран Фрешки: холодильник"><img class="shot" src="img/scr-freshka.jpg" alt=""></div>
-            <div class="screen" data-i="2" aria-label="Екран Аптечки: список ліків">
-              <div class="top"><b>Аптечка</b><strong>Сьогодні о 9:00</strong></div>
-              <div class="card"><img src="img/heart.png" alt=""><div class="t"><b>Вітамін D</b><small>1 крапля, щодня</small></div><span class="pill mint">випито</span></div>
-              <div class="card"><img src="img/paws.png" alt=""><div class="t"><b>Для кота: від бліх</b><small>раз на місяць</small></div><span class="pill">завтра</span></div>
-              <div class="card"><img src="img/sparkles.png" alt=""><div class="t"><b>Ібупрофен</b><small>термін до 03.2026</small></div><span class="pill hot">викинути</span></div>
-              <div class="card"><img src="img/egg.png" alt=""><div class="t"><b>Купити</b><small>пластир, спирт</small></div><span class="v">2</span></div>
-              <div class="tabbar" aria-hidden="true"><i></i><i></i><i class="on"></i><i></i></div>
-            </div>
-          </div>
-        </div>
-      </div>
-      <div class="side">
-        <div class="meta">
-          <span class="tag on" data-i="0">вже працює</span><span class="tag yellow" data-i="1">відкрито в Telegram</span><span class="tag hot" data-i="2">бета в Telegram</span>
-        </div>
-        <div class="text">
-          <p class="on" data-i="0">Сімейний гаманець у Telegram. Підключається до monobank, сам розкладає витрати по категоріях і показує, чи дотягнете до кінця місяця. Токен банку живе тільки на вашому телефоні</p>
-          <p data-i="1">Холодильник у телефоні. Скануєте штрихкод, Фрешка знає термін придатності і нагадає, що молоко треба допити сьогодні. Полиці з 3D-іконками, список покупок із того, що закінчилось</p>
-          <p data-i="2">Домашня аптечка, яка пам'ятає терміни за вас. Нагадування про прийом для всієї родини, прострочені ліки підсвічуються одразу, список для аптеки в один тап</p>
-        </div>
-      </div>
-      <div class="foot">
-        <div class="dotsbar" aria-hidden="true"><i class="on"></i><i></i><i></i></div>
-        <div class="cta">
-          <a class="btn pink on" data-i="0" href="https://groshyk-app.nb-77d18a.workers.dev/app">Відкрити Грошик</a>
-          <a class="btn mint" data-i="1" href="https://t.me/freshkapp_bot/fridge">Відкрити Фрешку в Telegram</a>
-          <a class="btn mint" data-i="2" href="https://t.me/medkitapp_bot/app">Відкрити Аптечку в Telegram</a>
-          <span class="stores on" data-i="0">Telegram і стори — СКОРО</span>
-          <span class="stores" data-i="1">В App Store і Google Play — СКОРО</span>
-          <span class="stores" data-i="2">В App Store і Google Play — СКОРО</span>
-        </div>
-      </div>
+<section class="apps wrap" id="apps" data-shape="cat">
+  <article class="case reveal first" data-app="groshik">
+    <div class="apps-head"><p class="k">Застосунки</p><h2 class="h2">Три застосунки,<br>три сезони стрімів</h2><p class="lead">Кожен почався з побутової дурниці, яка мене дістала: засохла зелень, прострочені таблетки і вічне «а скільки ще можна витратити»</p></div>
+    <div class="txt">
+      <div class="meta"><span class="num">01</span><span class="tag yellow">робимо публічну версію</span></div>
+      <h3 class="h3">Грошик</h3>
+      <p class="tl">Сімейний гаманець, який сам рахує, чи <b>дотягнеш до зарплати</b></p>
+      <p class="lead">Підключаєш monobank, і витрати самі розкладаються по категоріях. Жодних таблиць у неділю ввечері. Грошик каже, скільки можна витратити сьогодні, щоб в останній тиждень не їсти саму гречку</p>
+      <ul class="feats"><li style="--i:0"><i class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="5" width="18" height="16" rx="3"/><path d="M3 10h18M8 3v4M16 3v4"/></svg></i><div><b>До зарплати</b><span>Днів до зарплати і сума на день. Купив каву, сума перерахувалась</span></div></li><li style="--i:1"><i class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="6" width="18" height="13" rx="3"/><path d="m3 8 9 6 9-6"/></svg></i><div><b>Конверти і ліміти</b><span>Продукти, коти, кава: у кожного свій конверт. Жовтіє, коли лишилось мало</span></div></li><li style="--i:2"><i class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 16v-5a6 6 0 0 1 12 0v5l2 2H4l2-2ZM10 20a2 2 0 0 0 4 0"/></svg></i><div><b>Бот у Telegram</b><span>Пише, коли злетіла велика сума, і зранку коротко каже, як справи з бюджетом</span></div></li></ul>
+      <p class="uniq"><span class="sticker" style="--tilt:-4deg">чому це круто</span><span>Банківський токен живе тільки в тебе на телефоні, на мій сервер він не їде. І бюджет один на двох: не треба пересилати одне одному скріни з банку</span></p>
+      <div class="cta"><a class="btn pink" href="https://groshyk-app.nb-77d18a.workers.dev/app">Відкрити Грошик</a><span class="stores">Поки тестуємо на своїй сімʼї, публічна версія вже в роботі</span></div>
     </div>
-  </div>
-  <div class="cases-m wrap">
-    <p class="k">Застосунки</p>
-    <article class="case-m"><div class="meta"><span class="tag">вже працює</span></div><h3 class="h3">Грошик</h3><p class="lead">Сімейний гаманець у Telegram. Підключається до monobank, сам розкладає витрати і показує, чи дотягнете до кінця місяця</p><div class="stage"><div class="phone"><div class="scr"><div class="notch"></div><div class="screen on"><img class="shot" src="img/scr-groshik.jpg" alt=""></div></div></div></div><a class="btn pink" href="https://groshyk-app.nb-77d18a.workers.dev/app">Відкрити Грошик</a><span class="stores">Telegram і стори — СКОРО</span></article>
-    <article class="case-m"><div class="meta"><span class="tag yellow">відкрито в Telegram</span></div><h3 class="h3">Фрешка</h3><p class="lead">Холодильник у телефоні. Скануєте штрихкод, Фрешка знає термін придатності і нагадає, що молоко треба допити сьогодні</p><div class="stage"><div class="phone"><div class="scr"><div class="notch"></div><div class="screen on"><img class="shot" src="img/scr-freshka.jpg" alt=""></div></div></div></div><a class="btn mint" href="https://t.me/freshkapp_bot/fridge">Відкрити Фрешку в Telegram</a><span class="stores">В App Store і Google Play — СКОРО</span></article>
-    <article class="case-m"><div class="meta"><span class="tag hot">бета в Telegram</span></div><h3 class="h3">Аптечка</h3><p class="lead">Домашня аптечка, яка пам'ятає терміни за вас і нагадує про прийом усій родині</p><div class="stage"><div class="phone"><div class="scr"><div class="notch"></div><div class="screen on"><div class="top"><b>Аптечка</b><strong>Сьогодні о 9:00</strong></div><div class="card"><img src="img/heart.png" alt=""><div class="t"><b>Вітамін D</b><small>1 крапля, щодня</small></div><span class="pill mint">випито</span></div><div class="card"><img src="img/paws.png" alt=""><div class="t"><b>Для кота: від бліх</b><small>раз на місяць</small></div><span class="pill">завтра</span></div><div class="card"><img src="img/sparkles.png" alt=""><div class="t"><b>Ібупрофен</b><small>термін до 03.2026</small></div><span class="pill hot">викинути</span></div><div class="tabbar" aria-hidden="true"><i></i><i></i><i class="on"></i><i></i></div></div></div></div></div><a class="btn mint" href="https://t.me/medkitapp_bot/app">Відкрити Аптечку в Telegram</a><span class="stores">В App Store і Google Play — СКОРО</span></article>
-  </div>
+    <div class="vis"><div class="phone" style="--rot:-3deg"><div class="scr"><div class="notch"></div><div class="screen on"><img class="shot" src="img/scr-groshik.jpg" alt="Екран Грошика: головна"></div></div></div><div class="fw p1" style="--t:-4deg;--d:.4s"><p class="fk">До зарплати</p><p class="fv"><b>12</b> днів</p><div class="bar"><i id="gBar" style="--p:.78"></i></div><p class="fs">лишилось <b id="gLeft">7 680 ₴</b>, по <b id="gPer">640 ₴</b> на день</p><button class="mini" id="gBuy" type="button">Купити каву за 95 ₴</button></div>
+      <div class="fw p2" style="--t:3deg;--d:.8s"><p class="fk">Конверти на місяць</p><div class="row"><span>Продукти</span><em>3 200 з 5 000</em></div><div class="bar"><i style="--p:.64"></i></div><div class="row"><span>Коти</span><em>980 з 1 200</em></div><div class="bar"><i class="warn" style="--p:.82"></i></div><div class="row"><span>Кава</span><em>470 з 500</em></div><div class="bar"><i class="hot" style="--p:.94"></i></div></div>
+      <div class="fw p3 dark" style="--t:2deg;--d:1.3s"><p class="fk">Грошик-бот у Telegram</p><p class="fs" style="margin:0"><b>Крупна витрата:</b> 1 240 ₴, Сільпо. Це 18% тижня на продукти</p></div></div>
+  </article>
+  <article class="case reveal flip" data-app="freshka">
+    <div class="txt">
+      <div class="meta"><span class="num">02</span><span class="tag">в сторах і Telegram</span></div>
+      <h3 class="h3">Фрешка</h3>
+      <p class="tl">Холодильник, у який <b>цікаво зазирати</b></p>
+      <p class="lead">Не список, а намальований холодильник. Продукти стоять на полицях, як насправді. Те, що от-от зіпсується, видно з порога. А те, що сховалось у задньому ряду, видно зверху</p>
+      <ul class="feats"><li style="--i:0"><i class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2 12s4-7 10-7 10 7 10 7-4 7-10 7S2 12 2 12Z"/><circle cx="12" cy="12" r="3"/></svg></i><div><b>Свіжість видно здалеку</b><span>Банан спочатку жовтий, потім у цятках, потім сумний. Дати читати не треба</span></div></li><li style="--i:1"><i class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 5v14M8 5v14M11 5v14M14 5v14M17 5v14M20 5v14"/></svg></i><div><b>Додав за три секунди</b><span>Штрихкод, фото або плитка продукту. Швидше, ніж поставити молоко на полицю</span></div></li><li style="--i:2"><i class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="9" cy="8" r="3.5"/><path d="M2.5 20a6.5 6.5 0 0 1 13 0M16 5a3.5 3.5 0 0 1 0 7M18 13.5a6.5 6.5 0 0 1 3.5 6.5"/></svg></i><div><b>Спільний холодильник</b><span>Один холодильник на пару чи сусідів. Хто доїв йогурт, видно одразу</span></div></li></ul>
+      <p class="uniq"><span class="sticker" style="--tilt:-4deg">чому це круто</span><span>У продуктів є тара: пакет, миска, банка, купка. Переклав яблука з пакета в миску, і на полиці стоїть миска. Працює офлайн, акаунт не потрібен</span></p>
+      <div class="cta"><a class="btn mint" href="https://t.me/freshkapp_bot/fridge"><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M21.6 3.3 2.9 10.6c-1.1.4-1.1 1.1-.2 1.4l4.7 1.5 1.8 5.6c.2.6.4.8.8.8.5 0 .7-.2 1-.5l2.4-2.3 4.9 3.6c.9.5 1.5.2 1.8-.8L23 4.9c.3-1.3-.5-1.9-1.4-1.6zM8.3 13.2l9.9-6.2c.5-.3.9-.1.5.2l-8.4 7.6-.3 3.5-1.7-5.1z"/></svg>Відкрити у Telegram</a><span class="stores">Є в App Store і Google Play</span></div>
+    </div>
+    <div class="vis"><div class="phone" style="--rot:3deg"><div class="scr"><div class="notch"></div><div class="screen on"><img class="shot" src="img/scr-freshka.jpg" alt="Екран Фрешки: холодильник"></div></div></div><div class="fw p1 fridge" style="--t:-3deg;--d:.4s"><p class="fk">Полиці як справжні</p><div class="fbox" id="frBox"><img class="sh" src="img/fr/shelf.webp" alt="" style="top:48%"><img class="sh" src="img/fr/shelf.webp" alt="" style="top:96%"><img class="fi" data-s="0" src="img/fr/apple-bag.webp" alt="" id="frApple" draggable="false"><img class="fi" data-s="1" src="img/fr/milk-bottle.webp" alt="" draggable="false"><img class="fi" data-s="2" src="img/fr/cucumber-jar.webp" alt="" draggable="false"><img class="fi" data-s="3" src="img/fr/tomato-box.webp" alt="" draggable="false"><img class="fi" data-s="4" src="img/fr/egg-tray.webp" alt="" draggable="false"><i class="hand" id="frHand"></i></div><div class="tara" id="frTara"><button class="on" type="button" data-t="bag">Пакет</button><button type="button" data-t="bowl">Миска</button><button type="button" data-t="pile">Купка</button></div><p class="fs" id="frNote">Тягни продукти по полицях, яблукам міняй тару</p></div><div class="fw p2" style="--t:3deg;--d:.8s"><p class="fk">Свіжість видно по вигляду</p><div class="tile f0" id="frTile"><img id="frImg" src="img/fr/apple.webp" alt=""><b>Яблука</b><span id="frLbl">свіже, 6 днів</span></div></div>
+      <div class="fw p3 dark" style="--t:-2deg;--d:1.2s"><p class="fk">Додати продукт</p><div class="bc"><i class="laser"></i></div><p class="fs">Штрихкод, фото або плитка. <b>3 секунди</b></p></div>
+      <img class="kitty" src="img/cat-black.png" alt=""></div>
+  </article>
+  <article class="case reveal" data-app="medkit">
+    <div class="txt">
+      <div class="meta"><span class="num">03</span><span class="tag">в сторах і Telegram</span></div>
+      <h3 class="h3">Аптечка</h3>
+      <p class="tl">Аптечка, яка <b>памʼятає терміни</b> за тебе</p>
+      <p class="lead">Наводиш камеру на пачку, Аптечка читає назву і термін сама. Три пачки за десять секунд, жодної форми. Коли щось протермінується, вона підсвітить. Коли час пити, нагадає</p>
+      <ul class="feats"><li style="--i:0"><i class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 8V5a1 1 0 0 1 1-1h3M16 4h3a1 1 0 0 1 1 1v3M20 16v3a1 1 0 0 1-1 1h-3M8 20H5a1 1 0 0 1-1-1v-3M3 12h18"/></svg></i><div><b>Скан за секунду</b><span>Читає штрихкод і DataMatrix з коробки. Назву бере з державного реєстру ліків</span></div></li><li style="--i:1"><i class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m3 11 9-7 9 7v9a1 1 0 0 1-1 1h-5v-6h-6v6H4a1 1 0 0 1-1-1v-9Z"/></svg></i><div><b>Кілька аптечок</b><span>Дім, машина, дача, батьки. Кожна зі своїм вмістом в одному застосунку</span></div></li><li style="--i:2"><i class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="2.5" y="8.5" width="19" height="7" rx="3.5" transform="rotate(-45 12 12)"/><path d="m8.5 8.5 7 7"/></svg></i><div><b>Нагадування рідним</b><span>Курс для мами, дитини чи себе. Що закінчується, Аптечка складає в список для аптеки</span></div></li></ul>
+      <p class="uniq"><span class="sticker" style="--tilt:-4deg">чому це круто</span><span>Без акаунта і реєстрації. І вона чесно пише, якщо в пачки немає доведеної дії. Арбідол, привіт</span></p>
+      <div class="cta"><a class="btn mint" href="https://t.me/medkitapp_bot/app"><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M21.6 3.3 2.9 10.6c-1.1.4-1.1 1.1-.2 1.4l4.7 1.5 1.8 5.6c.2.6.4.8.8.8.5 0 .7-.2 1-.5l2.4-2.3 4.9 3.6c.9.5 1.5.2 1.8-.8L23 4.9c.3-1.3-.5-1.9-1.4-1.6zM8.3 13.2l9.9-6.2c.5-.3.9-.1.5.2l-8.4 7.6-.3 3.5-1.7-5.1z"/></svg>Відкрити у Telegram</a><span class="stores">Є в App Store і Google Play</span></div>
+    </div>
+    <div class="vis"><div class="phone" style="--rot:-2deg"><div class="scr"><div class="notch"></div><div class="screen on"><img class="shot" src="img/scr-medkit.jpg" alt="Екран Аптечки: головна"></div></div></div><div class="fw p1" style="--t:-3deg;--d:.4s"><p class="fk">Скан пачки</p><div class="box" id="mBox"><i class="laser"></i><b id="mName">Ібупрофен 400</b><small>DataMatrix на коробці</small><span class="dm"></span></div><span class="pill ok" id="mPill">термін до 03.2027</span><br><button class="mini" type="button" id="mBtn">Сканувати наступну</button></div>
+      <div class="fw p2 cabs" style="--t:3deg;--d:.8s"><p class="fk">Аптечки</p><div class="chips"><span class="on">Дім <em>24</em></span><span>Машина <em>6</em></span><span>Дача <em>9</em></span><span>Батьки <em>17</em></span></div></div>
+      <div class="fw p3 dark" style="--t:-2deg;--d:1.2s"><p class="fk">Нагадування, 9:00</p><div class="chk"><i id="mChk"></i><span>Мамі: Лоратадин, 1 таблетка</span></div></div></div>
+  </article>
 </section>
 
-<section class="state wrap" data-shape="paws">
-  <p class="k">Що таке Глупоня</p>
-  <p class="big-lead">Глупоня — це я, Клодік і чат. Я придумую застосунок, малюю екрани, <span class="mark">вирішую, що робимо, а що ні</span> і доводжу до релізу. Клодік пише код. Усе на стрімі</p>
-  <div class="corner chatcard reveal">
-    <span class="nick">Оня</span>
-    <p>З жовтня три застосунки. Ідеї мої, екрани мої, що робити спочатку, а що потім, теж я. Код Клодіка</p>
-    <p><b>— А чого на стрімі?</b></p>
-    <p>Бо так веселіше. Чат бачить, як воно робиться, і пише, що не так, ще до релізу</p>
+<section class="sec wrap station" id="station" data-shape="heart">
+  <div class="sec-head reveal"><p class="k">Четвертий проєкт</p><h2 class="h2">Глупостанція</h2><p class="lead">Програма, яку я зробила для свого стріму, бо набридло платити за пʼять сервісів і мати пʼять різних стилів у кадрі. Усе, що нижче, працює прямо тут, можна тицяти</p></div>
+  <div class="st-usp reveal"><p class="k">Головна фішка</p><p class="big-lead">Інший вигляд стріму за один клік. Шість скінів, сім палітр, і чат може перемикати їх сам за бали каналу</p></div>
+  <div class="st-demo reveal" id="stDemo">
+    <div class="st-stage"><span class="tag yellow">живе демо</span><iframe id="stFrame" src="st/demo.html" title="Демо Глупостанції: кадр стріму зі справжніми оверлеями" loading="lazy"></iframe></div>
+    <div class="st-ctl">
+      <div class="grp"><span class="lbl">Скін</span><div class="bts" data-cmd="skin"><button type="button" data-v="" class="on">Базовий</button><button type="button" data-v="notebook">Зошит</button><button type="button" data-v="polaroid">Полароїд</button><button type="button" data-v="vhs">VHS</button><button type="button" data-v="receipt">Чек</button><button type="button" data-v="terminal">Термінал</button></div></div>
+      <div class="grp"><span class="lbl">Колір</span><div class="bts sw" data-cmd="pal"><button type="button" data-v="" class="brand on" style="--c:var(--pink)" aria-label="Фірмова" title="Фірмова"></button><button type="button" data-v="#78EEC4" style="--c:#78EEC4" aria-label="Мʼятна" title="Мʼятна"></button><button type="button" data-v="#9146FF" style="--c:#9146FF" aria-label="Фіолетова" title="Фіолетова"></button><button type="button" data-v="#FFD84D" style="--c:#FFD84D" aria-label="Жовта" title="Жовта"></button><button type="button" data-v="#4CD97B" style="--c:#4CD97B" aria-label="Зелена" title="Зелена"></button><button type="button" data-v="#8FD3FF" style="--c:#8FD3FF" aria-label="Блакитна" title="Блакитна"></button><button type="button" data-v="#FF7ABE" style="--c:#FF7ABE" aria-label="Рожева" title="Рожева"></button></div></div>
+      <div class="grp"><span class="lbl">Алерти</span><div class="bts alerts" data-cmd="alert"><button type="button" data-v="follow">Фоллоу</button><button type="button" data-v="sub">Саб</button><button type="button" data-v="raid">Рейд</button><button type="button" data-v="donate">Донат</button><button type="button" data-v="klodik">Клодік каже</button><button type="button" data-v="tarot">Карта дня</button></div></div>
+      <div class="grp tools"><button class="tg" type="button" id="stSound" aria-pressed="true">Звук є</button><button class="tg" type="button" id="stPlan" aria-pressed="false">План у кадрі</button></div>
+    </div>
+  </div>
+  <div class="st-why reveal">
+    <article class="paper plum"><p class="k">Для мене</p><h3>Один пульт замість пʼяти вкладок</h3><p>Донати з Donatello, monobank і Ko-fi, нагороди Twitch, музика, кліпи і план на ефір в одному вікні. Недороблене з плану саме переїжджає на наступний стрім</p></article>
+    <article class="paper plum"><p class="k">Для чату</p><h3>Чат сам крутить оверлей</h3><p>За бали каналу чат перефарбовує оверлей, тягне карту дня, вмикає озвучку. Глупобот відповідає, памʼятає постійних і підколює новеньких</p></article>
+    <article class="paper plum"><p class="k">Для каналу</p><h3>Є причина повернутись</h3><p>У кожного глядача свій профіль: ачивки, звання, альбом карт. За вечір усі 24 не зібрати, тож приходять ще. Кліпи після ефіру станція ріже сама</p></article>
+  </div>
+  <div class="st-tarot" id="tarot">
+    <div class="sec-head reveal"><p class="k">Спробуй просто зараз</p><h2 class="h2">Витягни свою карту</h2></div>
+    <div class="inner reveal">
+    <div class="stage" id="tStage" aria-label="Карта таро, натисніть щоб витягнути">
+      <div class="card3" id="tCard">
+        <div class="face front"><img id="tFront" src="img/tarot/back.webp" alt=""><div class="holo" id="tHolo"></div><div class="glare" id="tGlare"></div></div>
+        <div class="face back"><img src="img/tarot/back.webp" alt=""></div>
+      </div>
+    </div>
+    <div class="info">
+      <p class="num" id="tNum">Карта дня зі стріму</p>
+      <h3 class="title" id="tTitle">Сорочкою вгору</h3>
+      <span class="rar" id="tRar" style="background:var(--surface)">24 карти, 4 рідкості</span>
+      <p class="say" id="tSay">Клацни по карті. Шанс на легендарну три відсотки, як на стрімі</p>
+      <div class="actions"><button class="btn pink" id="tBtn" type="button">Витягнути карту</button><a class="btn twitch" href="https://twitch.tv/gluponya">Забрати собі в профіль</a></div>
+      <p class="hint" id="tHint">Тут карта тренувальна. На стрімі напиши в чат !таро, і справжня ляже в твій альбом. Зібрав усі 24, отримав VIP каналу</p>
+    </div>
+  </div>
+  </div>
+  <div class="st-cta reveal"><p class="big-lead">Хочеш таку станцію на свій канал?</p><a class="btn mint" href="#contacts">Напиши мені</a></div>
+</section>
+
+
+<section class="how wrap" id="how" data-shape="heart">
+  <div class="grid">
+    <div class="paper left reveal">
+      <p class="k" style="color:var(--on-fill)">Як це працює</p>
+      <p class="big-lead">Приблизно так виглядає кожен стрім</p>
+      <div class="stack"><span class="sticker" style="--tilt:-4deg">так, окей</span><span class="sticker mint" style="--tilt:3deg">бе-бе-бе</span><span class="sticker pink" style="--tilt:-6deg">все пропало</span><span class="sticker mint" style="--tilt:4deg">це перемога</span></div>
+      <div class="kl" id="kl" aria-live="off"><div class="face" aria-hidden="true">К</div><div class="bub"><small>Клодік</small><span id="klt"></span><i class="c" aria-hidden="true"></i></div></div>
+      <img src="img/krutaya.png" alt="Оня показує великий палець, кружечок зі стріму" style="width:min(260px,60%);filter:drop-shadow(0 12px 20px rgba(20,4,15,.4))">
+    </div>
+    <div class="paper mint right reveal">
+      <div class="item"><b>А:</b><div><strong>Оня придумує продукт</strong><p>Малюю екрани і вирішую, що піде в першу версію, а що почекає</p></div></div>
+      <div class="item"><b>Б:</b><div><strong>Клодік пише код</strong><p>Я кажу, що треба, Клодік пише, я дивлюсь і повертаю на доробку. Разів з трьох виходить</p></div></div>
+      <div class="item"><b>В:</b><div><strong>Щось ламається</strong><p>Завжди. Баг знаходжу я або чат, Клодік лагодить, і так по колу</p></div></div>
+      <div class="item"><b>Г:</b><div><strong>Тестуємо на людях</strong><p>Спочатку на собі, потім на сім'ї і друзях, потім на глядачах. Якщо мама розібралась без пояснень, можна випускати</p></div></div>
+      <div class="item"><b>Ґ:</b><div><strong>Good enough</strong><p>Випускаємо те, що працює сьогодні. Решту доробляємо на наступному стрімі</p></div></div>
+    </div>
   </div>
 </section>
 
@@ -493,22 +652,11 @@ body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset
     <div class="story-text reveal">
       <p class="k">Про мене</p>
       <h2 class="h2">Я не вмію програмувати. Чесно</h2>
-      <p class="lead">Диплом комп&#39;ютерного інженера є, але востаннє я щось кодила так давно, що це не рахується. Зате я вмію придумати, що має бути в застосунку, намалювати, як воно виглядає, і не відпускати, поки воно не запрацює</p>
-      <p class="lead">Почала в жовтні 2026. Витратила купу грошей на підписки ШІ і захотіла зробити щось маленьке, але до кінця. Ідея прийшла, коли я знову викинула засохлу зелень, яку заховала в глибині холодильника. Так з&#39;явилась Фрешка: холодильник у телефоні</p>
-      <p class="lead">Стрімлю, бо так веселіше. Чат знаходить баги раніше за мене, сперечається про кольори і дивиться на котів. Коти теж на стрімі постійно: ходять перед камерою, лягають на клавіатуру і показують попи</p>
+      <p class="lead">Диплом комп&#39;ютерного інженера є, але код я востаннє писала так давно, що це не рахується. Зате вмію вчепитися в ідею і не відпускати, поки застосунок не запрацює</p>
+      <p class="lead">Почала в жовтні 2026: витратила купу грошей на ШІ-підписки і захотіла довести до кінця хоч щось маленьке. Ідея прийшла, коли я вкотре викинула засохлу зелень із глибини холодильника. Так з&#39;явилася Фрешка</p>
+      <p class="lead">Стрімлю, бо так веселіше, а коти все одно лізуть у кадр</p>
       <div class="stack"><span class="sticker" style="--tilt:-4deg">почуваюсь бабулечкою</span><span class="sticker mint" style="--tilt:3deg">good enough</span></div>
     </div>
-  </div>
-  <div class="cats reveal">
-    <article class="cat"><img src="img/bubunya.jpg" alt="Бубуня, чорний кіт"><h3>Бубуня</h3><p>Чорний кіт і зірка стріму. Приходить, коли все пропало, і сідає прямо в кадр</p></article>
-    <article class="cat"><img src="img/chukens.jpg" alt="Чукенс, рудий кіт, дивиться вгору"><h3>Чукенс</h3><p>Рудий. Лягає на клавіатуру в найважливіший момент і дивиться так, ніби це я заважаю</p></article>
-    <article class="cat"><img src="img/rops.jpg" alt="Ропс, мопс, спить на подушці"><h3>Ропс</h3><p>Мопс, який упевнений, що він кіт. Хропе під столом, чат чує</p></article>
-  </div>
-  <div class="catpics reveal" id="pets">
-    <img src="img/rops-67.jpg" alt="Ропс облизується, Оня тримає кубик із числом 67" style="--tilt:3deg">
-    <img src="img/chukens-belly.jpg" alt="Чукенс лежить догори пузом на жовтій ковдрі" style="--tilt:-3deg">
-    <img src="img/cats-both.jpg" alt="Бубуня і Чукенс разом на полиці" style="--tilt:2deg">
-    <img src="img/chukens-peek.jpg" alt="Чукенс визирає з-за шафи" style="--tilt:-2deg">
   </div>
   <div class="clips reveal" id="cuts">
     <p class="k">Нарізки зі стрімів</p>
@@ -529,12 +677,6 @@ body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset
     <div class="chatcard" style="--tilt:1.5deg"><span class="nick">klirmio21</span><p>«А стрим становится все лучше и лучше. Потрясающий потенциал»</p></div>
     <div class="chatcard" style="--tilt:-1deg"><span class="nick">alexsad95</span><p>«Дизайн прикольный, люблю такой. Вроде необрутализм или типо того»</p></div>
     <div class="chatcard" style="--tilt:0.5deg"><span class="nick">pashok_26</span><p>«Первый раз зашел из реков, классный стрим, постоянно кодишь на стримах?»</p></div>
-    <div class="chatcard" style="--tilt:1deg"><span class="nick">leksa_faers</span><p>«Видела ютуб видео, кайфово смонтировано, было интересно смотреть и про кастрюлю в горошек, и про яйцо)»</p></div>
-    <div class="chatcard" style="--tilt:-1.5deg"><span class="nick">allyadin</span><p>«Ты меня конечно извини)) дизайн красивый, НО прога по слежению за аптечкой.. ну.. спорно КАК ПО МНЕ»</p></div>
-    <div class="chatcard" style="--tilt:0.5deg"><span class="nick">i_am_peepo_man</span><p>«Предлагаю киллер фичу: это напоминание, что корм для кота заканчивается»</p></div>
-    <div class="chatcard" style="--tilt:-1deg"><span class="nick">klirmio21</span><p>«Блин, выглядит как будто навайбкожено Kappa»</p></div>
-    <div class="chatcard" style="--tilt:1deg"><span class="nick">footagegod</span><p>«Ну лучше чем у большинства получается))»</p></div>
-    <div class="chatcard" style="--tilt:-0.5deg"><span class="nick">cesarus1337</span><p>«Графика на стриме прикольная»</p></div>
   </div>
 </section>
 
@@ -542,11 +684,11 @@ body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset
   <div class="pin">
     <div class="head wrap"><p class="k">Стрім у цифрах, жовтень 2026</p></div>
     <div class="rail" id="rail">
-      <div class="paper"><span class="src">досвід програмування</span><span class="num">0</span><span class="cap">рядків коду написала сама. Три застосунки, і жодного рядка руками</span><span class="sticker" style="--tilt:6deg">я пенсія</span></div>
-      <div class="paper pink"><span class="src">Twitch, з жовтня</span><span class="num" data-count="144">0</span><span class="cap">людей писали в чат за перший місяць стрімів. Половина з них знайшла хоча б один баг</span><span class="sticker" style="--tilt:-5deg">осуджую</span></div>
-      <div class="paper mint"><span class="src">у кадрі</span><span class="num">3</span><span class="cap">хвости ходять перед камерою: Бубуня, Чукенс і мопс Ропс, який вважає, що він кіт</span></div>
-      <div class="paper yellow"><span class="src">Twitch, 30 днів</span><span class="num" data-count="5708">0</span><span class="cap">переглядів за місяць. Майже всі зайшли вперше</span><span class="sticker pink" style="--tilt:-5deg">ошалєть</span></div>
-      <div class="paper plum"><span class="src">застосунки</span><span class="num" style="color:var(--mint)">3</span><span class="cap">Грошик уже в телефоні, Фрешку робимо, Аптечка чекає своєї черги</span></div>
+      <div class="paper"><span class="src">досвід програмування</span><span class="num">0</span><span class="cap">рядків коду на три застосунки написала сама</span><span class="sticker" style="--tilt:6deg">я пенсія</span></div>
+      <div class="paper pink"><span class="src">Twitch, з жовтня</span><span class="num" data-count="144">0</span><span class="cap">людини писали в чат за перший місяць стрімів. Половина з них знайшла хоча б один баг</span><span class="sticker" style="--tilt:-5deg">осуджую</span></div>
+      <div class="paper mint"><span class="src">у кадрі</span><span class="num">3</span><span class="cap">хвости ходять перед камерою: Бубуня, Чукенс і мопс Ропс</span></div>
+      <div class="paper yellow"><span class="src">Twitch, 30 днів</span><span class="num" data-count="5708">0</span><span class="cap">переглядів за місяць. Майже всі глядачі зайшли вперше</span><span class="sticker pink" style="--tilt:-5deg">ошалєть</span></div>
+      <div class="paper plum"><span class="src">застосунки</span><span class="num" style="color:var(--mint)">3</span><span class="cap">Фрешка й Аптечка вже в сторах і в Telegram, Грошик готує публічну версію</span></div>
     </div>
   </div>
 </section>
@@ -556,33 +698,15 @@ body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset
     <div class="lines" aria-hidden="true"></div>
     <p class="word">Придумуємо</p>
     <p class="word">Ламаємо</p>
-    <p class="word">Чинимо</p>
+    <p class="word">Лагодимо</p>
     <p class="word">Випускаємо</p>
   </div>
 </section>
 
-<section class="how wrap" id="how" data-shape="heart">
-  <div class="grid">
-    <div class="paper left reveal">
-      <p class="k" style="color:var(--on-fill)">Як це працює</p>
-      <p class="big-lead">Приблизно так виглядає кожен стрім. Код пише Клодік, усе інше на мені</p>
-      <div class="stack"><span class="sticker" style="--tilt:-4deg">так, окей</span><span class="sticker mint" style="--tilt:3deg">бе-бе-бе</span><span class="sticker pink" style="--tilt:-6deg">все пропало</span><span class="sticker mint" style="--tilt:4deg">це перемога</span></div>
-      <img src="img/krutaya.png" alt="Оня показує великий палець, кружечок зі стріму" style="width:min(260px,60%);border-radius:999px;box-shadow:var(--shadow)">
-    </div>
-    <div class="paper mint right reveal">
-      <div class="item"><b>А:</b><div><strong>Оня придумує продукт</strong><p>Починається з того, що мене щось бісить у побуті. Малюю екрани, вирішую, що в першу версію, а що потім</p></div></div>
-      <div class="item"><b>Б:</b><div><strong>Клодік пише код</strong><p>Я ставлю задачу, Клодік робить, я перевіряю і повертаю на доробку. Чату пояснюю, що відбувається, людською мовою</p></div></div>
-      <div class="item"><b>В:</b><div><strong>Щось ламається</strong><p>Завжди. Я або чат знаходимо баг, Клодік чинить, я кажу «все пропало», а потім «це перемога»</p></div></div>
-      <div class="item"><b>Г:</b><div><strong>Тестуємо на людях</strong><p>Спочатку на собі, потім на сім'ї і друзях, потім на глядачах. Якщо мама розібралась без пояснень, можна випускати</p></div></div>
-      <div class="item"><b>Ґ:</b><div><strong>Good enough</strong><p>Випускаємо те, що працює сьогодні. Решту доробляємо на наступному стрімі</p></div></div>
-    </div>
-  </div>
-</section>
-
 <section class="sec wrap" id="content" data-shape="paws">
-  <div class="sec-head reveal"><p class="k">Не тільки застосунки</p><h2 class="h2">Стріми і контент,<br>де все це відбувається</h2><p class="lead">Застосунки це половина. Друга половина — стріми, епізоди на YouTube і шортси про те, як воно все робилось</p></div>
+  <div class="sec-head reveal"><p class="k">Не тільки застосунки</p><h2 class="h2">Де все це<br>відбувається</h2><p class="lead">Половина Глупоні — застосунки. Друга половина — стріми, де їх видно в процесі, і нарізки з них</p></div>
   <div class="media reveal">
-    <article class="mcard"><span class="tag" style="background:var(--twitch);color:var(--white)">Twitch</span><h3>Прямі ефіри</h3><p>Кілька разів на тиждень. На початку пишу список, що сьогодні звершуємо, в кінці ставимо галочки. Чат підказує, сперечається і вибирає, який екран кращий</p><a class="btn twitch" href="https://twitch.tv/gluponya">twitch.tv/gluponya</a></article>
+    <article class="mcard"><span class="tag" style="background:var(--twitch);color:var(--white)">Twitch</span><h3>Прямі ефіри</h3><p>Кілька разів на тиждень. На початку список, що сьогодні робимо, в кінці галочки. Чат підказує, сперечається і голосує, який екран кращий</p><a class="btn twitch" href="https://twitch.tv/gluponya">twitch.tv/gluponya</a></article>
     <article class="mcard"><span class="tag">YouTube</span><h3>Довгі епізоди</h3><p>Один епізод — одна історія: як збирали Фрешку, як за пів години намалювали 66 іконок, як Грошик навчився рахувати до зарплати</p><a class="btn mint" href="https://youtube.com/@gluponya">Дивитись епізоди</a></article>
     <article class="mcard"><span class="tag yellow">TikTok і Shorts</span><h3>Короткі моменти</h3><p>Хвилина про одну фічу або один баг. Від «все пропало» до «це перемога» за шістдесят секунд</p><a class="btn pink" href="https://tiktok.com/@gluponya">Шортси</a></article>
   </div>
@@ -594,12 +718,13 @@ body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset
   </div>
 </div>
 
+
 <section class="sec band wrap" id="stream" data-shape="heart">
   <div class="inner paper reveal">
     <div class="copy">
       <p class="k" style="color:var(--on-fill)">Усе це в прямому ефірі</p>
       <h2 class="h2">Приходьте дивитись, як воно ламається</h2>
-      <p class="lead">Стріми на Twitch кілька разів на тиждень. Що не влізло в ефір, виходить епізодами на YouTube і шортсами в TikTok</p>
+      
       <div class="actions"><a class="btn twitch" href="https://twitch.tv/gluponya">twitch.tv/gluponya</a><a class="btn pink" href="https://youtube.com/@gluponya">YouTube</a></div>
     </div>
     <div class="faces" aria-hidden="true"><img src="img/shok.png" alt=""><img src="img/hehe.png" alt=""><img src="img/kaif.png" alt=""><img src="img/omega-glups.png" alt=""><img src="img/hatsker.png" alt=""></div>
@@ -610,20 +735,46 @@ body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset
 <footer class="foot wrap" id="contacts">
   <div class="grid">
     <div class="clocks">
-      <div class="clock"><b id="kyiv"><span>00</span><span>00</span></b><small>Чернігів, тут усе і робиться</small></div>
-      <div class="clock"><b id="utc"><span>00</span><span>00</span></b><small>UTC, для чату з інших країн</small></div>
+      <div class="clock"><b id="kyiv"><span>00</span><span>00</span></b><small>Чернігів</small></div>
+      <div class="clock"><b id="utc"><span>00</span><span>00</span></b><small>UTC</small></div>
     </div>
-    <nav class="links" aria-label="Розділи сайту"><a href="#top">Головна</a><a href="#apps">Застосунки</a><a href="#how">Як це працює</a><a href="#chat">Чат</a><a href="https://twitch.tv/gluponya">Twitch</a><a href="https://youtube.com/@gluponya">YouTube</a></nav>
+    <nav class="links" aria-label="Розділи сайту"><a href="#top">Головна</a><a href="#apps">Застосунки</a><a href="#station">Глупостанція</a><a href="#how">Як це працює</a><a href="#chat">Чат</a><a href="https://twitch.tv/gluponya">Twitch</a><a href="https://youtube.com/@gluponya">YouTube</a></nav>
   </div>
   <div class="cols">
     <div><p class="k">Написати</p><p class="note">Якщо хочете щось зробити разом, спитати про застосунки або покликати на подкаст</p></div>
-    <div><p class="k">Юридично</p><p class="note">ТОВ «Глупоня», Україна. Розробка застосунків і відеоконтент</p></div>
+    <div><p class="k">Юридично</p><p class="note">Глупоня, Україна. Розробка застосунків і відеоконтент</p></div>
     <div><p class="k">Документи</p><a href="#privacy">Політика конфіденційності</a><a href="#terms">Умови використання</a></div>
   </div>
   <div class="mail"><code id="mail">hello@gluponya.tv</code><button type="button" id="copy">Скопіювати</button></div>
-  <div class="legal"><span class="note">2026 ТОВ «Глупоня»</span><span class="note">Зроблено в Чернігові, з котами</span></div>
+  <div class="legal"><span class="note">2026 Глупоня</span><span class="note">Зроблено в Чернігові</span></div>
 </footer>
 
+<script id="gluRu">window.GLU_RU={"text":{"Демо Глупостанції: кадр стріму зі справжніми оверлеями":"Демо Глупостанции: кадр стрима с настоящими оверлеями","живе демо":"живое демо","Базовий":"Базовый","Зошит":"Тетрадь","Полароїд":"Полароид","Термінал":"Терминал","Фірмова":"Фирменная","Мʼятна":"Мятная","Фіолетова":"Фиолетовая","Жовта":"Жёлтая","Зелена":"Зелёная","Блакитна":"Голубая","Рожева":"Розовая","Клодік каже":"Клодик говорит","три сезони стрімів":"три сезона стримов","Глупоня, на початок сторінки":"Глупоня, в начало страницы","феномен":"феномен","Глупоня":"Глупоня","Розділи":"Разделы","Застосунки":"Приложения","Глупостанція":"Глупостанция","Про мене":"Обо мне","Стріми":"Стримы","Чат":"Чат","Контакти":"Контакты","Стрім":"Стрим","продукт мій, код Клодіка":"продукт мой, код Клодика","Оня з жабками на обличчі, селфі":"Оня с лягушками на лице, селфи","Чат зі стріму":"Чат со стрима","чат зі стріму":"чат со стрима","Придумуємо,":"Придумываем,","робимо":"делаем","і показуємо":"и показываем","в ефірі":"в эфире","Як це працює":"Как это работает","Три застосунки,":"Три приложения,","Кожен виріс із того, що мене бісило в побуті. Гортайте далі":"Каждое выросло из того, что бесило меня в быту. Листай дальше","Грошик":"Грошик","Фрешка":"Фрешка","Аптечка":"Аптечка","Екран Грошика: головна":"Экран Грошика: главная","Екран Фрешки: холодильник":"Экран Фрешки: холодильник","Екран Аптечки: головна":"Экран Аптечки: главная","робимо публічну версію":"делаем публичную версию","в сторах і Telegram":"в сторах и Telegram","Сімейний гаманець. Підключається до monobank, сам розкладає витрати за категоріями і показує, чи дотягнете до кінця місяця. Токен банку живе тільки на вашому телефоні":"Семейный кошелёк. Подключается к monobank, сам раскладывает траты по категориям и показывает, дотянешь ли до конца месяца. Токен банка живёт только у тебя на телефоне","Холодильник у телефоні. Скануєте штрихкод, Фрешка запам'ятовує термін придатності і нагадає, що молоко треба допити сьогодні. Полиці з 3D-іконками, список покупок із того, що закінчилось":"Холодильник в телефоне. Сканируешь штрихкод, Фрешка запоминает срок годности и напомнит, что молоко надо допить сегодня. Полки с 3D-иконками, список покупок из того, что закончилось","Домашня аптечка, яка пам'ятає терміни за вас. Нагадування про прийом для всієї родини, прострочені ліки підсвічуються одразу, список для аптеки в один тап":"Домашняя аптечка, которая помнит сроки за тебя. Напоминания о приёме для всей семьи, просроченные лекарства подсвечиваются сразу, список для аптеки в один тап","Відкрити Грошик":"Открыть Грошик","Відкрити в Telegram":"Открыть в Telegram","Публічна версія, Telegram і стори — скоро":"Публичная версия, Telegram и сторы — скоро","Є в App Store і Google Play":"Есть в App Store и Google Play","Сімейний гаманець. Підключається до monobank, сам розкладає витрати і показує, чи дотягнете до кінця місяця":"Семейный кошелёк. Подключается к monobank, сам раскладывает траты и показывает, дотянешь ли до конца месяца","Холодильник у телефоні. Скануєте штрихкод, Фрешка знає термін придатності і нагадає, що молоко треба допити сьогодні":"Холодильник в телефоне. Сканируешь штрихкод, Фрешка знает срок годности и напомнит, что молоко надо допить сегодня","Відкрити Фрешку в Telegram":"Открыть Фрешку в Telegram","Домашня аптечка, яка пам'ятає терміни за вас і нагадує про прийом усій родині":"Домашняя аптечка, которая помнит сроки за тебя и напоминает о приёме всей семье","Відкрити Аптечку в Telegram":"Открыть Аптечку в Telegram","Четвертий проєкт":"Четвёртый проект","Екран «Скоро почнемо» зі стріму, піксельний шрифт і план на сьогодні":"Экран «Скоро начнём» со стрима, пиксельный шрифт и план на сегодня","Пульт Глупостанції: донати, нагороди за бали, кліпи, музика й озвучка в одному вікні":"Пульт Глупостанции: донаты, награды за баллы, клипы, музыка и озвучка в одном окне","Плашка збору в оверлеї стріму":"Плашка сбора в оверлее стрима","Для мене":"Для меня","Для чату":"Для чата","Для каналу":"Для канала","Що вміє Глупостанція":"Что умеет Глупостанция","Глупобот у чаті":"Глупобот в чате","Карта дня":"Карта дня","Озвучка чату":"Озвучка чата","«Клодік, кліп» голосом":"«Клодик, клип» голосом","Свої алерти з мяу":"Свои алерты с мяу","Профіль глядача і 32 ачивки":"Профиль зрителя и 32 ачивки","Шість палітр оверлея":"Шесть палитр оверлея","Кліпи після ефіру самі":"Клипы после эфира сами","План у кадрі":"План в кадре","Донати з трьох сервісів":"Донаты из трёх сервисов","Глупобот":"Глупобот","відповідає в чаті, вітає новачків і пам’ятає, як пише кожен глядач":"отвечает в чате, приветствует новичков и помнит, как пишет каждый зритель","!таро":"!таро","в чаті, і карта лягає на екран, а потім у твій альбом. 24 карти, 4 рідкості":"в чате, и карта ложится на экран, а потом в твой альбом. 24 карты, 4 редкости","Питання":"Вопрос","Клодіку":"Клодику","за бали: відповідь на екрані і голосом, щоб чути, не читаючи":"за баллы: ответ на экране и голосом, чтобы слышать, не читая","Станція слухає стрімера. Сказав":"Станция слушает стримера. Сказал","«Клодік, кліп»":"«Клодик, клип»",", і момент уже збережений":", и момент уже сохранён","Фоллоу, саб, рейд: кожен алерт у стилі каналу, з котиком і":"Фоллоу, саб, рейд: каждый алерт в стиле канала, с котиком и","мяу":"мяу","!профіль":"!профиль","показує картку глядача: стріми, карти, улюбленець і 32 ачивки":"показывает карточку зрителя: стримы, карты, любимец и 32 ачивки","Зошит, полароїд, VHS, чек, термінал і базова. Чат":"Тетрадь, полароид, VHS, чек, терминал и базовая. Чат","міняє палітру за бали":"меняет палитру за баллы","просто під час ефіру":"прямо во время эфира","Через 10 хвилин після стріму станція сама знаходить":"Через 10 минут после стрима станция сама находит","найкращі моменти":"лучшие моменты","і ріже кліпи":"и режет клипы","Список справ на стрім":"Список дел на стрим","прямо в кадрі":"прямо в кадре",": глядачі бачать, що зроблено, а що ще ні":": зрители видят, что сделано, а что ещё нет","Monobank, Donatello і Ko-fi в":"Monobank, Donatello и Ko-fi в","одній плашці":"одной плашке",", з мемом від Клодіка до кожного донату":", с мемом от Клодика к каждому донату","Спробуй просто зараз":"Попробуй прямо сейчас","Витягни свою карту":"Вытяни свою карту","Карта таро, натисніть щоб витягнути":"Карта таро, нажми, чтобы вытянуть","Карта дня зі стріму":"Карта дня со стрима","Сорочкою вгору":"Рубашкой вверх","24 карти, 4 рідкості":"24 карты, 4 редкости","Клацни по карті. Шанс на легендарну три відсотки, як на стрімі":"Кликни по карте. Шанс на легендарную три процента, как на стриме","Витягнути карту":"Вытянуть карту","Забрати собі в профіль":"Забрать себе в профиль","Тут карта тренувальна. На стрімі напиши в чат !таро, і справжня ляже в твій альбом. Зібрав усі 24, отримав VIP каналу":"Тут карта тренировочная. На стриме напиши в чат !таро, и настоящая ляжет в твой альбом. Собрал все 24, получил VIP канала","Хочеш таку станцію на свій канал?":"Хочешь такую станцию на свой канал?","Напиши мені":"Напиши мне","Приблизно так виглядає кожен стрім":"Примерно так выглядит каждый стрим","так, окей":"так, окей","бе-бе-бе":"бе-бе-бе","все пропало":"всё пропало","це перемога":"это перемога","К":"К","Клодік":"Клодик","Оня показує великий палець, кружечок зі стріму":"Оня показывает большой палец, кружочек со стрима","А:":"А:","Оня придумує продукт":"Оня придумывает продукт","Малюю екрани і вирішую, що піде в першу версію, а що почекає":"Рисую экраны и решаю, что пойдёт в первую версию, а что подождёт","Б:":"Б:","Клодік пише код":"Клодик пишет код","В:":"В:","Щось ламається":"Что-то ломается","Завжди. Баг знаходжу я або чат, Клодік лагодить, і так по колу":"Всегда. Баг нахожу я или чат, Клодик чинит, и так по кругу","Г:":"Г:","Тестуємо на людях":"Тестируем на людях","Спочатку на собі, потім на сім'ї і друзях, потім на глядачах. Якщо мама розібралась без пояснень, можна випускати":"Сначала на себе, потом на семье и друзьях, потом на зрителях. Если мама разобралась без объяснений, можно выпускать","Ґ:":"Д:","Випускаємо те, що працює сьогодні. Решту доробляємо на наступному стрімі":"Выпускаем то, что работает сегодня. Остальное доделываем на следующем стриме","Оня в шапці з вушками і рожевих окулярах":"Оня в шапке с ушками и розовых очках","це я":"это я","Я не вмію програмувати. Чесно":"Я не умею программировать. Честно","Диплом комп'ютерного інженера є, але код я востаннє писала так давно, що це не рахується. Зате вмію вчепитися в ідею і не відпускати, поки застосунок не запрацює":"Диплом компьютерного инженера есть, но код я в последний раз писала так давно, что это не считается. Зато умею вцепиться в идею и не отпускать, пока приложение не заработает","Почала в жовтні 2026: витратила купу грошей на ШІ-підписки і захотіла довести до кінця хоч щось маленьке. Ідея прийшла, коли я вкотре викинула засохлу зелень із глибини холодильника. Так з'явилася Фрешка":"Начала в октябре 2026: потратила кучу денег на ИИ-подписки и захотела довести до конца хоть что-то маленькое. Идея пришла, когда я в очередной раз выбросила засохшую зелень из глубины холодильника. Так появилась Фрешка","Стрімлю, бо так веселіше, а коти все одно лізуть у кадр":"Стримлю, потому что так веселее, а коты всё равно лезут в кадр","почуваюсь бабулечкою":"чувствую себя бабулечкой","Нарізки зі стрімів":"Нарезки со стримов","їм яблуко":"ем яблоко","Із чату, дослівно":"Из чата, дословно","Що кажуть ті,":"Что говорят те,","хто дивиться":"кто смотрит","«Ну приложения у тебя стильные получаются. Таких мало в магазине. Классно!»":"«Ну приложения у тебя стильные получаются. Таких мало в магазине. Классно!»","«Стилизация бомбезная, lo-fi вайбы) а как ты делаешь иконки продуктов?»":"«Стилизация бомбезная, lo-fi вайбы) а как ты делаешь иконки продуктов?»","«Интересно тут. Я 25 лет кодю, интересно, как вот это всё настроить :)»":"«Интересно тут. Я 25 лет кодю, интересно, как вот это всё настроить :)»","«А стрим становится все лучше и лучше. Потрясающий потенциал»":"«А стрим становится все лучше и лучше. Потрясающий потенциал»","«Дизайн прикольный, люблю такой. Вроде необрутализм или типо того»":"«Дизайн прикольный, люблю такой. Вроде необрутализм или типо того»","«Первый раз зашел из реков, классный стрим, постоянно кодишь на стримах?»":"«Первый раз зашел из реков, классный стрим, постоянно кодишь на стримах?»","Стрім у цифрах, жовтень 2026":"Стрим в цифрах, октябрь 2026","досвід програмування":"опыт программирования","рядків коду на три застосунки написала сама":"строк кода на три приложения написала сама","я пенсія":"я пенсия","Twitch, з жовтня":"Twitch, с октября","людини писали в чат за перший місяць стрімів. Половина з них знайшла хоча б один баг":"человека писали в чат за первый месяц стримов. Половина из них нашла хотя бы один баг","осуджую":"осуждаю","хвости ходять перед камерою: Бубуня, Чукенс і мопс Ропс":"хвоста ходят перед камерой: Бубуня, Чукенс и мопс Ропс","Twitch, 30 днів":"Twitch, 30 дней","переглядів за місяць. Майже всі глядачі зайшли вперше":"просмотров за месяц. Почти все зрители зашли впервые","ошалєть":"ошалеть","застосунки":"приложения","Фрешка й Аптечка вже в сторах і в Telegram, Грошик готує публічну версію":"Фрешка и Аптечка уже в сторах и в Telegram, Грошик готовит публичную версию","Придумуємо":"Придумываем","Ламаємо":"Ломаем","Лагодимо":"Чиним","Випускаємо":"Выпускаем","Не тільки застосунки":"Не только приложения","Де все це":"Где всё это","відбувається":"происходит","Прямі ефіри":"Прямые эфиры","Довгі епізоди":"Длинные эпизоды","Один епізод — одна історія: як збирали Фрешку, як за пів години намалювали 66 іконок, як Грошик навчився рахувати до зарплати":"Один эпизод — одна история: как собирали Фрешку, как за полчаса нарисовали 66 иконок, как Грошик научился считать до зарплаты","Дивитись епізоди":"Смотреть эпизоды","TikTok і Shorts":"TikTok и Shorts","Короткі моменти":"Короткие моменты","Хвилина про одну фічу або один баг. Від «все пропало» до «це перемога» за шістдесят секунд":"Минута про одну фичу или один баг. От «всё пропало» до «это перемога» за шестьдесят секунд","Шортси":"Шортсы","Це перемога":"Это перемога","Я пенсія":"Я пенсия","Кайф":"Кайф","Імба":"Имба","Давай, працюй, машино":"Давай, работай, машина","Хіхоньки-хахоньки":"Хихоньки-хахоньки","Ошалєть":"Ошалеть","Клодік, ти допрацював?":"Клодик, ты доработал?","Це база":"Это база","Вот і думайте":"Вот и думайте","Осуджую":"Осуждаю","Усе це в прямому ефірі":"Всё это в прямом эфире","Приходьте дивитись, як воно ламається":"Приходи смотреть, как оно ломается","Чернігів":"Чернигов","Розділи сайту":"Разделы сайта","Головна":"Главная","Написати":"Написать","Якщо хочете щось зробити разом, спитати про застосунки або покликати на подкаст":"Если хочешь что-то сделать вместе, спросить о приложениях или позвать на подкаст","Юридично":"Юридически","Глупоня, Україна. Розробка застосунків і відеоконтент":"Глупоня, Украина. Разработка приложений и видеоконтент","Документи":"Документы","Політика конфіденційності":"Политика конфиденциальности","Умови використання":"Условия использования","Скопіювати":"Скопировать","2026 Глупоня":"2026 Глупоня","Зроблено в Чернігові":"Сделано в Чернигове","✦ Особлива карта":"✦ Особая карта","Аркан":"Аркан ","Крути карту, вона двостороння":"Крути карту, она двусторонняя","Ще раз":"Ещё раз","Скопійовано":"Скопировано","Мова":"Язык","Відкрити чат на Twitch":"Открыть чат на Twitch","Кадр зі стріму: Оня в камері, термінал Клодіка і план на сьогодні":"Кадр со стрима: Оня в камере, терминал Клодика и план на сегодня","чому це круто":"почему это круто","Сімейний гаманець, який сам рахує, чи":"Семейный кошелёк, который сам считает,","дотягнеш до зарплати":"дотянешь ли до зарплаты","До зарплати":"До зарплаты","Конверти і ліміти":"Конверты и лимиты","Продукти, коти, кава: у кожного свій конверт. Жовтіє, коли лишилось мало":"Продукты, коты, кофе: у каждого свой конверт. Желтеет, когда осталось мало","Бот у Telegram":"Бот в Telegram","днів":"дней","лишилось":"осталось","на день":"в день","Купити каву за 95 ₴":"Купить кофе за 95 ₴","Ще одну? Клодік би не радив":"Ещё одну? Клодик бы не советовал","Грошик: може, вдома зваримо?":"Грошик: может, дома сварим?","Конверти на місяць":"Конверты на месяц","Продукти":"Продукты","3 200 з 5 000":"3 200 из 5 000","Коти":"Коты","980 з 1 200":"980 из 1 200","Кава":"Кофе","470 з 500":"470 из 500","Грошик-бот у Telegram":"Грошик-бот в Telegram","Крупна витрата:":"Крупная трата:","1 240 ₴, Сільпо. Це 18% тижня на продукти":"1 240 ₴, Сильпо. Это 18% недели на продукты","Холодильник, у який":"Холодильник, в который","цікаво зазирати":"интересно заглядывать","Свіжість видно здалеку":"Свежесть видно издалека","Додав за три секунди":"Добавил за три секунды","Штрихкод, фото або плитка продукту. Швидше, ніж поставити молоко на полицю":"Штрихкод, фото или плитка продукта. Быстрее, чем поставить молоко на полку","Спільний холодильник":"Общий холодильник","Відкрити у Telegram":"Открыть в Telegram","Вид":"Вид","Спереду":"Спереди","Зверху":"Сверху","Огірки":"Огурцы","Сир":"Сыр","Три видно, три ховаються ззаду":"Три видно, три прячутся сзади","Зверху видно і задній ряд":"Сверху виден и задний ряд","Свіжість видно по вигляду":"Свежесть видно по виду","свіже, 6 днів":"свежее, 6 дней","скоро, 2 дні":"скоро, 2 дня","терміново, сьогодні":"срочно, сегодня","зіпсоване, викинь":"испортилось, выбрось","Додати продукт":"Добавить продукт","Штрихкод, фото або плитка.":"Штрихкод, фото или плитка.","3 секунди":"3 секунды","Аптечка, яка":"Аптечка, которая","памʼятає терміни":"помнит сроки","за тебе":"за тебя","Кілька аптечок":"Несколько аптечек","Дім, машина, дача, батьки. Кожна зі своїм вмістом в одному застосунку":"Дом, машина, дача, родители. Каждая со своим содержимым в одном приложении","Нагадування рідним":"Напоминания родным","Ібупрофен 400":"Ибупрофен 400","Арбідол":"Арбидол","DataMatrix на коробці":"DataMatrix на коробке","термін до 03.2027":"срок до 03.2027","прострочено з січня":"просрочено с января","без доведеної дії":"без доказанного действия","термін до 11.2027":"срок до 11.2027","Сканувати наступну":"Сканировать следующую","Дім":"Дом","Батьки":"Родители","Нагадування, 9:00":"Напоминание, 9:00","Мамі: Лоратадин, 1 таблетка":"Маме: Лоратадин, 1 таблетка","Я Оня. Вигадую застосунки, малюю їм екрани і не відпускаю, поки не вийде реліз":"Я Оня. Придумываю приложения, рисую им экраны и не отпускаю, пока не выйдет релиз","Глупоня — це я, Клодік і чат. Сидимо в Чернігові. З жовтня 2026 встигли три застосунки і свою програму для стрімів":"Глупоня — это я, Клодик и чат. Сидим в Чернигове. С октября 2026 успели три приложения и свою программу для стримов","Кожен почався з побутової дурниці, яка мене дістала: засохла зелень, прострочені таблетки і вічне «а скільки ще можна витратити»":"Каждое началось с бытовой ерунды, которая меня достала: засохшая зелень, просроченные таблетки и вечное «а сколько ещё можно потратить»","Підключаєш monobank, і витрати самі розкладаються по категоріях. Жодних таблиць у неділю ввечері. Грошик каже, скільки можна витратити сьогодні, щоб в останній тиждень не їсти саму гречку":"Подключаешь monobank, и траты сами раскладываются по категориям. Никаких таблиц в воскресенье вечером. Грошик говорит, сколько можно потратить сегодня, чтобы в последнюю неделю не есть одну гречку","Днів до зарплати і сума на день. Купив каву, сума перерахувалась":"Дней до зарплаты и сумма на день. Купил кофе, сумма пересчиталась","Пише, коли злетіла велика сума, і зранку коротко каже, як справи з бюджетом":"Пишет, когда улетела большая сумма, и утром коротко говорит, как дела с бюджетом","Банківський токен живе тільки в тебе на телефоні, на мій сервер він не їде. І бюджет один на двох: не треба пересилати одне одному скріни з банку":"Банковский токен живёт только у тебя на телефоне, на мой сервер он не едет. И бюджет один на двоих: не нужно пересылать друг другу скрины из банка","Поки тестуємо на своїй сімʼї, публічна версія вже в роботі":"Пока тестируем на своей семье, публичная версия уже в работе","Не список, а намальований холодильник. Продукти стоять на полицях, як насправді. Те, що от-от зіпсується, видно з порога. А те, що сховалось у задньому ряду, видно зверху":"Не список, а нарисованный холодильник. Продукты стоят на полках, как на самом деле. То, что вот-вот испортится, видно с порога. А то, что спряталось в заднем ряду, видно сверху","Банан спочатку жовтий, потім у цятках, потім сумний. Дати читати не треба":"Банан сначала жёлтый, потом в пятнышках, потом грустный. Даты читать не надо","Один холодильник на пару чи сусідів. Хто доїв йогурт, видно одразу":"Один холодильник на пару или соседей. Кто доел йогурт, видно сразу","У продуктів є тара: пакет, миска, банка, купка. Переклав яблука з пакета в миску, і на полиці стоїть миска. Працює офлайн, акаунт не потрібен":"У продуктов есть тара: пакет, миска, банка, кучка. Переложил яблоки из пакета в миску, и на полке стоит миска. Работает офлайн, аккаунт не нужен","Наводиш камеру на пачку, Аптечка читає назву і термін сама. Три пачки за десять секунд, жодної форми. Коли щось протермінується, вона підсвітить. Коли час пити, нагадає":"Наводишь камеру на пачку, Аптечка читает название и срок сама. Три пачки за десять секунд, ни одной формы. Когда что-то просрочится, она подсветит. Когда пора пить, напомнит","Читає штрихкод і DataMatrix з коробки. Назву бере з державного реєстру ліків":"Читает штрихкод и DataMatrix с коробки. Название берёт из государственного реестра лекарств","Курс для мами, дитини чи себе. Що закінчується, Аптечка складає в список для аптеки":"Курс для мамы, ребёнка или себя. Что заканчивается, Аптечка складывает в список для аптеки","Без акаунта і реєстрації. І вона чесно пише, якщо в пачки немає доведеної дії. Арбідол, привіт":"Без аккаунта и регистрации. И она честно пишет, если у пачки нет доказанного действия. Арбидол, привет","Програма, яку я зробила для свого стріму, бо набридло платити за пʼять сервісів і мати пʼять різних стилів у кадрі. Усе, що нижче, працює прямо тут, можна тицяти":"Программа, которую я сделала для своего стрима, потому что надоело платить за пять сервисов и иметь пять разных стилей в кадре. Всё, что ниже, работает прямо здесь, можно тыкать","Я кажу, що треба, Клодік пише, я дивлюсь і повертаю на доробку. Разів з трьох виходить":"Я говорю, что нужно, Клодик пишет, я смотрю и возвращаю на доработку. Раза с третьего получается","Половина Глупоні — застосунки. Друга половина — стріми, де їх видно в процесі, і нарізки з них":"Половина Глупони — приложения. Вторая половина — стримы, где их видно в процессе, и нарезки из них","Кілька разів на тиждень. На початку список, що сьогодні робимо, в кінці галочки. Чат підказує, сперечається і голосує, який екран кращий":"Несколько раз в неделю. В начале список, что сегодня делаем, в конце галочки. Чат подсказывает, спорит и голосует, какой экран лучше","Один пульт замість пʼяти вкладок":"Один пульт вместо пяти вкладок","Донати з Donatello, monobank і Ko-fi, нагороди Twitch, музика, кліпи і план на ефір в одному вікні. Недороблене з плану саме переїжджає на наступний стрім":"Донаты с Donatello, monobank и Ko-fi, награды Twitch, музыка, клипы и план на эфир в одном окне. Недоделанное из плана само переезжает на следующий стрим","Чат сам крутить оверлей":"Чат сам крутит оверлей","За бали каналу чат перефарбовує оверлей, тягне карту дня, вмикає озвучку. Глупобот відповідає, памʼятає постійних і підколює новеньких":"За баллы канала чат перекрашивает оверлей, тянет карту дня, включает озвучку. Глупобот отвечает, помнит постоянных и подкалывает новеньких","Є причина повернутись":"Есть причина вернуться","У кожного глядача свій профіль: ачивки, звання, альбом карт. За вечір усі 24 не зібрати, тож приходять ще. Кліпи після ефіру станція ріже сама":"У каждого зрителя свой профиль: ачивки, звания, альбом карт. За вечер все 24 не собрать, так что приходят ещё. Клипы после эфира станция режет сама","Головна фішка":"Главная фишка","Інший вигляд стріму за один клік. Шість скінів, сім палітр, і чат може перемикати їх сам за бали каналу":"Другой вид стрима в один клик. Шесть скинов, семь палитр, и чат может переключать их сам за баллы канала","Скін":"Скин","Колір":"Цвет","Алерти":"Алерты","Звук є":"Звук есть","Без звуку":"Без звука","Полиці як справжні":"Полки как настоящие","Пакет":"Пакет","Миска":"Миска","Купка":"Кучка","Яблука":"Яблоки","Тягни продукти по полицях, яблукам міняй тару":"Тяни продукты по полкам, яблокам меняй тару","у кадрі":"в кадре"},"cards":{"fool":["Шут","Сегодня можно делать глупости. Главное, чтобы в эфире"],"magician":["Маг","Всё, что задумаешь сегодня, соберётся с первого раза. Даже у Клодика"],"priestess":["Верховная Жрица","Ты уже знаешь ответ. Просто ещё не открыла тот таб"],"empress":["Императрица","День плодородный: три фичи, два бага и один новый кошачий звук"],"emperor":["Император","Составь список. Вычеркни половину. Вот и план"],"hierophant":["Иерофант","Кто-то в чате сегодня научит тебя тому, что ты умеешь 25 лет"],"lovers":["Влюблённые","Выбор между двумя экранами. Бери тот, что с котом"],"chariot":["Колесница","Едем. Куда, выясним по дороге, но уже едем"],"strength":["Сила","Ты выдержишь даже «всё пропало» в два часа ночи"],"hermit":["Отшельник","Выключи чат на час. Вернись, когда будет что показать"],"wheel":["Колесо Фортуны","Деплой пройдёт. Или нет. Но будет весело"],"justice":["Справедливость","Все теги встанут на место. Даже в узком окне"],"hanged":["Повешенный","Посмотри на задачу вверх ногами. Так она проще"],"death":["Смерть","Что-то старое сегодня удалишь. И станет легче"],"temperance":["Умеренность","Один кофе вместо трёх. Один стрим вместо нуля"],"devil":["Дьявол","Ещё один «последний» редизайн. Ты знаешь, чем это кончится"],"tower":["Башня","Что-то упадёт. Починим. Это контент"],"star":["Звезда","Кто-то зайдёт из реков и останется"],"moon":["Луна","Не верь скриншоту, проверь на телефоне"],"sun":["Солнце","Всё сработает с первого раза. Странно, но так"],"judgement":["Суд","Чат выносит вердикт: это база"],"world":["Мир","Три приложения, три сезона. И это только начало"],"dream":["Сладкий сон","Бубуня благословила. Сегодня всё получится"],"guardian":["Хранитель","Тебя охраняют. Деплой под защитой"]},"rl":{"common":"обычная","rare":"редкая","myth":"мифическая","legend":"легендарная"},"L":["Оня, тест опять красный. Смотрю, что там","Сделал. Проверь на телефоне, пожалуйста","Чат прав, кнопка и правда не нажимается","Ещё пять минут и заработает. Наверное","Это не баг, это фича. Ладно, баг","Сделал так, как ты нарисовала. Ну, похоже","Да, я доработал. Почти","Пробую ещё раз, теперь точно"]}</script>
+<script>
+(function(){
+  var D=window.GLU_RU,cur='uk';try{cur=localStorage.getItem('lang')||'uk'}catch(e){}
+  var orig=new WeakMap(),ATTRS=['alt','aria-label','title','placeholder'];
+  function look(k){var r=D.text[k];if(r==null)r=D.text[k.replace(/\s+/g,' ')];return r==null?null:r}
+  function tr(v){var m=v.match(/^(\s*)([\s\S]*?)(\s*)$/);var r=look(m[2]);return r==null?null:m[1]+r+m[3]}
+  function walk(fn){var w=document.createTreeWalker(document.body,NodeFilter.SHOW_ELEMENT|NodeFilter.SHOW_TEXT,{acceptNode:function(n){if(n.nodeType===1){var t=n.tagName;if(t==='SCRIPT'||t==='STYLE'||t==='IFRAME'||n.id==='livemsgs'||n.id==='h1t'||n.id==='klt')return NodeFilter.FILTER_REJECT;return NodeFilter.FILTER_ACCEPT}return n.nodeValue.trim()?NodeFilter.FILTER_ACCEPT:NodeFilter.FILTER_SKIP}});var n;while(n=w.nextNode())fn(n)}
+  function apply(lang){cur=lang;
+    document.querySelectorAll('.h2[data-src]').forEach(function(h){h.innerHTML=h.dataset.src});
+    walk(function(n){
+      if(n.nodeType===3){var o=orig.get(n);if(o==null){o=n.nodeValue;orig.set(n,o)}if(lang==='ru'){var r=tr(o);if(r!=null)n.nodeValue=r}else if(n.nodeValue!==o)n.nodeValue=o;return}
+      ATTRS.forEach(function(a){if(!n.hasAttribute(a))return;var key='o'+a.replace('-','');var o=n.dataset[key];if(o==null){o=n.getAttribute(a);n.dataset[key]=o}if(lang==='ru'){var r=look(o);if(r!=null)n.setAttribute(a,r)}else n.setAttribute(a,o)});
+    });
+    document.documentElement.lang=lang==='ru'?'ru':'uk';document.documentElement.setAttribute('data-lang',lang);
+    document.querySelectorAll('.nav .lang button').forEach(function(b){b.setAttribute('aria-pressed',b.getAttribute('data-lang')===lang?'true':'false')});
+  }
+  window.gluLang=function(){return cur};
+  window.gluT=function(ua){if(cur!=='ru')return ua;var r=look(ua);return r==null?ua:r};
+  window.gluCard=function(c){var R=D.cards[c[0]];return (cur==='ru'&&R)?R:[c[2],c[4]]};
+  window.gluRl=function(k){return (cur==='ru'&&D.rl[k])||null};
+  window.gluSet=function(lang){apply(lang);try{localStorage.setItem('lang',lang)}catch(e){}dispatchEvent(new CustomEvent('glulang',{detail:lang}))};
+  document.querySelectorAll('.nav .lang button').forEach(function(b){b.addEventListener('click',function(){if(b.getAttribute('data-lang')!==cur)gluSet(b.getAttribute('data-lang'))})});
+  if(cur==='ru')apply('ru');
+})();
+</script>
 <script>
 (function(){
   var root = document.documentElement; root.classList.add('js');
@@ -687,8 +838,9 @@ body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset
 
 
   /* motion pass */
-  ['.quotes .chatcard','.cats .cat','.catpics img','.clips-row figure'].forEach(function(sel){ document.querySelectorAll(sel).forEach(function(el,i){ el.style.setProperty('--n', i); }); });
-  document.querySelectorAll('.h2').forEach(function(h){ if (h.querySelector('.w')) return; var d=0; h.innerHTML = h.innerHTML.split(/<br\s*\/?>/i).map(function(line){ return line.trim().split(/\s+/).filter(Boolean).map(function(w){ return '<span class="w"><span style="--d:'+(d++)+'">'+w+'</span></span>'; }).join(' '); }).join('<br>'); });
+  ['.quotes .chatcard','.clips-row figure'].forEach(function(sel){ document.querySelectorAll(sel).forEach(function(el,i){ el.style.setProperty('--n', i); }); });
+  function splitH2(){ document.querySelectorAll('.h2').forEach(function(h){ if (h.querySelector('.w')) return; if (h.dataset.src==null) h.dataset.src=h.innerHTML; var d=0; h.innerHTML = h.innerHTML.split(/<br\s*\/?>/i).map(function(line){ return line.trim().split(/\s+/).filter(Boolean).map(function(w){ return '<span class="w"><span style="--d:'+(d++)+'">'+w+'</span></span>'; }).join(' '); }).join('<br>'); }); }
+  splitH2(); addEventListener('glulang', splitH2);
   var pbar = document.getElementById('progress');
   function setProg(){ var h = document.documentElement; var max = h.scrollHeight - innerHeight; pbar.style.setProperty('--p', max>0 ? (h.scrollTop/max).toFixed(4) : 0); }
   addEventListener('scroll', setProg, {passive:true}); setProg();
@@ -705,17 +857,20 @@ body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset
   (function(){
     var g = document.getElementById('h1g'), out = document.getElementById('h1t'); if (!g || !out) return;
     if (reduce){ out.innerHTML = g.innerHTML; return; }
-    var ops = [
+    var aborted = false; addEventListener('glulang', function(){ aborted = true; out.innerHTML = g.innerHTML; });
+    var opsRU = [['t','Придум'],['t','ую'],['w',380],['mark',2],['w',420],['bs',2],['t','уваем,'],['t',' '],['t','делаем','mint'],['w',260],['br'],['t','и показыва'],['t','ю'],['w',360],['mark',1],['w',380],['bs',1],['t','ем'],['t',' '],['t','в эф','pink'],['t','ир','pink'],['w',420],['mark',2],['w',400],['bs',2],['t','ире','pink']];
+    var ops = (window.gluLang && gluLang()==='ru') ? opsRU : [
       ['t','Придум'],['t','уе'],['w',380],['mark',1],['w',420],['bs',1],['t','ємо,'],['t',' '],['t','робимо','mint'],['w',260],['br'],
       ['t','і показу'],['t','ю'],['w',360],['mark',1],['w',380],['bs',1],['t','ємо'],['t',' '],['t','в еф','pink'],['t','ир','pink'],['w',420],['mark',2],['w',400],['bs',2],['t','ірі','pink']
     ];
     var chars = [], k = 0;
     function render(cursor){ var h = '', last = null; chars.forEach(function(c){ if (c.cls !== last){ if (last !== null) h += '</span>'; h += '<span class="' + (c.cls||'') + '">'; last = c.cls; } h += c.ch === '\n' ? '<br>' : c.ch; }); if (last !== null) h += '</span>'; out.innerHTML = h + (cursor ? '<span class="cur"></span>' : ''); }
     function next(){
+      if (aborted) return;
       if (k >= ops.length){ render(true); setTimeout(function(){ var c = out.querySelector('.cur'); if (c) c.classList.add('off'); }, 2600); return; }
       var o = ops[k++], d = 0;
-      if (o[0]==='t'){ var str = o[1], j = 0; (function tc(){ chars.push({ch:str[j], cls:o[2]||''}); render(true); j++; if (j < str.length) setTimeout(tc, 42 + Math.random()*55); else setTimeout(next, 40); })(); return; }
-      if (o[0]==='bs'){ var n = o[1]; (function bc(){ chars.pop(); render(true); n--; if (n>0) setTimeout(bc, 70); else setTimeout(next, 90); })(); return; }
+      if (o[0]==='t'){ var str = o[1], j = 0; (function tc(){ if (aborted) return; chars.push({ch:str[j], cls:o[2]||''}); render(true); j++; if (j < str.length) setTimeout(tc, 42 + Math.random()*55); else setTimeout(next, 40); })(); return; }
+      if (o[0]==='bs'){ var n = o[1]; (function bc(){ if (aborted) return; chars.pop(); render(true); n--; if (n>0) setTimeout(bc, 70); else setTimeout(next, 90); })(); return; }
       if (o[0]==='mark'){ for (var i=1;i<=o[1];i++) chars[chars.length-i].cls = ((chars[chars.length-i].cls||'') + ' err').trim(); render(true); }
       if (o[0]==='br'){ chars.push({ch:'\n', cls:''}); render(true); }
       if (o[0]==='w') d = o[1];
@@ -734,6 +889,24 @@ body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset
     }, {threshold:.15}); qo.observe(qs);
   })();
 
+  /* Клодік щось каже: фрази в дусі стріму, друкуються по черзі */
+  (function(){
+    var box=document.getElementById('kl'),t=document.getElementById('klt');if(!box)return;
+    var LU=['Оню, тест знову червоний. Дивлюсь, що там',
+      'Зробив. Перевір на телефоні, будь ласка',
+      'Чат має рацію, кнопка і справді не натискається',
+      'Ще п\'ять хвилин і запрацює. Мабуть',
+      'Це не баг, це фіча. Добре, баг',
+      'Зробив так, як ти намалювала. Ну, схоже',
+      'Так, я допрацював. Майже',
+      'Пробую ще раз, тепер точно'];
+    function L_(){var R=window.GLU_RU;return (window.gluLang&&gluLang()==='ru'&&R&&R.L&&R.L.length)?R.L:LU}
+    var reduce=window.matchMedia('(prefers-reduced-motion: reduce)').matches,i=Math.floor(Math.random()*LU.length),on=false,tm=0;
+    function show(){var A=L_(),s=A[i];i=(i+1)%A.length;box.classList.remove('idle');
+      if(reduce){t.textContent=s;box.classList.add('idle');tm=setTimeout(show,6000);return}
+      var k=0;t.textContent='';(function step(){t.textContent=s.slice(0,++k);if(k<s.length)tm=setTimeout(step,28+Math.random()*40);else{box.classList.add('idle');tm=setTimeout(show,4500+Math.random()*3000)}})()}
+    if('IntersectionObserver' in window){new IntersectionObserver(function(es){var v=es[0].isIntersecting;if(v&&!on){on=true;show()}else if(!v&&on){on=false;clearTimeout(tm)}},{threshold:.2}).observe(box)}else show();
+  })();
   /* live chat: real messages from the stream chat, landing one by one */
   (function(){
     var box = document.getElementById('livemsgs'), live = document.getElementById('live'), btn = document.getElementById('livebtn'), cnt = document.getElementById('livecnt'); if (!box) return;
@@ -796,10 +969,6 @@ body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset
       while (box.children.length > 9) box.removeChild(box.firstChild);
       timer = setTimeout(add, reduce ? 4000 : 1300 + Math.random()*2600);
     }
-    var off = false; try { off = localStorage.getItem('liveoff') === '1'; } catch(e){}
-    if (off) live.classList.add('off');
-    btn.addEventListener('click', function(){ if (live.classList.contains('fx')){ live.classList.toggle('open'); return; } off = !off; live.classList.toggle('off', off); try { localStorage.setItem('liveoff', off ? '1' : '0'); } catch(e){} });
-    var heroEl = document.getElementById('top'); if ('IntersectionObserver' in window) new IntersectionObserver(function(es){ live.classList.toggle('fx', !es[0].isIntersecting); if (es[0].isIntersecting) live.classList.remove('open'); }, {threshold:0, rootMargin:'-120px 0px 0px 0px'}).observe(heroEl);
     document.addEventListener('visibilitychange', function(){ if (document.hidden) clearTimeout(timer); else timer = setTimeout(add, 800); });
     if (matchMedia('(min-width:801px)').matches) timer = setTimeout(add, 1800); else cnt.textContent = '';
   })();
@@ -819,39 +988,81 @@ body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset
   if ('IntersectionObserver' in window){ var io2 = new IntersectionObserver(function(es){ es.forEach(function(e){ if(e.isIntersecting){ count(e.target); io2.unobserve(e.target);} }); }, {threshold:.3}); nums.forEach(function(n){ io2.observe(n); }); } else nums.forEach(count);
 
   var railSec = document.getElementById('nums'), rail = document.getElementById('rail');
-  var appsSec = document.getElementById('apps'), appI = -1;
   var kin = document.getElementById('kin'), words = kin.querySelectorAll('.word');
   function prog(sec){ var r = sec.getBoundingClientRect(); var total = sec.offsetHeight - innerHeight; return total <= 0 ? 0 : Math.max(0, Math.min(1, -r.top/total)); }
-  function setApp(i){
-    if (i===appI) return; appI = i;
-    appsSec.querySelectorAll('[data-i]').forEach(function(el){ el.classList.toggle('on', +el.getAttribute('data-i')===i); });
-    appsSec.querySelectorAll('.tabs b').forEach(function(b,k){ b.classList.toggle('on',k===i); });
-    appsSec.querySelectorAll('.dotsbar i').forEach(function(b,k){ b.classList.toggle('on',k===i); });
-    var ph = document.getElementById('phone'); ph.style.setProperty('--rz', [-4,3,-2][i] + 'deg'); ph.querySelectorAll('.screen').forEach(function(sc,k){ sc.style.setProperty('--k', k - i); }); ph.querySelector('.scr').style.setProperty('--dx','0px');
-  }
+
+  (function(){
+    var root=document.getElementById('stDemo');if(!root)return;
+    var fr=document.getElementById('stFrame'),ready=false,q=[],T=function(x){return window.gluT?gluT(x):x};
+    var frT=fr.title;fr.title=T(frT);
+    function send(cmd,value){var m={type:'glu',cmd:cmd,value:value};if(!ready){q.push(m);return}fr.contentWindow.postMessage(m,'*')}
+    addEventListener('message',function(e){if(e.source!==fr.contentWindow||!e.data||e.data.type!=='glu'||!e.data.ready)return;ready=true;q.forEach(function(m){fr.contentWindow.postMessage(m,'*')});q=[]});
+    function press(b){var g=b.parentNode,cmd=g.dataset.cmd,v=b.dataset.v;
+      if(cmd==='alert'){if(v==='tarot')send('tarot');else send('alert',v);b.classList.add('fire');setTimeout(function(){b.classList.remove('fire')},700);return}
+      g.querySelectorAll('button').forEach(function(x){x.classList.toggle('on',x===b)});send(cmd,cmd==='pal'?(v||null):v)}
+    var touched=false,tour=null;
+    function pauseTour(){if(tour){clearInterval(tour);tour=null}}
+    function stopTour(){touched=true;pauseTour()}
+    root.querySelectorAll('.bts button').forEach(function(b){b.addEventListener('click',function(){stopTour();press(b)})});
+    var snd=document.getElementById('stSound'),on=true;send('sound',true);
+    function sndL(){snd.setAttribute('aria-pressed',on?'true':'false');snd.textContent=T(on?'Звук є':'Без звуку')}
+    snd.addEventListener('click',function(){on=!on;sndL();send('sound',on)});
+    var pl=document.getElementById('stPlan'),open=false;
+    pl.addEventListener('click',function(){open=!open;pl.setAttribute('aria-pressed',open?'true':'false');send('plan',open)});
+    addEventListener('glulang',function(){sndL();fr.title=T(frT)});
+    var reduce=matchMedia('(prefers-reduced-motion:reduce)').matches,skins=root.querySelectorAll('.bts[data-cmd=skin] button'),pals=root.querySelectorAll('.bts[data-cmd=pal] button');
+    var steps=[[skins,1],[pals,1],[skins,2],[pals,3],[skins,3],[pals,2],[skins,4],[pals,5],[skins,5],[pals,4],[skins,0],[pals,0]],si=0;
+    function startTour(){if(touched||tour||reduce)return;tour=setInterval(function(){var st=steps[si%steps.length];si++;press(st[0][st[1]])},2600)}
+    if('IntersectionObserver' in window)new IntersectionObserver(function(es){es.forEach(function(e){if(e.isIntersecting)startTour();else pauseTour()})},{threshold:.35}).observe(root);
+    root.querySelector('.st-stage').addEventListener('pointerdown',stopTour);
+  })();
   function onScroll(){
     if (narrow()) return;
     var p = prog(railSec); var max = Math.max(0, rail.scrollWidth - innerWidth); rail.style.transform = 'translateX(' + (-p*max) + 'px)';
-    var a = prog(appsSec); setApp(a < .3 ? 0 : a < .62 ? 1 : 2);
     if (!reduce){ var r = kin.getBoundingClientRect(); var v = Math.max(0, Math.min(1, (innerHeight - r.top)/(innerHeight + r.height)));
       words.forEach(function(w,k){ w.style.setProperty('--sy', (0.72 + 0.56*Math.abs(Math.sin(Math.PI*(v*1.6 + k*0.27)))).toFixed(3)); }); }
   }
   addEventListener('scroll', onScroll, {passive:true}); addEventListener('resize', onScroll); onScroll();
-  setApp(0);
 
-  /* phone: 3d tilt behind the cursor, swipe between apps */
-  var phone = document.getElementById('phone'), pin = appsSec.querySelector('.pin'), scr = phone.querySelector('.scr');
-  function goTo(i){ i = Math.max(0, Math.min(2, i)); var total = appsSec.offsetHeight - innerHeight; var top = appsSec.getBoundingClientRect().top + scrollY + [.12,.46,.8][i]*total; scrollTo({top:top, behavior: reduce ? 'auto' : 'smooth'}); }
-  appsSec.querySelectorAll('.titles .h3').forEach(function(h){ h.addEventListener('click', function(){ goTo(+h.getAttribute('data-i')); }); });
-  if (!reduce && matchMedia('(hover:hover)').matches){
-    pin.addEventListener('mousemove', function(e){ if (phone.classList.contains('drag')) return; var r = pin.getBoundingClientRect(); var x = (e.clientX - r.left)/r.width - .5, y = (e.clientY - r.top)/r.height - .5; phone.style.setProperty('--ry', (x*22).toFixed(2)+'deg'); phone.style.setProperty('--rx', (-y*16).toFixed(2)+'deg'); });
-    pin.addEventListener('mouseleave', function(){ phone.style.setProperty('--ry','0deg'); phone.style.setProperty('--rx','0deg'); });
-  }
-  var sx = null, sdx = 0;
-  phone.addEventListener('pointerdown', function(e){ if (e.button) return; sx = e.clientX; sdx = 0; phone.classList.add('drag'); phone.setPointerCapture(e.pointerId); });
-  phone.addEventListener('pointermove', function(e){ if (sx===null) return; sdx = e.clientX - sx; if ((appI===0 && sdx>0) || (appI===2 && sdx<0)) sdx *= .3; scr.style.setProperty('--dx', sdx+'px'); phone.style.setProperty('--ry', (sdx*.08).toFixed(2)+'deg'); });
-  function endDrag(){ if (sx===null) return; phone.classList.remove('drag'); phone.style.setProperty('--ry','0deg'); var d = sdx; sx = null; sdx = 0; if (Math.abs(d) > 50 && !narrow()) goTo(appI + (d < 0 ? 1 : -1)); else scr.style.setProperty('--dx','0px'); }
-  phone.addEventListener('pointerup', endDrag); phone.addEventListener('pointercancel', endDrag);
+  /* apps: live widgets around the phones */
+  (function(){
+    var T=function(x){return window.gluT?gluT(x):x};
+    var left=7680,base=7680,days=12,gBuy=document.getElementById('gBuy'),gLeft=document.getElementById('gLeft'),gPer=document.getElementById('gPer'),gBar=document.getElementById('gBar');
+    function fmt(n){return String(n).replace(/\B(?=(\d{3})+(?!\d))/g,'\u2009')+' ₴'}
+    function gDraw(){var per=left/days;gLeft.textContent=fmt(left);gPer.textContent=fmt(Math.round(per));gBar.style.setProperty('--p',(left/9800).toFixed(3));gBar.className=per<520?'hot':per<600?'warn':'';gBuy.textContent=T(per<520?'Грошик: може, вдома зваримо?':per<600?'Ще одну? Клодік би не радив':'Купити каву за 95 ₴')}
+    if(gBuy)gBuy.addEventListener('click',function(){left-=95;if(left<5900)left=base;gDraw()});
+    var fbox=document.getElementById('frBox'),frNote=document.getElementById('frNote'),apple=document.getElementById('frApple'),hand=document.getElementById('frHand'),tara=document.getElementById('frTara'),frTouched=false,frTick=0;
+    var SX=[3,36,69],SY=[48,96],items=fbox?[].slice.call(fbox.querySelectorAll('.fi')):[];
+    function sxy(s){return [SX[s%3],SY[s>2?1:0]]}
+    function place(it){var p=sxy(+it.dataset.s);it.style.left=p[0]+'%';it.style.top=p[1]+'%'}
+    items.forEach(place);
+    function slotAt(x,y){var best=0,bd=1e9;for(var k=0;k<6;k++){var p=sxy(k),dx=p[0]+14-x,dy=p[1]-14-y,d=dx*dx+dy*dy;if(d<bd){bd=d;best=k}}return best}
+    function moveTo(it,k){var o=items.filter(function(x){return x!==it&&+x.dataset.s===k})[0];if(o){o.dataset.s=it.dataset.s;place(o)}it.dataset.s=k;place(it)}
+    function setTara(t){if(!apple)return;apple.src='img/fr/apple-'+t+'.webp';apple.classList.remove('pop');void apple.offsetWidth;apple.classList.add('pop');tara.querySelectorAll('button').forEach(function(b){b.classList.toggle('on',b.dataset.t===t)})}
+    function handAt(k){var p=sxy(k);hand.style.left=(p[0]+14)+'%';hand.style.top=(p[1]-14)+'%'}
+    if(fbox){items.forEach(function(it){it.addEventListener('pointerdown',function(e){e.preventDefault();frTouched=true;hand.style.opacity=0;var r=fbox.getBoundingClientRect();it.classList.add('drag');it.setPointerCapture(e.pointerId);
+        function xy(ev){return [(ev.clientX-r.left)/r.width*100,(ev.clientY-r.top)/r.height*100]}
+        function mv(ev){var p=xy(ev);it.style.left=(p[0]-14)+'%';it.style.top=(p[1]+14)+'%'}
+        mv(e);it.addEventListener('pointermove',mv);
+        it.addEventListener('pointerup',function up(ev){it.removeEventListener('pointermove',mv);it.classList.remove('drag');var p=xy(ev);moveTo(it,slotAt(p[0],p[1]))},{once:true})})});
+      tara.addEventListener('click',function(e){var b=e.target.closest('button');if(!b)return;frTouched=true;setTara(b.dataset.t)})}
+    function frStep(){if(frTouched||!fbox)return;var k=frTick++%6;
+      if(k===0){var free=[0,1,2,3,4,5].filter(function(z){return !items.some(function(x){return +x.dataset.s===z})})[0];apple.classList.add('lift');hand.style.opacity=1;handAt(+apple.dataset.s);
+        setTimeout(function(){moveTo(apple,free);handAt(free)},350);setTimeout(function(){apple.classList.remove('lift');hand.style.opacity=0},1250)}
+      if(k===2)setTara('bowl');if(k===3)setTara('pile');if(k===5)setTara('bag')}
+    var mBtn=document.getElementById('mBtn'),mBox=document.getElementById('mBox'),mName=document.getElementById('mName'),mPill=document.getElementById('mPill'),mi=0,
+      M=[['Ібупрофен 400','ok','термін до 03.2027'],['Цитрамон','bad','прострочено з січня'],['Арбідол','meh','без доведеної дії'],['Лоратадин','ok','термін до 11.2027']];
+    function mDraw(){mName.textContent=T(M[mi][0]);mPill.className='pill '+M[mi][1];mPill.textContent=T(M[mi][2])}
+    if(mBtn)mBtn.addEventListener('click',function(){if(mBox.classList.contains('busy'))return;mBox.classList.add('busy');mPill.style.opacity=0;setTimeout(function(){mi=(mi+1)%M.length;mDraw();mPill.style.opacity=1;mBox.classList.remove('busy')},900)});
+    var FL=['свіже, 6 днів','скоро, 2 дні','терміново, сьогодні','зіпсоване, викинь'],FI=['apple','apple','apple-wilting','apple-spoiled'],fi=0,tile=document.getElementById('frTile'),lbl=document.getElementById('frLbl'),frImg=document.getElementById('frImg');
+    var chips=document.querySelectorAll('.cabs .chips span'),ci=0,chk=document.getElementById('mChk'),timers={};
+    function start(id){if(timers[id])return;
+      if(id==='freshka'&&tile){timers[id]=setInterval(function(){fi=(fi+1)%4;tile.className='tile f'+fi;lbl.textContent=T(FL[fi]);if(frImg)frImg.src='img/fr/'+FI[fi]+'.webp'},1700);timers.fr=setInterval(frStep,1400)}
+      if(id==='medkit')timers[id]=setInterval(function(){ci=(ci+1)%chips.length;chips.forEach(function(c,k){c.classList.toggle('on',k===ci)});if(chk)chk.classList.toggle('on')},1800)}
+    function stop(id){clearInterval(timers[id]);timers[id]=0;if(id==='freshka'){clearInterval(timers.fr);timers.fr=0}}
+    if(!reduce&&'IntersectionObserver' in window){var ao=new IntersectionObserver(function(es){es.forEach(function(e){var id=e.target.getAttribute('data-app');if(e.isIntersecting)start(id);else stop(id)})},{threshold:.25});document.querySelectorAll('.apps .case').forEach(function(c){ao.observe(c)})}
+    addEventListener('glulang',function(){if(gBuy)gDraw();if(lbl)lbl.textContent=T(FL[fi]);if(mPill)mDraw();if(frNote)frNote.textContent=T('Тягни продукти по полицях, яблукам міняй тару')});
+  })();
 
   function clock(){ var now = new Date();
     function put(id, h, m){ var s = document.getElementById(id).children; s[0].textContent = ('0'+h).slice(-2); s[1].textContent = ('0'+m).slice(-2); }
@@ -862,12 +1073,115 @@ body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset
 
   var btn = document.getElementById('copy'), mail = document.getElementById('mail');
   btn.addEventListener('click', function(){
-    var done = function(){ btn.textContent='Скопійовано'; setTimeout(function(){ btn.textContent='Скопіювати'; },1600); };
+    var done = function(){ btn.textContent=gluT('Скопійовано'); setTimeout(function(){ btn.textContent=gluT('Скопіювати'); },1600); };
     function sel(){ var rg=document.createRange(); rg.selectNodeContents(mail); var s=getSelection(); s.removeAllRanges(); s.addRange(rg); }
     if (navigator.clipboard && navigator.clipboard.writeText) navigator.clipboard.writeText(mail.textContent).then(done, sel); else sel();
   });
 })();
 </script>
 
+
+<script>
+(function(){
+  var reduce=matchMedia('(prefers-reduced-motion:reduce)').matches;
+  var RC={common:'#B9A79D',rare:'#4F86C6',myth:'#8E54D6',legend:'#D9A21E'};
+  var RL={common:'звичайна',rare:'рідкісна',myth:'міфічна',legend:'легендарна'};
+  var RW={common:60,rare:27,myth:10,legend:3};
+  var C=[
+   ['fool','0','Блазень','common','Сьогодні можна робити дурниці. Головне, щоб у ефірі'],
+   ['magician','I','Маг','myth','Усе, що задумаєш сьогодні, збереться з першого разу. Навіть у Клодіка'],
+   ['priestess','II','Жриця','common','Ти вже знаєш відповідь. Просто ще не відкрила той таб'],
+   ['empress','III','Імператриця','myth','День родючий: три фічі, два баги і один новий котячий звук'],
+   ['emperor','IV','Імператор','common','Склади список. Викресли половину. Ось і план'],
+   ['hierophant','V','Ієрофант','common','Хтось у чаті сьогодні навчить тебе того, що ти вмієш 25 років'],
+   ['lovers','VI','Закохані','rare','Вибір між двома екранами. Бери той, що з котом'],
+   ['chariot','VII','Колісниця','rare','Їдемо. Куди, зʼясуємо по дорозі, але вже їдемо'],
+   ['strength','VIII','Сила','myth','Ти витримаєш навіть «все пропало» о другій ночі'],
+   ['hermit','IX','Самітник','myth','Вимкни чат на годину. Повернись, коли буде що показати'],
+   ['wheel','X','Колесо фортуни','myth','Деплой пройде. Або ні. Але буде весело'],
+   ['justice','XI','Справедливість','rare','Усі теги стануть на місце. Навіть у вузькому вікні'],
+   ['hanged','XII','Повішений','common','Подивись на задачу догори дриґом. Так вона простіша'],
+   ['death','XIII','Смерть','common','Щось старе сьогодні видалиш. І стане легше'],
+   ['temperance','XIV','Поміркованість','legend','Одна кава замість трьох. Один стрім замість нуля'],
+   ['devil','XV','Диявол','rare','Ще один «останній» редизайн. Ти знаєш, чим це закінчиться'],
+   ['tower','XVI','Вежа','common','Щось упаде. Полагодимо. Це контент'],
+   ['star','XVII','Зірка','rare','Хтось зайде з реків і залишиться'],
+   ['moon','XVIII','Місяць','rare','Не вір скріншоту, перевір на телефоні'],
+   ['sun','XIX','Сонце','rare','Усе спрацює з першого разу. Дивно, але так'],
+   ['judgement','XX','Суд','common','Чат виносить вердикт: це база'],
+   ['world','XXI','Світ','myth','Три застосунки, три сезони. І це тільки початок'],
+   ['dream','✦','Солодкий сон','legend','Бубуня благословила. Сьогодні все вийде'],
+   ['guardian','✦','Хранитель','legend','Тебе охороняють. Деплой під захистом']
+  ];
+  var stage=document.getElementById('tStage'),card=document.getElementById('tCard'),front=document.getElementById('tFront'),glare=document.getElementById('tGlare'),holo=document.getElementById('tHolo');
+  var num=document.getElementById('tNum'),title=document.getElementById('tTitle'),rar=document.getElementById('tRar'),say=document.getElementById('tSay'),btn=document.getElementById('tBtn'),hint=document.getElementById('tHint');
+  if(!stage)return;
+  var BACK='img/tarot/back.webp';var st={rx:0,ry:180,vx:0,vy:0,t:0,drag:null,target:null,after:null,cur:null,busy:false,pending:null,face:BACK};
+  function paint(){
+    card.style.transform='rotateX('+st.rx+'deg) rotateY('+st.ry+'deg)';
+    var a=((st.ry%360)+360)%360,gx=50+Math.sin(a*Math.PI/180)*60,gy=50-st.rx*2.2;var bk=a>90&&a<270;card.classList.toggle('bk',bk);var want=bk?BACK:st.face;if(front.getAttribute('src')!==want)front.setAttribute('src',want);
+    glare.style.background='radial-gradient(circle at '+gx+'% '+gy+'%, rgba(255,255,255,.75), rgba(255,255,255,0) 55%)';
+    holo.style.background='linear-gradient('+(115+st.ry*1.5)+'deg,#ff6ec7 0%,#7afcff 25%,#feff9c 50%,#b28dff 75%,#ff6ec7 100%)';
+  }
+  function glow(){
+    var r=st.cur?st.cur[3]:'common',c=RC[r];
+    var g=r==='common'?'0 30px 60px rgba(0,0,0,.45)':'0 0 0 4px '+c+', 0 0 '+(r==='legend'?70:45)+'px '+c+', 0 30px 60px rgba(0,0,0,.45)';
+    card.querySelectorAll('.face').forEach(function(f){f.style.boxShadow=g});
+    card.className='card3 '+(st.cur?r:'');
+  }
+  var raf=0,vis=false;
+  var last=0;
+  function loop(now){
+    var dt=last?Math.min(8,(now-last)/16.7):1;last=now;
+    if(!st.drag){
+      if(Math.abs(st.vy)>.02||Math.abs(st.vx)>.02){st.ry+=st.vy*dt;st.rx=Math.max(-35,Math.min(35,st.rx+st.vx*dt));st.vy*=Math.pow(.94,dt);st.vx*=Math.pow(.9,dt)}
+      else if(st.target!=null){var d=st.target-st.ry,k=1-Math.pow(.88,dt);st.ry+=d*k;st.rx*=Math.pow(.85,dt);if(Math.abs(d)<.3){st.ry=st.target;st.target=null;if(st.after!=null){st.target=st.after;st.after=null}}}
+      else if(!reduce){st.t+=dt;var k2=1-Math.pow(.97,dt);st.rx+=((Math.sin(st.t/70)*6)-st.rx)*k2;var b=Math.round(st.ry/180)*180;st.ry+=(b+Math.sin(st.t/90)*8-st.ry)*k2}
+    }
+    if(st.pending){var a=((st.ry%360)+360)%360;if(a>90&&a<270){st.face=st.pending[1];st.cur=st.pending[0];st.pending=null;glow()}}
+    paint();
+    raf=vis?requestAnimationFrame(loop):0;
+  }
+  new IntersectionObserver(function(es){es.forEach(function(e){vis=e.isIntersecting;if(vis&&!raf)loop()})},{threshold:.05}).observe(stage);
+  function pick(){
+    var ks=Object.keys(RW),sum=0,r=Math.random()*100,t='common';
+    for(var i=0;i<ks.length;i++){sum+=RW[ks[i]];if(r<sum){t=ks[i];break}}
+    var pool=C.filter(function(c){return c[3]===t&&(!st.cur||c[0]!==st.cur[0])});
+    return pool[Math.floor(Math.random()*pool.length)];
+  }
+  function typeIn(el,txt){
+    el.textContent='';el.classList.add('ty');var i=0;
+    if(reduce){el.textContent=txt;el.classList.remove('ty');return}
+    (function step(){if(i<txt.length){el.textContent+=txt[i++];setTimeout(step,22)}else el.classList.remove('ty')})();
+  }
+  function draw(){
+    if(st.busy)return;st.busy=true;
+    var c=pick();
+    var img=new Image();img.src='img/tarot/'+c[0]+'.webp';
+    num.textContent=c[1]==='✦'?'✦ Особлива карта':'Аркан '+c[1];
+    title.innerHTML='';var k=0;Array.from(gluCard(c)[0]).forEach(function(ch){var sp=document.createElement('span');sp.textContent=ch===' '?'\u00a0':ch;sp.style.setProperty('--n',k++);title.appendChild(sp)});
+    rar.textContent=gluRl(c[3])||RL[c[3]];rar.style.background=RC[c[3]];
+    say.textContent='';hint.textContent='Крути карту, вона двостороння';
+    btn.textContent='Ще раз';
+    st.vx=st.vy=0;
+    var base=Math.round(st.ry/180)*180,onFront=((base%360)+360)%360===0;
+    st.target=null;
+    function go(){st.pending=[c,img.src];var fin=base+(onFront?720:540)-(reduce?360:0);
+      if(reduce){st.target=fin}else{stage.animate([{transform:'translateY(90px) scale(.72)',opacity:.4},{transform:'translateY(-14px) scale(1.04)',opacity:1,offset:.7},{transform:'none'}],{duration:650,easing:'cubic-bezier(.2,.9,.3,1.1)'});
+        setTimeout(function(){st.target=fin+28;st.after=fin;st.vx=(Math.random()-.5)*2},520)}
+      setTimeout(function(){typeIn(say,gluCard(c)[1]);sparks(c[3]);st.busy=false},reduce?0:1650)}
+    function sparks(r){if(reduce||r==='common')return;var n=r==='legend'?60:r==='myth'?40:18,cols=r==='legend'?['#FFD966','#F49CB9','#fff']:r==='myth'?['#D3A6FF','#F49CB9','#fff']:['#8FC2FF','#fff'];
+      for(var i=0;i<n;i++){var sp=document.createElement('i');sp.className='spark';sp.style.background=cols[i%cols.length];var a=Math.random()*6.283,d=(r==='legend'?240:170)*(.5+Math.random()),sz=4+Math.random()*8;sp.style.width=sp.style.height=sz+'px';stage.appendChild(sp);
+        sp.animate([{transform:'translate(-50%,-50%) scale(1)',opacity:1},{transform:'translate(calc(-50% + '+Math.cos(a)*d+'px),calc(-50% + '+(Math.sin(a)*d+60)+'px)) scale(0)',opacity:0}],{duration:900+Math.random()*600,easing:'cubic-bezier(.1,.8,.3,1)'}).onfinish=function(){this.effect.target.remove()}}}
+    if(img.complete)go();else{img.onload=go;img.onerror=go}
+  }
+  btn.addEventListener('click',draw);
+  stage.addEventListener('pointerdown',function(e){st.drag={x:e.clientX,y:e.clientY,moved:0};st.target=null;st.vx=st.vy=0;stage.setPointerCapture(e.pointerId)});
+  stage.addEventListener('pointermove',function(e){if(!st.drag)return;var dx=e.clientX-st.drag.x,dy=e.clientY-st.drag.y;st.drag.x=e.clientX;st.drag.y=e.clientY;st.drag.moved+=Math.abs(dx)+Math.abs(dy);st.ry+=dx*.55;st.rx=Math.max(-35,Math.min(35,st.rx-dy*.35));st.vy=dx*.55;st.vx=-dy*.35});
+  function up(){if(!st.drag)return;var m=st.drag.moved;st.drag=null;if(reduce)st.vx=st.vy=0;if(m<6&&!st.cur)draw()}
+  stage.addEventListener('pointerup',up);stage.addEventListener('pointercancel',up);
+  glow();paint();
+})();
+</script>
 </body>
 </html>

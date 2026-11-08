@@ -1,0 +1,132 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Глупостанция — демо</title>
+<link rel="icon" href="data:,">
+<style>
+  /* Кадр стрима 1920×1080 из настоящих оверлеев Глупостанции (каждый — iframe со своим mock_hub.js вместо сервера).
+     Раскладка повторяет сцену OBS «Кодим» (Новая_раскладка.json) и кадр full_3772.png. Сцена масштабируется под ширину страницы. */
+  html, body { margin: 0; background: #0c0a08; overflow: hidden; }
+  #wrap { position: relative; width: 100%; aspect-ratio: 16 / 9; overflow: hidden; }
+  #stage { position: absolute; left: 0; top: 0; width: 1920px; height: 1080px; transform-origin: 0 0; }
+  #stage > * { position: absolute; }
+  iframe { border: 0; background: transparent; display: block; pointer-events: none; }
+  /* внутренность рамок: экран с «терминалом» и телефон — то, что в OBS даёт захват окна */
+  .screen { background: #141216; border-radius: 10px; overflow: hidden; color: #cfc6c9; font: 700 15px/1.55 "JetBrains Mono", Consolas, monospace; padding: 22px 26px; box-sizing: border-box; }
+  .screen .tabs { display: flex; gap: 6px; margin: -8px -10px 14px; }
+  .screen .tabs i { flex: 0 0 110px; height: 14px; border-radius: 4px 4px 0 0; background: #221d20; }
+  .screen .tabs i.on { background: #3a2e35; }
+  .screen .dim { color: #7a6f75; }
+  .screen .ok { color: #78EEC4; }
+  .screen .pink { color: #FF7ABE; }
+  .screen .yel { color: #FFD84D; }
+  .screen .cur::after { content: "▌"; animation: blink 1s steps(1) infinite; }
+  @keyframes blink { 50% { opacity: 0; } }
+  .phone { background: #0f0d10; border-radius: 10px; }
+  #cam { object-fit: cover; }
+  @font-face { font-family: "JetBrains Mono"; src: url("/static/fonts/jetbrains-mono-cyrillic-700-normal.woff2") format("woff2"); font-weight: 700; unicode-range: U+0400-04FF; }
+  @font-face { font-family: "JetBrains Mono"; src: url("/static/fonts/jetbrains-mono-latin-700-normal.woff2") format("woff2"); font-weight: 700; }
+  /* отладочная панель (?ui=1) */
+  #ui { display: none; position: fixed; left: 0; right: 0; bottom: 0; padding: 8px 10px; background: rgba(20, 8, 16, .92); color: #fff;
+        font: 600 13px/1.4 system-ui, sans-serif; display: none; flex-wrap: wrap; gap: 6px 14px; align-items: center; z-index: 9; }
+  #ui b { opacity: .6; margin-right: 2px; }
+  #ui button { background: #45173A; color: #fff; border: 1px solid #6B2E58; border-radius: 8px; padding: 4px 10px; font: inherit; cursor: pointer; }
+  #ui button.on { background: #FF4FA3; border-color: #FF7ABE; }
+  #ui button.sw { width: 26px; height: 26px; padding: 0; border-radius: 50%; }
+</style>
+</head>
+<body>
+<div id="wrap">
+  <div id="stage">
+    <iframe id="bg" src="/static/bg.html" style="left:0;top:0;width:1920px;height:1080px"></iframe>
+    <!-- захват экрана (терминал) и телефон: внутри рамок terminal_frame.html, pad=21 -->
+    <div class="screen" style="left:23px;top:192px;width:924px;height:507px">
+      <div class="tabs"><i></i><i></i><i class="on"></i><i></i><i></i><i></i></div>
+      <div class="dim">Ran 1 shell command</div>
+      <div>● Готово, <span class="pink">https://gluponya.tv</span> работает.</div>
+      <div class="dim">  — Домен переподключила через API, GitHub сразу выдал сертификат.<br>  — Enforce HTTPS включён: http теперь редиректит на https.</div>
+      <div class="dim" style="margin-top:10px">✻ Brewed for 1m 29s · done 18:04</div>
+      <div style="margin-top:10px"><span class="yel">&gt;</span> теперь собери демо Глупостанции для сайта, без сервера</div>
+      <div class="dim">Ran 3 shell commands</div>
+      <div>● Собрала: оверлеи те же, что на стриме, вместо хаба — <span class="ok">mock_hub.js</span>. Скины переключаются, алерты звучат.</div>
+      <div class="dim" style="margin-top:10px">✻ Sautéed for 25s · done 18:06</div>
+      <div style="margin-top:14px"><span class="yel">&gt;</span> <span class="cur"></span></div>
+    </div>
+    <div class="phone" style="left:941px;top:23px;width:395px;height:903px"></div>
+    <iframe id="tf1" src="/static/terminal_frame.html?pad=21&w=7&r=24" style="left:2px;top:171px;width:966px;height:549px"></iframe>
+    <iframe id="tf2" src="/static/terminal_frame.html?pad=21&w=7&r=24" style="left:920px;top:2px;width:437px;height:945px"></iframe>
+    <!-- кот у полосы: источник 300×450 в масштабе 0.5 -->
+    <iframe id="cat" src="/static/cat.html" style="left:412px;top:792px;width:300px;height:450px;transform:scale(.5);transform-origin:0 0"></iframe>
+    <iframe id="strip" src="/static/strip.html" style="left:54px;top:873px;width:1280px;height:240px"></iframe>
+    <iframe id="chat" src="/static/chat.html" style="left:1360px;top:244px;width:520px;height:336px"></iframe>
+    <!-- план: источник 577×600, в OBS масштаб 0.927 (= 535/577, как и ждёт plan_mini) -->
+    <iframe id="plan" src="/static/plan_mini.html" style="left:1384px;top:23px;width:577px;height:600px;transform:scale(.927);transform-origin:0 0"></iframe>
+    <!-- камера: кадр со стрима под рамкой cam_frame.html?fit -->
+    <video id="cam" autoplay muted loop playsinline poster="/st/cam.jpg" style="left:1392px;top:768px;width:520px;height:292px;border-radius:20px;object-fit:cover;background:#000"><source src="/st/cam.webm" type="video/webm"><source src="/st/cam.mp4" type="video/mp4"></video>
+    <iframe id="camf" src="/static/cam_frame.html?fit&b=6&r=20" style="left:1392px;top:768px;width:520px;height:292px"></iframe>
+    <!-- плашка «нормальная такая Робоняня» над камерой: topic.html, источник 1280×540 в масштабе 0.354 -->
+    <iframe id="topic" src="/static/topic.html" style="left:1334px;top:732px;width:1280px;height:540px;transform:scale(.354);transform-origin:0 0"></iframe>
+    <iframe id="alert" src="/st/donate_alert.html?volume=0.5" style="left:0;top:0;width:1920px;height:1080px"></iframe>
+  </div>
+</div>
+<div id="ui"></div>
+<script>
+(() => {
+  const P = new URLSearchParams(location.search);
+  const SKINS = ['', 'notebook', 'polaroid', 'vhs', 'receipt', 'terminal'];
+  const ALERTS = ['follow', 'sub', 'gift', 'raid', 'cheer', 'donate', 'water', 'klodik'];
+  const PALS = ['#FF7ABE', '#78EEC4', '#9146FF', '#FFD84D', '#4CD97B', '#8FD3FF'];
+  const frames = [...document.querySelectorAll('iframe')];
+  const stage = document.getElementById('stage'), wrap = document.getElementById('wrap');
+  const state = { skin: '', pal: null, sound: false, plan: false };
+
+  function fit() { stage.style.transform = `scale(${wrap.clientWidth / 1920})`; }
+  addEventListener('resize', fit); fit();
+  if (window.ResizeObserver) new ResizeObserver(fit).observe(wrap);
+
+  // одна команда — во все слои: каждый mock_hub.js сам решает, что ему делать
+  const send = (cmd, value) => frames.forEach(f => f.contentWindow && f.contentWindow.postMessage({ type: 'glu', cmd, value }, location.origin));
+  function handle(cmd, value) {
+    switch (cmd) {
+      case 'skin': state.skin = SKINS.includes(value) ? value : ''; send('skin', state.skin); break;
+      case 'pal': state.pal = value || null; send('pal', state.pal); break;
+      case 'sound': state.sound = !!value; send('sound', state.sound); break;
+      case 'plan': state.plan = value === undefined ? !state.plan : !!value; send('plan', state.plan); break;
+      case 'reset': Object.assign(state, { skin: '', pal: null, plan: false }); send('reset'); break;
+      case 'alert': if (ALERTS.includes(value)) send('alert', value); break;
+      case 'tarot': send('tarot'); break;
+    }
+    ui();
+  }
+  window.__demo = { cmd: handle, state, frames: Object.fromEntries(frames.map(f => [f.id, f])) };
+  addEventListener('message', e => { const d = e.data; if (d && d.type === 'glu' && d.cmd && e.source !== window) handle(d.cmd, d.value); });
+
+  // все слои загрузились — сообщаем родителю
+  let left = frames.length;
+  const loaded = () => { if (--left === 0 && window.parent !== window) parent.postMessage({ type: 'glu', ready: true, skins: SKINS, alerts: ALERTS }, '*'); };
+  frames.forEach(f => f.addEventListener('load', loaded, { once: true }));
+
+  // отладочная панель
+  const box = document.getElementById('ui');
+  const SK_NAME = { '': 'обычный', notebook: 'тетрадь', polaroid: 'полароид', vhs: 'кассета', receipt: 'чек', terminal: 'терминал' };
+  function ui() {
+    if (!P.has('ui')) return;
+    box.style.display = 'flex';
+    const b = (t, on, click, extra) => `<button class="${on ? 'on ' : ''}${extra || ''}" data-c="${click}">${t}</button>`;
+    box.innerHTML = '<b>скин</b>' + SKINS.map(s => b(SK_NAME[s], state.skin === s, 'skin:' + s)).join('')
+      + '<b>цвет</b>' + b('фирм.', !state.pal, 'pal:') + PALS.map(c => `<button class="sw${state.pal === c ? ' on' : ''}" data-c="pal:${c}" style="background:${c}"></button>`).join('')
+      + '<b>алерт</b>' + ALERTS.map(a => b(a, false, 'alert:' + a)).join('') + b('таро', false, 'tarot:')
+      + '<b></b>' + b('план', state.plan, 'plan:') + b(state.sound ? 'звук вкл' : 'звук выкл', state.sound, 'sound:') + b('сброс', false, 'reset:');
+  }
+  box.addEventListener('click', e => {
+    const t = e.target.closest('button'); if (!t) return;
+    const [c, v] = t.dataset.c.split(/:(.*)/);
+    if (c === 'sound') handle('sound', !state.sound); else if (c === 'plan') handle('plan'); else handle(c, v || undefined);
+  });
+  ui();
+})();
+</script>
+</body>
+</html>

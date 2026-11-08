@@ -1,0 +1,124 @@
+/* Глупостанция gluponya: общий стиль (цвета и шрифты из брендбука) */
+@font-face { font-family: "Rubik"; src: url("/static/fonts/Rubik_900Black.ttf"); font-weight: 900; }
+@font-face { font-family: "Nunito"; src: url("/static/fonts/Nunito_700Bold.ttf"); font-weight: 700; }
+@font-face { font-family: "Nunito"; src: url("/static/fonts/Nunito_800ExtraBold.ttf"); font-weight: 800; }
+@font-face { font-family: "Nunito"; src: url("/static/fonts/Nunito_900Black.ttf"); font-weight: 900; }
+:root {
+  --pink: #FF7ABE; --pink-hot: #FF4FA3; --mint: #78EEC4; --plum: #2E0C24; --cream: #FFF8FB;
+  --yellow: #FFD84D; --twitch: #9146FF; --card: #45173A; --chat: #1E0818; --muted: #D9B8CC; --line: #6B2E58;
+  --display: "Rubik", "Nunito", sans-serif; --body: "Nunito", system-ui, sans-serif;
+  --shadow: 0 12px 28px rgba(20, 4, 15, .45);
+}
+* { box-sizing: border-box; }
+
+/* ===== Скин «Терминал» (07.11): моноширинный текст и пиксельные заголовки на всех страницах с hub.css ===== */
+@font-face { font-family: "JetBrains Mono"; src: url("/static/fonts/jetbrains-mono-cyrillic-700-normal.woff2") format("woff2");
+             font-weight: 400 750; unicode-range: U+0301, U+0400-045F, U+0490-0491, U+04B0-04B1, U+2116; }
+@font-face { font-family: "JetBrains Mono"; src: url("/static/fonts/jetbrains-mono-latin-700-normal.woff2") format("woff2"); font-weight: 400 750; }
+@font-face { font-family: "JetBrains Mono"; src: url("/static/fonts/jetbrains-mono-cyrillic-800-normal.woff2") format("woff2");
+             font-weight: 751 1000; unicode-range: U+0301, U+0400-045F, U+0490-0491, U+04B0-04B1, U+2116; }
+@font-face { font-family: "JetBrains Mono"; src: url("/static/fonts/jetbrains-mono-latin-800-normal.woff2") format("woff2"); font-weight: 751 1000; }
+@font-face { font-family: "Tiny5"; src: url("/static/fonts/tiny5-cyrillic-400-normal.woff2") format("woff2");
+             font-weight: 100 1000; unicode-range: U+0301, U+0400-045F, U+0490-0491, U+04B0-04B1, U+2116; }
+@font-face { font-family: "Tiny5"; src: url("/static/fonts/tiny5-latin-400-normal.woff2") format("woff2"); font-weight: 100 1000; }
+:root[data-skin="terminal"] {
+  --display: "Tiny5", "JetBrains Mono", monospace; --body: "JetBrains Mono", Consolas, monospace;
+}
+
+/* Общий набор скина «Терминал» (07.11): одинаковые правила для всех оверлеев с hub.css.
+   Плашки ровные (без наклона), почти прямые углы, свечение вместо тени, полосы развёртки на карточках,
+   прогресс блоками, эквалайзер ступеньками, без искорок. Дальше каждая страница дописывает своё. */
+:root[data-skin="terminal"] body { text-shadow: 0 0 7px color-mix(in srgb, var(--pink) 28%, transparent); }
+:root[data-skin="terminal"] .card, :root[data-skin="terminal"] .wrap { border-radius: 4px !important; border-width: 2px !important;
+   box-shadow: 0 0 20px -5px var(--pink), 0 0 0 1px color-mix(in srgb, #000 35%, transparent) !important;
+   background-image: repeating-linear-gradient(0deg, rgba(0,0,0,.2) 0 1px, transparent 1px 4px) !important; }
+:root[data-skin="terminal"] .kick, :root[data-skin="terminal"] .tag, :root[data-skin="terminal"] .cmd, :root[data-skin="terminal"] .queue, :root[data-skin="terminal"] .nick, :root[data-skin="terminal"] .who b, :root[data-skin="terminal"] .who .ord, :root[data-skin="terminal"] .music, :root[data-skin="terminal"] .tabs span {
+   border-radius: 2px !important; transform: none !important; }
+:root[data-skin="terminal"] .chip { border-radius: 2px !important; }
+:root[data-skin="terminal"] .kick, :root[data-skin="terminal"] .tag, :root[data-skin="terminal"] .cmd, :root[data-skin="terminal"] .chip, :root[data-skin="terminal"] .queue, :root[data-skin="terminal"] .nick, :root[data-skin="terminal"] .who b, :root[data-skin="terminal"] .tabs span.on {
+   box-shadow: 0 0 16px -4px var(--pink) !important; text-shadow: none; }
+:root[data-skin="terminal"] .kick::before, :root[data-skin="terminal"] .tag:not(body)::before { content: "> "; }   /* не body: у тамагочи класс tag на <body> */
+:root[data-skin="terminal"] .chip::after, :root[data-skin="terminal"] .shine { display: none !important; }
+:root[data-skin="terminal"] .track { border-radius: 0 !important; background: color-mix(in srgb, #000 45%, var(--plum)) !important;
+   outline: 1px solid color-mix(in srgb, var(--pink) 45%, transparent); outline-offset: 2px; }
+:root[data-skin="terminal"] .fill { border-radius: 0 !important;
+   -webkit-mask: repeating-linear-gradient(90deg, #000 0 10px, transparent 10px 14px);
+           mask: repeating-linear-gradient(90deg, #000 0 10px, transparent 10px 14px); }
+:root[data-skin="terminal"] .seg span { border-radius: 0 !important; }
+:root[data-skin="terminal"] .eq i { border-radius: 0 !important; animation-timing-function: steps(4, end) !important; }
+:root[data-skin="terminal"] .disc { border-radius: 4px !important; animation: none !important; }
+:root[data-skin="terminal"] .disc::before { border-radius: 0 !important; background: repeating-linear-gradient(0deg, rgba(0,0,0,.28) 0 2px, transparent 2px 4px) !important; }
+:root[data-skin="terminal"] .disc::after { display: none !important; }
+:root[data-skin="terminal"] .sp { display: none !important; }
+:root[data-skin="terminal"] .box { border-radius: 0 !important; }
+:root[data-skin="terminal"] .title, :root[data-skin="terminal"] .song, :root[data-skin="terminal"] .name, :root[data-skin="terminal"] .t { text-shadow: 0 0 12px color-mix(in srgb, var(--pink) 55%, transparent); }
+@keyframes t-blink { 50% { opacity: 0; } }
+
+/* ===== Формы оверлея (07.11): Тетрадь, Полароид, Кассета, Чек. Общий набор для всех страниц с hub.css =====
+   Форма (скин) и палитра (настроение) независимы: любая форма в любой палитре. Цвета только из переменных палитры.
+   Рукописный шрифт: Caveat, если положим в static/fonts, пока курсивный Nunito (--hand-style). Системные Segoe Print/Script НЕ ставить: вешают рендерер Chrome на этом компе (проверено 07.11). */
+:root { --hand: "Caveat", "Nunito", sans-serif; --hand-style: italic;
+        --zig: conic-gradient(from 135deg at bottom, #0000, #000 1deg 89deg, #0000 90deg) bottom/18px 9px repeat-x,
+               linear-gradient(#000 0 0) top/100% calc(100% - 9px) no-repeat; }
+
+/* .tag:not(body): у страницы тамагочи класс tag стоит на самом <body> (режим бирки), иначе бирочный фон заливал весь экран (07.11)
+   --- Тетрадь в клеточку: белая бумага, пунктирные рамки ручкой (яркий цвет палитры), важное маркером (жёлтый), подписи от руки --- */
+:root[data-skin="notebook"] { --mark: color-mix(in srgb, var(--yellow) 70%, var(--pen)); --paper: color-mix(in srgb, var(--muted) 30%, white); --grid: color-mix(in srgb, var(--muted) 70%, white);
+                              --ink: var(--plum); --pen: var(--pink-hot); --soft: color-mix(in srgb, var(--plum) 55%, white); }
+:root[data-skin="notebook"] .card, :root[data-skin="notebook"] .wrap { background: #fff !important; background-image: none !important; color: var(--ink);
+   border: 2px dashed var(--pen) !important; border-radius: 6px !important; box-shadow: 0 4px 0 color-mix(in srgb, var(--muted) 60%, transparent) !important; }
+:root[data-skin="notebook"] .kick, :root[data-skin="notebook"] .tag:not(body), :root[data-skin="notebook"] .cmd, :root[data-skin="notebook"] .chip,
+:root[data-skin="notebook"] .queue, :root[data-skin="notebook"] .nick { background: var(--pen) !important; color: #fff !important;
+   border-radius: 4px !important; box-shadow: none !important; transform: rotate(-1.5deg) !important; }
+:root[data-skin="notebook"] .chip::after, :root[data-skin="notebook"] .shine, :root[data-skin="notebook"] .sp { display: none !important; }
+/* полоски заполнения во всех формах — сплошные, без штриховок и пунктира: узоры рябили и плохо читались (07.11) */
+:root[data-skin="notebook"] .track { background: color-mix(in srgb, var(--pen) 18%, white) !important; border: 0; border-radius: 3px !important; box-shadow: none !important; }
+:root[data-skin="notebook"] .fill { background: var(--pen) !important; opacity: 1; border-radius: 3px !important; }
+:root[data-skin="notebook"] .seg span { border-radius: 0 !important; }
+:root[data-skin="notebook"] .box { border-radius: 3px !important; }
+:root[data-skin="notebook"] .card :is(.title, .song, .name, .t, .sub, .pt, .ot, .on, .tx) { color: var(--ink); text-shadow: none; }
+
+/* --- Полароид: белые снимки без рамок, мягкая тень, скотч цветов палитры, подписи от руки, лёгкие повороты --- */
+:root[data-skin="polaroid"] { --mark: color-mix(in srgb, var(--yellow) 70%, var(--pen)); --paper: #fff; --ink: var(--plum); --pen: var(--pink-hot); --soft: color-mix(in srgb, var(--plum) 55%, white);
+                              --tape: color-mix(in srgb, var(--yellow) 75%, transparent); --tape2: color-mix(in srgb, var(--pink-hot) 65%, transparent); }
+:root[data-skin="polaroid"] .card, :root[data-skin="polaroid"] .wrap { background: #fff !important; background-image: none !important; color: var(--ink);
+   border: 0 !important; border-radius: 4px !important; box-shadow: 0 8px 22px rgba(0,0,0,.22) !important; }
+:root[data-skin="polaroid"] .kick, :root[data-skin="polaroid"] .tag:not(body), :root[data-skin="polaroid"] .cmd, :root[data-skin="polaroid"] .chip,
+:root[data-skin="polaroid"] .queue, :root[data-skin="polaroid"] .nick { background: var(--pen) !important; color: #fff !important;
+   border-radius: 4px !important; box-shadow: none !important; transform: none !important; font-family: var(--hand) !important; font-style: var(--hand-style, italic); font-weight: 700 !important; text-transform: none !important; }
+:root[data-skin="polaroid"] .chip::after, :root[data-skin="polaroid"] .shine, :root[data-skin="polaroid"] .sp { display: none !important; }
+:root[data-skin="polaroid"] .track { background: color-mix(in srgb, var(--ink) 12%, white) !important; border-radius: 4px !important; box-shadow: none !important; }
+:root[data-skin="polaroid"] .fill { background: var(--pen) !important; border-radius: 4px !important; }
+:root[data-skin="polaroid"] .seg span { border-radius: 0 !important; }
+:root[data-skin="polaroid"] .box { border-radius: 4px !important; }
+:root[data-skin="polaroid"] .card :is(.title, .song, .name, .t, .sub, .pt, .ot, .on, .tx) { color: var(--ink); text-shadow: none; }
+
+/* --- Кассета VHS: моноширинный шрифт, белые тонкие рамки без скруглений, цветной сдвиг у заголовков, полосы развёртки, прогресс как настроечная таблица --- */
+:root[data-skin="vhs"] { --display: "JetBrains Mono", Consolas, monospace; --body: "JetBrains Mono", Consolas, monospace;
+                         --chroma: .08em 0 color-mix(in srgb, var(--pink-hot) 80%, transparent), -.08em 0 color-mix(in srgb, var(--mint) 80%, transparent);
+                         --bars: repeating-linear-gradient(90deg, #fff 0 80px, var(--yellow) 80px 160px, var(--mint) 160px 240px, var(--pink-hot) 240px 320px, var(--pink) 320px 400px, var(--line) 400px 480px); }
+:root[data-skin="vhs"] .card, :root[data-skin="vhs"] .wrap { background: color-mix(in srgb, var(--plum) 80%, transparent) !important;
+   background-image: repeating-linear-gradient(0deg, rgba(255,255,255,.05) 0 1px, transparent 1px 4px) !important;
+   border: 2px solid #fff !important; border-radius: 0 !important; box-shadow: none !important; }
+:root[data-skin="vhs"] .kick, :root[data-skin="vhs"] .tag:not(body), :root[data-skin="vhs"] .cmd, :root[data-skin="vhs"] .chip,
+:root[data-skin="vhs"] .queue, :root[data-skin="vhs"] .nick { background: none !important; border: 2px solid #fff; color: #fff !important;
+   border-radius: 0 !important; box-shadow: none !important; transform: none !important; text-shadow: var(--chroma); text-transform: uppercase; }
+:root[data-skin="vhs"] .chip::after, :root[data-skin="vhs"] .shine, :root[data-skin="vhs"] .sp { display: none !important; }
+:root[data-skin="vhs"] .track { background: rgba(255,255,255,.18) !important; border-radius: 0 !important; box-shadow: none !important; }
+:root[data-skin="vhs"] .fill { background: #fff !important; border-radius: 0 !important; box-shadow: 3px 0 0 color-mix(in srgb, var(--pink-hot) 80%, transparent); }
+:root[data-skin="vhs"] .seg span, :root[data-skin="vhs"] .box, :root[data-skin="vhs"] .eq i, :root[data-skin="vhs"] .disc { border-radius: 0 !important; }
+:root[data-skin="vhs"] .card :is(.title, .song, .name, .t) { text-shadow: var(--chroma); text-transform: uppercase; letter-spacing: .03em; }
+
+/* --- Чек из магазина: кассовая лента (светлая бумага, зубчатый низ), моноширинный шрифт, штрих-код вместо прогресса, штамп ярким цветом --- */
+:root[data-skin="receipt"] { --mark: color-mix(in srgb, var(--yellow) 70%, var(--pen)); --display: "JetBrains Mono", Consolas, monospace; --body: "JetBrains Mono", Consolas, monospace;
+                             --paper: #FBF7EE; --ink: #222; --soft: #666; --pen: var(--pink-hot); }
+:root[data-skin="receipt"] .card, :root[data-skin="receipt"] .wrap { background: var(--paper) !important; background-image: none !important; color: var(--ink);
+   border: 0 !important; border-radius: 0 !important; box-shadow: none !important; -webkit-mask: var(--zig); mask: var(--zig); padding-bottom: 28px !important; }
+:root[data-skin="receipt"] .kick, :root[data-skin="receipt"] .tag:not(body), :root[data-skin="receipt"] .cmd, :root[data-skin="receipt"] .chip,
+:root[data-skin="receipt"] .queue, :root[data-skin="receipt"] .nick { background: var(--pen) !important; color: #fff !important;
+   border-radius: 0 !important; box-shadow: none !important; transform: none !important; letter-spacing: .06em; }
+:root[data-skin="receipt"] .chip::after, :root[data-skin="receipt"] .shine, :root[data-skin="receipt"] .sp { display: none !important; }
+:root[data-skin="receipt"] .track { background: color-mix(in srgb, var(--ink) 14%, var(--paper)) !important; border: 0; border-radius: 0 !important; box-shadow: none !important; }
+:root[data-skin="receipt"] .fill { background: var(--ink) !important; border-radius: 0 !important; }
+:root[data-skin="receipt"] .seg span, :root[data-skin="receipt"] .box { border-radius: 0 !important; }
+:root[data-skin="receipt"] .card :is(.title, .song, .name, .t, .sub, .pt, .ot, .on, .tx) { color: var(--ink); text-shadow: none; }

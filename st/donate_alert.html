@@ -1,0 +1,1077 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<script src="/st/mock_hub.js"></script>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Алерт доната и Twitch</title>
+<link rel="stylesheet" href="/static/hub.css">
+<style>
+  /* Три уровня алерта по сумме: «Оня рада» (маленький, сбоку), «Оня супер рада» (средний, сбоку, искры),
+     «Оня супер мега дупер рада!!!» (большой, по центру сверху, конфетти и тряска). */
+  :root{
+    --pink:#FF7ABE; --pink-hot:#FF4FA3; --mint:#78EEC4; --plum:#2E0C24;
+    --cream:#FFF8FB; --yellow:#FFD84D; --violet:#9146FF; --card:#45173A; --muted:#D9B8CC;
+    --shadow:0 12px 28px rgba(20,4,15,.45);
+    --display:"Rubik","Nunito",sans-serif; --body:"Nunito","Rubik",sans-serif;
+  }
+  html,body{margin:0;height:100%;background:transparent;overflow:hidden}
+  body.preview{background:repeating-conic-gradient(#241020 0 25%, #2c1428 0 50%) 0 0/40px 40px}
+  *{box-sizing:border-box}
+  #fx{position:absolute;inset:0;width:100%;height:100%;pointer-events:none;z-index:5}
+  /* погода за баллы: под алертами и виджетами, поверх всего остального на экране */
+  #wx{position:absolute;inset:0;width:100%;height:100%;pointer-events:none;z-index:1}
+
+  .alert{position:absolute;z-index:3}
+  .card{position:relative;background:var(--card);border-radius:28px;box-shadow:var(--shadow)}
+  .label{position:absolute;left:24px;top:0;transform:translateY(-55%) rotate(-3deg);white-space:nowrap;
+         font:900 24px/1 var(--display);text-transform:uppercase;letter-spacing:.03em;color:var(--plum);
+         padding:10px 16px 8px;border-radius:10px;box-shadow:0 6px 14px rgba(20,4,15,.35);z-index:3}
+  .amount{position:absolute;background:var(--yellow);color:var(--plum);font:900 46px/1 var(--display);
+          padding:12px 20px 10px;border-radius:18px;box-shadow:var(--shadow);transform:rotate(5deg);white-space:nowrap;z-index:3}
+  .name{font:900 40px/1.1 var(--display);color:var(--cream);text-transform:uppercase;
+        white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .via{margin-top:8px;font:800 22px/1.25 var(--body);color:var(--muted)}
+  .via b{color:var(--mint);font-weight:900}
+  .msg{margin-top:16px;font:800 32px/1.32 var(--body);color:var(--cream);overflow-wrap:anywhere}
+  .msg:empty{display:none}
+  .amount .usd{font-size:.6em;opacity:.8}
+  .meme{position:absolute;z-index:4;filter:drop-shadow(0 12px 22px rgba(20,4,15,.5))}
+  .meme img{width:100%;height:100%;object-fit:contain;animation:wobble 2.2s ease-in-out infinite;transform-origin:50% 80%}
+  @keyframes wobble{0%,100%{transform:rotate(-7deg)}50%{transform:rotate(7deg) scale(1.04)}}
+  /* Клодик: оранжевая искорка с глазками, пока ответ на экране — «говорит» */
+  .klod svg{width:100%;height:100%;overflow:visible;animation:kbob 1.8s ease-in-out infinite;transform-origin:50% 60%}
+  .klod .eyes{animation:kblink 3.6s infinite;transform-origin:50% 46%}
+  .klod .mouth{animation:ktalk .32s ease-in-out infinite alternate;transform-origin:50% 60%}
+  .klod.quiet .mouth{animation:none;transform:scaleY(.25)}
+  .klod.sync .mouth{animation:none;transform:scaleY(.2)}
+  .klod .tear{animation:ktear 1.6s ease-in infinite}
+  .klod.m-angry svg{animation:kshake .3s ease-in-out infinite}
+  .klod.m-shock svg{animation:kjump .9s ease-in-out infinite}
+  .klod.m-love svg{animation:kbob 1.1s ease-in-out infinite}
+  .klod.m-stars svg{animation:kjump .7s ease-in-out infinite}
+  .klod.m-stars .eyes{animation:none}
+  .klod.m-stars .eyes path{animation:kspin 2.4s linear infinite;transform-box:fill-box;transform-origin:50% 50%}
+  .klod.m-scared svg{animation:kshiver .12s linear infinite}
+  .klod.m-sleepy svg{animation:kbob 3.4s ease-in-out infinite}
+  .klod.m-sleepy .eyes,.klod.m-cry .eyes,.klod.m-cool .eyes,.klod.m-wink .eyes{animation:none}
+  .klod .tears path{animation:ktear 1.1s ease-in infinite}
+  .klod .tears path+path{animation-delay:-.5s}
+  .klod .zzz text{animation:kz 2.4s ease-in-out infinite;opacity:0}
+  .klod .zzz text:nth-child(2){animation-delay:.8s}.klod .zzz text:nth-child(3){animation-delay:1.6s}
+  .klod .dots circle{animation:kdot 1.5s infinite;opacity:.2}
+  .klod .dots circle:nth-child(2){animation-delay:.3s}.klod .dots circle:nth-child(3){animation-delay:.6s}
+  .klod .sweat{animation:ktear 1.4s ease-in infinite}
+  .klod.m-judge .eyes,.klod.m-scheme .eyes,.klod.m-confused .eyes,.klod.m-eyeroll .eyes{animation:none}
+  .klod .shifty{animation:kshifty 2.2s ease-in-out infinite}
+  .klod .roll{animation:kroll 2.6s ease-in-out infinite}
+  .klod .mark{animation:kmark 1.2s ease-in-out infinite;transform-box:fill-box;transform-origin:50% 100%}
+  .klod.m-scheme svg{animation:kbob 2.6s ease-in-out infinite}
+  @keyframes kshifty{0%,15%,100%{transform:translateX(0)}30%,50%{transform:translateX(-2.2px)}65%,85%{transform:translateX(2.2px)}}
+  @keyframes kroll{0%,100%{transform:translate(0,0)}25%{transform:translate(2.2px,1px)}50%{transform:translate(0,-.6px)}75%{transform:translate(-2.2px,1px)}}
+  @keyframes kmark{0%,100%{transform:rotate(-10deg) scale(1)}50%{transform:rotate(10deg) scale(1.15)}}
+  @keyframes kspin{to{transform:rotate(360deg)}}
+  @keyframes kshiver{0%,100%{transform:translateX(0)}50%{transform:translateX(1.5%)}}
+  @keyframes kz{0%{opacity:0;transform:translateY(4px)}30%,70%{opacity:1}100%{opacity:0;transform:translateY(-6px)}}
+  @keyframes kdot{0%,100%{opacity:.2}50%{opacity:1}}
+  @keyframes ktear{0%{transform:translateY(0);opacity:1}80%{transform:translateY(9px);opacity:1}100%{transform:translateY(11px);opacity:0}}
+  @keyframes kshake{0%,100%{transform:rotate(-4deg)}50%{transform:rotate(4deg) scale(1.04)}}
+  @keyframes kjump{0%,100%{transform:translateY(0) scale(1)}30%{transform:translateY(-8%) scale(1.1)}}
+  @keyframes kbob{0%,100%{transform:rotate(-5deg) scale(1)}50%{transform:rotate(5deg) scale(1.06)}}
+  @keyframes kblink{0%,92%,100%{transform:scaleY(1)}95%{transform:scaleY(.1)}}
+  @keyframes ktalk{0%{transform:scaleY(.25)}60%{transform:scaleY(1)}100%{transform:scaleY(.55)}}
+
+  /* у маленького и среднего подпись «Оня рада» висит на нижнем краю карточки справа */
+  .t0 .label,.t1 .label{top:auto;bottom:0;left:auto;right:28px;transform:translateY(55%) rotate(-3deg)}
+  /* 1. Оня рада: компактно сбоку */
+  .t0{width:470px;padding-top:70px}
+  .t0 .card{border:3px solid var(--mint);padding:40px 26px 34px 26px}
+  .t0 .label{background:var(--mint);font-size:20px}
+  .t0 .amount{top:-24px;right:18px;font-size:34px;padding:9px 15px 8px;background:var(--mint)}
+  .t0 .meme{top:0;left:-28px;width:140px;height:140px}
+  .t0.has-meme .name,.t0.has-meme .via{padding-left:96px}
+
+  .t0 .name{font-size:30px} .t0 .via{font-size:18px} .t0 .msg{font-size:26px;margin-top:12px}
+
+  /* 2. Оня супер рада: сбоку, крупнее, розовая рамка */
+  .t1{width:600px;padding-top:110px}
+  .t1 .card{border:4px solid var(--pink);padding:58px 34px 42px 34px}
+  .t1 .label{background:var(--pink)}
+  .t1 .amount{top:-30px;right:24px;background:var(--pink)}
+  .t1 .meme{top:0;left:-40px;width:200px;height:200px}
+  .t1.has-meme .name,.t1.has-meme .via{padding-left:142px}
+
+
+  /* 3. Оня супер мега дупер рада!!!: по центру сверху, большая, светится */
+  .t2{width:820px;padding-top:150px;left:50%;margin-left:-410px}
+  .t2 .name{padding-right:250px}
+  .t2 .card{border:6px solid var(--pink-hot);padding:74px 44px 36px 44px;
+            animation:glow 1.1s ease-in-out infinite alternate}
+  @keyframes glow{from{box-shadow:0 0 0 0 rgba(255,79,163,.0),var(--shadow)}to{box-shadow:0 0 46px 10px rgba(255,79,163,.55),var(--shadow)}}
+  .t2 .label{left:50%;top:-150px;background:var(--pink-hot);font-size:40px;padding:14px 24px 11px;animation:shout .9s ease-in-out infinite}
+  @keyframes shout{0%,100%{transform:translateX(-50%) rotate(-3deg) scale(1)}50%{transform:translateX(-50%) rotate(2deg) scale(1.06)}}
+  .t2 .amount{top:-36px;right:30px;font-size:60px;background:var(--yellow)}
+  .t2 .meme{bottom:-60px;right:-70px;width:260px;height:260px}
+  .t2.has-meme .msg{padding-right:170px}
+  .t2.has-meme .card{min-height:250px}
+  .t2 .name{font-size:52px} .t2 .via{font-size:24px} .t2 .msg{font-size:36px}
+  /* сабки: в центре экрана, а не сбоку */
+  .alert.mid{left:50%} .t0.mid{margin-left:-235px} .t1.mid{margin-left:-300px}
+
+  /* алерты Twitch: свой цвет у каждого события */
+  .th-violet .card{border-color:var(--violet)} .th-violet .label{background:var(--violet);color:var(--cream)} .th-violet .amount{background:var(--violet);color:var(--cream)}
+  .th-yellow .card{border-color:var(--yellow)} .th-yellow .label{background:var(--yellow)} .th-yellow .amount{background:var(--yellow)}
+  .th-mint .card{border-color:var(--mint)} .th-mint .label{background:var(--mint)} .th-mint .amount{background:var(--mint)}
+  .th-hot .card{border-color:var(--pink-hot)} .th-hot .label{background:var(--pink-hot);color:var(--cream)} .th-hot .amount{background:var(--yellow)}
+  .th-violet.t2 .card{animation:glowv 1.1s ease-in-out infinite alternate}
+  @keyframes glowv{from{box-shadow:0 0 0 0 rgba(145,70,255,0),var(--shadow)}to{box-shadow:0 0 46px 10px rgba(145,70,255,.6),var(--shadow)}}
+  .sticker img{animation-duration:1.6s}
+
+  /* ставки и опросы за баллы: виджеты сверху по центру, друг под другом */
+  #topw{position:absolute;top:22px;left:50%;width:620px;margin-left:-310px;z-index:2;display:flex;flex-direction:column;gap:14px}
+  .pw{display:none}
+  .pw .card{border:4px solid var(--yellow);padding:20px 24px 18px}
+  .pw .ph{display:flex;align-items:center;justify-content:space-between;gap:12px}
+  .pw .chip{background:var(--yellow);color:var(--plum);font:900 20px/1 var(--display);text-transform:uppercase;
+              padding:8px 12px 6px;border-radius:10px;transform:rotate(-3deg);box-shadow:0 6px 14px rgba(20,4,15,.35)}
+  .pw .tm{font:900 26px/1 var(--display);color:var(--mint);font-variant-numeric:tabular-nums}
+  .pw .tm.lock{color:var(--muted);font-size:18px;text-transform:uppercase}
+  .pw .pt{margin:14px 0 12px;font:900 30px/1.15 var(--display);color:var(--cream)}
+  .pw .o{position:relative;height:46px;border-radius:14px;background:#2a0c22;overflow:hidden;margin-top:8px;transition:opacity .4s}
+  .pw .o i{position:absolute;inset:0 auto 0 0;border-radius:14px;opacity:.9;transition:width .6s cubic-bezier(.2,.9,.3,1)}
+  .pw .o .ot{position:absolute;left:14px;top:0;bottom:0;display:flex;align-items:center;font:900 22px/1 var(--body);color:var(--cream);
+               text-shadow:0 2px 6px rgba(20,4,15,.7);max-width:58%;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .pw .o .on{position:absolute;right:14px;top:0;bottom:0;display:flex;align-items:center;gap:10px;font:900 19px/1 var(--body);
+               color:var(--cream);text-shadow:0 2px 6px rgba(20,4,15,.7)}
+  .pw .o .on b{font:900 24px/1 var(--display)}
+  .pw .o .on small{font-size:16px;color:var(--yellow)}
+  .pw .o.lose{opacity:.38}
+  .pw .o.win{box-shadow:0 0 0 3px var(--yellow),0 0 26px 4px rgba(255,216,77,.5)}
+  .pw .pf{margin-top:12px;font:800 18px/1.2 var(--body);color:var(--muted)}
+  .pw .pf b{color:var(--yellow)}
+
+  #poll .card{border-color:var(--mint)} #poll .chip{background:var(--mint)}
+  #poll .o.lead{box-shadow:0 0 0 3px var(--mint)}
+  @media (prefers-reduced-motion:reduce){*{animation:none!important}}
+  .th-blue .card{border-color:#7ACBFF} .th-blue .label{background:#7ACBFF} .th-blue .amount{background:#7ACBFF}
+  .th-custom .card{border-color:var(--c)} .th-custom .label{background:var(--c)} .th-custom .amount{background:var(--c)}
+  .big-emoji{display:flex;align-items:center;justify-content:center;font-size:110px;line-height:1}
+  .big-emoji span{display:inline-block;animation:wobble 2.2s ease-in-out infinite;transform-origin:50% 80%}
+  .t0 .big-emoji{font-size:96px} .t1 .big-emoji{font-size:140px}
+
+  /* ---- таро: карта дня (переворот рубашки, свечение по редкости, предсказание) ---- */
+  .tarot{position:absolute;left:50%;top:50%;z-index:4;width:400px;margin-left:-200px;margin-top:-430px;text-align:center}
+  .tarot .tlab{display:block;width:max-content;max-width:620px;position:relative;left:50%;font:900 26px/1 var(--display);text-transform:uppercase;
+               color:var(--plum);background:var(--yellow);padding:10px 18px 8px;border-radius:12px;transform:translateX(-50%) rotate(-3deg);
+               box-shadow:var(--shadow);margin-bottom:18px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .tarot .flip{position:relative;width:400px;height:689px;perspective:1600px}
+  .tarot .in{position:absolute;inset:0;transform-style:preserve-3d;transition:transform 1s cubic-bezier(.3,1.4,.5,1)}
+  .tarot.open .in{transform:rotateY(180deg)}
+  .tarot .face{position:absolute;inset:0;backface-visibility:hidden;border-radius:20px;overflow:hidden}
+  .tarot .face img{width:100%;height:100%;display:block}
+  .tarot .front{transform:rotateY(180deg)}
+  .tarot .glow{position:absolute;inset:-6px;border-radius:26px;pointer-events:none;opacity:0;transition:opacity .6s .9s}
+  .tarot.open .glow{opacity:1;animation:tGlow 2.2s ease-in-out 1.5s infinite}
+  @keyframes tGlow{0%,100%{filter:brightness(1)}50%{filter:brightness(1.5)}}
+  .tarot.rare .glow{box-shadow:0 0 30px 8px rgba(110,170,240,.85)}
+  .tarot.myth .glow{box-shadow:0 0 38px 12px rgba(190,120,255,.9),0 0 80px 20px rgba(244,156,185,.5)}
+  .tarot.legend .glow{box-shadow:0 0 44px 14px rgba(255,214,120,.95),0 0 110px 34px rgba(244,156,185,.6)}
+  .tarot.common .glow{box-shadow:0 12px 28px rgba(20,4,15,.45)}
+  .tarot .tsay{margin:18px auto 0;max-width:460px;margin-left:-30px;margin-right:-30px;background:var(--card);border-radius:18px;padding:14px 18px;
+               font:800 24px/1.3 var(--body);color:var(--cream);box-shadow:var(--shadow);opacity:0;transition:opacity .5s 1.3s}
+  .tarot .tsay b{display:block;font:900 18px/1 var(--display);text-transform:uppercase;letter-spacing:.04em;margin-bottom:6px}
+  .tarot.open .tsay{opacity:1}
+  .tarot.common .tsay b{color:var(--muted)} .tarot.rare .tsay b{color:#8FC2FF}
+  .tarot.myth .tsay b{color:#D3A6FF} .tarot.legend .tsay b{color:var(--yellow)}
+
+  /* !профиль — карточка зрителя: сбоку, как алерты */
+  .prof{position:absolute;z-index:4;width:600px;background:var(--card);border-radius:30px;box-shadow:var(--shadow);
+        border:4px solid var(--pink);padding:30px 28px 24px;color:var(--cream);font-family:var(--body)}
+  .prof .plab{position:absolute;left:26px;top:0;transform:translateY(-55%) rotate(-3deg);background:var(--yellow);color:var(--plum);
+        font:900 24px/1 var(--display);text-transform:uppercase;letter-spacing:.03em;padding:10px 16px 8px;border-radius:10px;
+        box-shadow:0 6px 14px rgba(20,4,15,.35);white-space:nowrap}
+  .prof .ph{display:flex;gap:20px;align-items:center}
+  .prof .ava{flex:0 0 112px;height:112px;border-radius:50%;border:5px solid var(--yellow);box-shadow:0 0 0 4px var(--plum);
+        background:var(--plum);overflow:hidden;display:grid;place-items:center;font-size:58px}
+  .prof .ava img{width:100%;height:100%;object-fit:cover;display:block}
+  .prof .pn{min-width:0;flex:1}
+  .prof .nm{font:900 40px/1.05 var(--display);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .prof .chips{display:flex;flex-wrap:wrap;gap:8px;margin-top:10px}
+  .prof .chip{font:900 17px/1 var(--display);text-transform:uppercase;letter-spacing:.03em;padding:8px 12px 7px;border-radius:10px;
+        background:var(--mint);color:var(--plum)}
+  .prof .chip.t{background:var(--yellow);color:var(--plum);transform:rotate(-3deg)}
+  .prof .chip.s{background:var(--violet);color:#fff} .prof .chip.v{background:var(--pink-hot);color:#fff}
+  .prof .since{margin-top:8px;font:800 17px/1.2 var(--body);color:var(--muted)}
+  .prof .bar{margin:20px 0 4px;height:14px;border-radius:8px;background:rgba(0,0,0,.28);overflow:hidden}
+  .prof .bar i{display:block;height:100%;width:0;border-radius:8px;background:linear-gradient(90deg,var(--pink),var(--yellow));
+        transition:width 1.2s cubic-bezier(.2,.9,.3,1) .5s}
+  .prof .bart{font:800 15px/1 var(--body);color:var(--muted);text-align:right}
+  .prof .st{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-top:16px}
+  .prof .st div{background:rgba(0,0,0,.22);border-radius:16px;padding:12px 6px 10px;text-align:center}
+  .prof .st b{display:block;font:900 30px/1 var(--display);color:var(--yellow)}
+  .prof .st span{display:block;margin-top:6px;font:800 15px/1.1 var(--body);color:var(--muted)}
+  .prof .ach{display:grid;grid-template-columns:repeat(8,1fr);gap:6px;margin-top:16px}
+  .prof .ach div{aspect-ratio:1;border-radius:12px;display:grid;place-items:center;font-size:26px;background:rgba(255,255,255,.1)}
+  .prof .ach div.on{background:rgba(255,216,77,.2);box-shadow:inset 0 0 0 2px var(--yellow)}
+  .prof .ach div.on.r3{background:rgba(160,110,255,.28);box-shadow:inset 0 0 0 2px #C59BFF}
+  .prof .ach div.on.r4{background:rgba(255,120,190,.28);box-shadow:inset 0 0 0 3px #FF8CC6,0 0 14px rgba(255,140,198,.7)}
+  .prof .ach div.off{filter:grayscale(1);opacity:.28}
+  .prof .pets{display:flex;gap:10px;margin-top:16px}
+  .prof .pets>div{flex:1;min-width:0;display:flex;align-items:center;gap:10px;background:rgba(0,0,0,.22);border-radius:16px;padding:4px 14px 4px 4px}
+  .prof .pets img{flex:0 0 72px;width:72px;height:72px;object-fit:contain;transform:scale(1.5)}
+  .prof .pets b{display:block;font:900 19px/1.1 var(--body);color:var(--mint);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .prof .pets span{display:block;font:800 14px/1.1 var(--body);color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .prof .af{margin-top:12px;font:900 18px/1 var(--display);text-transform:uppercase;letter-spacing:.04em;color:var(--mint)}
+  /* Скин «Терминал» (07.11): ровные плашки, углы, свечение; карточки берут общий набор из hub.css */
+  :root[data-skin="terminal"] .card { border-width: 3px !important; }
+  :root[data-skin="terminal"] .label { border-radius: 2px; transform: translateY(-55%); box-shadow: 0 0 18px -4px var(--pink); }
+  :root[data-skin="terminal"] .label::before { content: "> "; }
+  :root[data-skin="terminal"] .t0 .label, :root[data-skin="terminal"] .t1 .label { transform: translateY(55%); }
+  :root[data-skin="terminal"] .t2 .label { animation: t-shout .9s steps(2, end) infinite; }
+  @keyframes t-shout { 0%, 100% { transform: translateX(-50%); } 50% { transform: translateX(-50%) scale(1.05); } }
+  :root[data-skin="terminal"] .amount { border-radius: 3px; transform: none; box-shadow: 0 0 22px -4px var(--yellow); }
+  :root[data-skin="terminal"] .pw .chip, :root[data-skin="terminal"] .prof .chip.t { border-radius: 2px; transform: none !important; }
+  :root[data-skin="terminal"] .tarot .tlab { border-radius: 2px; transform: translateX(-50%); }
+  :root[data-skin="terminal"] .prof .plab { border-radius: 2px; transform: translateY(-55%); }
+  /* ===== Формы оверлея (07.11): карточки берут общий набор из hub.css, здесь подписи, сумма и текст ===== */
+  :root[data-skin="notebook"] .label { border-radius: 4px; box-shadow: none; }
+  :root[data-skin="notebook"] .amount { border-radius: 4px; box-shadow: none; transform: rotate(3deg); font: 700 54px/1 var(--hand); font-style: var(--hand-style, italic); }
+  :root[data-skin="notebook"] .name { color: var(--ink); } :root[data-skin="notebook"] .via { color: var(--soft); }
+  :root[data-skin="notebook"] .msg { color: var(--ink); font: 700 38px/1.2 var(--hand); font-style: var(--hand-style, italic); }
+  :root[data-skin="notebook"] .t2 .card { animation: none; }
+  :root[data-skin="notebook"] .pw .pt { color: var(--ink); } :root[data-skin="notebook"] .pw .o { background: var(--paper); border-radius: 6px; }
+  :root[data-skin="notebook"] .pw .ot, :root[data-skin="notebook"] .pw .on { color: var(--ink); text-shadow: none; } :root[data-skin="notebook"] .pw .pf { color: var(--soft); }
+  :root[data-skin="polaroid"] .label { border-radius: 4px; box-shadow: none; font: 700 30px/1 var(--hand); font-style: var(--hand-style, italic); text-transform: none; }
+  :root[data-skin="polaroid"] .amount { border-radius: 4px; box-shadow: 0 6px 14px rgba(0,0,0,.2); }
+  :root[data-skin="polaroid"] .name { color: var(--ink); } :root[data-skin="polaroid"] .via { color: var(--soft); }
+  :root[data-skin="polaroid"] .msg { color: var(--ink); font: 700 40px/1.2 var(--hand); font-style: var(--hand-style, italic); }
+  :root[data-skin="polaroid"] .alert .card::before { content: ""; position: absolute; left: 40%; top: -12px; width: 20%; height: 24px; background: var(--tape2); transform: rotate(3deg); z-index: 4; }
+  :root[data-skin="polaroid"] .t2 .card { animation: none; }
+  :root[data-skin="polaroid"] .pw .pt { color: var(--ink); } :root[data-skin="polaroid"] .pw .o { background: color-mix(in srgb, var(--muted) 30%, white); border-radius: 4px; }
+  :root[data-skin="polaroid"] .pw .ot, :root[data-skin="polaroid"] .pw .on { color: var(--ink); text-shadow: none; } :root[data-skin="polaroid"] .pw .pf { color: var(--soft); }
+  :root[data-skin="vhs"] .label { border-radius: 0; background: var(--plum) !important; border: 2px solid #fff; color: #fff !important; transform: translateY(-55%); box-shadow: none; text-shadow: var(--chroma); }
+  :root[data-skin="vhs"] .label::before { content: "▶ "; }
+  :root[data-skin="vhs"] .t0 .label, :root[data-skin="vhs"] .t1 .label { transform: translateY(55%); }
+  :root[data-skin="vhs"] .t2 .label { transform: translateX(-50%); animation: none; }
+  :root[data-skin="vhs"] .amount { border-radius: 0; transform: none; box-shadow: none; background: none !important; border: 2px solid #fff; color: #fff !important; text-shadow: var(--chroma); }
+  :root[data-skin="vhs"] .name { text-shadow: var(--chroma); } :root[data-skin="vhs"] .via b { color: var(--yellow); }
+  :root[data-skin="vhs"] .t2 .card { animation: none; }
+  :root[data-skin="vhs"] .pw .chip, :root[data-skin="vhs"] .prof .chip.t { border-radius: 0; transform: none !important; }
+  :root[data-skin="vhs"] .pw .o, :root[data-skin="vhs"] .pw .o i { border-radius: 0; }
+  :root[data-skin="vhs"] .tarot .tlab { border-radius: 0; transform: translateX(-50%); } :root[data-skin="vhs"] .prof .plab { border-radius: 0; transform: translateY(-55%); }
+  :root[data-skin="receipt"] .label { border-radius: 0; transform: none; top: 14px; left: 22px; box-shadow: none; background: var(--ink) !important; color: #fff !important; letter-spacing: .08em; font-size: 18px; }
+  :root[data-skin="receipt"] .t0 .card { padding-top: 72px !important; padding-bottom: 70px !important; }
+  :root[data-skin="receipt"] .t1 .card { padding-top: 92px !important; padding-bottom: 78px !important; }
+  :root[data-skin="receipt"] .t0 .amount { top: 10px; right: 16px; } :root[data-skin="receipt"] .t1 .amount { top: 12px; right: 20px; }
+  :root[data-skin="receipt"] .t2 .card { padding-top: 90px !important; padding-bottom: 60px !important; }
+  :root[data-skin="receipt"] .t0 .label, :root[data-skin="receipt"] .t1 .label { transform: none; top: auto; bottom: 30px; left: auto; right: 22px; }
+  :root[data-skin="receipt"] .t2 .label { transform: translateX(-50%); top: 16px; animation: none; }
+  :root[data-skin="receipt"] .amount { border-radius: 0; transform: rotate(-4deg); box-shadow: none; background: none !important; border: 4px double var(--pen); color: var(--pen) !important; letter-spacing: .06em; }
+  :root[data-skin="receipt"] .name { color: var(--ink); } :root[data-skin="receipt"] .name::after { content: ""; display: block; border-bottom: 2px dashed var(--ink); margin-top: 8px; }
+  :root[data-skin="receipt"] .via { color: var(--soft); } :root[data-skin="receipt"] .via b { color: var(--pen); } :root[data-skin="receipt"] .msg { color: var(--ink); }
+  :root[data-skin="receipt"] .t2 .card { animation: none; }
+  :root[data-skin="receipt"] .pw .chip, :root[data-skin="receipt"] .prof .chip.t { border-radius: 0; transform: none !important; }
+  :root[data-skin="receipt"] .pw .pt { color: var(--ink); } :root[data-skin="receipt"] .pw .o, :root[data-skin="receipt"] .pw .o i { border-radius: 0; } :root[data-skin="receipt"] .pw .o { background: #e6e2dc; }
+  :root[data-skin="receipt"] .pw .ot, :root[data-skin="receipt"] .pw .on { color: var(--ink); text-shadow: none; } :root[data-skin="receipt"] .pw .pf { color: var(--soft); }
+  :root[data-skin="receipt"] .tarot .tlab { border-radius: 0; transform: translateX(-50%); } :root[data-skin="receipt"] .prof .plab { border-radius: 0; transform: translateY(-55%); }
+</style>
+<script src="/static/theme.js"></script>
+</head>
+<body>
+<canvas id="wx"></canvas>
+<canvas id="fx"></canvas>
+<div id="topw">
+<div id="pred" class="pw"><div class="card"><div class="ph"><span class="chip">🔮 ставки</span><span class="tm"></span></div>
+  <div class="pt"></div><div class="po"></div><div class="pf"></div></div></div>
+<div id="poll" class="pw"><div class="card"><div class="ph"><span class="chip">📊 опрос</span><span class="tm"></span></div>
+  <div class="pt"></div><div class="po"></div><div class="pf"></div></div></div>
+</div>
+<script>
+(() => {
+  const P = new URLSearchParams(location.search);
+  const side = P.get('side') === 'left' ? 'left' : 'right';
+  const top = parseInt(P.get('top') || '90', 10);
+  const vol = Math.max(0, Math.min(1, parseFloat(P.get('volume') || '0.8')));
+  const fmt = n => Math.round(n).toLocaleString('ru-RU').replace(/\s/g, ' ');
+  const esc = s => String(s ?? '').replace(/[&<>"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+  const VIA = { donatello: 'Donatello', mono: 'банку моно', kofi: 'Ko-fi', test: 'тест' };
+  const LABELS = ['Оня рада', 'Оня супер рада', 'Оня супер мега дупер рада!!!'];
+  let sym = '₴', usdRate = 0;
+  const usd = a => usdRate > 0 && sym === '₴' ? ` <span class="usd">≈ $${Math.max(1, Math.round(a / usdRate))}</span>` : '';
+  let sounds = [{ from: 0, file: 'meow_cartoon.mp3' }, { from: 100, file: 'meow_purr.mp3' },
+                { from: 500, file: 'meow_begging.mp3', then: 'purr.mp3' }];
+  // запросы к Глупостанции не висят дольше 4 с (AbortSignal.timeout есть не во всех версиях OBS)
+  const T = ms => { if (window.AbortSignal && AbortSignal.timeout) return AbortSignal.timeout(ms);
+                    const c = new AbortController(); setTimeout(() => c.abort(), ms); return c.signal; };
+  const getJ = async u => { const r = await fetch(u, { cache: 'no-store', signal: T(4000) }); if (!r.ok) throw new Error(r.status); return r.json(); };
+  // рукопожатие с озвучкой: «донат в очереди / выехал / уехал» — озвучка читает сообщение, когда алерт уже на экране
+  let hs = false;
+  const tell = (id, state) => { if (hs && id) fetch('/hub/tts/alert', { method: 'POST', headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ id: String(id), state }), signal: T(4000) }).catch(() => {}); };
+
+  // уровень = номер ступени в настройке sounds (до 100, 100–499, от 500)
+  function tierOf(amount) {
+    let t = 0;
+    sounds.forEach((s, i) => { if (amount >= (s.from || 0)) t = i; });
+    return Math.min(t, 2);
+  }
+  function play(files) {
+    let i = 0;
+    const next = () => {
+      if (i >= files.length) return;
+      const a = new Audio('sounds/' + encodeURIComponent(files[i++]));
+      a.volume = vol; a.onended = next; a.play().catch(() => {});
+    };
+    next();
+  }
+
+  // ---- искры и конфетти ----
+  const cv = document.getElementById('fx'), cx = cv.getContext('2d');
+  let parts = [], raf = 0;
+  const fit = () => { cv.width = innerWidth; cv.height = innerHeight; };
+  fit(); addEventListener('resize', fit);
+  const COLORS = ['#78EEC4', '#FF7ABE', '#FFD84D', '#FFF8FB', '#FF4FA3'];
+  // конфетти и искры в текущей палитре (если зритель перекрасил оверлей — в его цветах)
+  const LIVE = ['--mint', '--pink', '--yellow', '--cream', '--pink-hot'];
+  const confCol = i => getComputedStyle(document.documentElement).getPropertyValue(LIVE[i % LIVE.length]).trim() || COLORS[i % COLORS.length];
+  function burst(x, y, n, spread, big) {
+    for (let i = 0; i < n; i++) {
+      const a = Math.random() * Math.PI * 2, v = (big ? 9 : 5) * (0.4 + Math.random());
+      parts.push({ x, y, vx: Math.cos(a) * v * spread, vy: Math.sin(a) * v - (big ? 6 : 3),
+                   r: big ? 6 + Math.random() * 8 : 3 + Math.random() * 4, rot: Math.random() * 6, vr: (Math.random() - .5) * .3,
+                   c: confCol(i), life: big ? 200 : 70, star: !big || i % 4 === 0 });
+    }
+    if (!raf) raf = requestAnimationFrame(tick);
+  }
+  function rain(n) {
+    for (let i = 0; i < n; i++) parts.push({ x: Math.random() * cv.width, y: -20 - Math.random() * 400, vx: (Math.random() - .5) * 2,
+      vy: 2 + Math.random() * 3, r: 6 + Math.random() * 7, rot: Math.random() * 6, vr: (Math.random() - .5) * .2,
+      c: confCol(i), life: 420, star: i % 5 === 0 });
+    if (!raf) raf = requestAnimationFrame(tick);
+  }
+  function star(r) { cx.beginPath(); for (let i = 0; i < 8; i++) { const rr = i % 2 ? r * .42 : r, a = i * Math.PI / 4; cx.lineTo(Math.cos(a) * rr, Math.sin(a) * rr); } cx.closePath(); cx.fill(); }
+  function tick() {
+    cx.clearRect(0, 0, cv.width, cv.height);
+    parts = parts.filter(p => p.life-- > 0 && p.y < cv.height + 40);
+    for (const p of parts) {
+      p.vy += 0.18; p.vx *= .99; p.x += p.vx; p.y += p.vy; p.rot += p.vr;
+      cx.save(); cx.translate(p.x, p.y); cx.rotate(p.rot); cx.globalAlpha = Math.min(1, p.life / 30); cx.fillStyle = p.c;
+      if (p.star) star(p.r); else cx.fillRect(-p.r, -p.r * .45, p.r * 2, p.r * .9);
+      cx.restore();
+    }
+    raf = parts.length ? requestAnimationFrame(tick) : 0;
+  }
+
+
+  // ---- погода за баллы: снег, звездопад, конфетти, листопад, сердечки, пузыри, котики, дождь ----
+  // Идёт secs секунд: 2 с набирает силу, последние 2,5 с стихает, потом всё, что уже летит, долетает.
+  // Цвета берёт из текущей палитры оверлея (настроение или перекраска от зрителя), обводки сливовые, как в брендбуке.
+  const wc = document.getElementById('wx'), wx = wc.getContext('2d');
+  const wfit = () => { wc.width = innerWidth; wc.height = innerHeight; };
+  wfit(); addEventListener('resize', wfit);
+  const cssv = v => getComputedStyle(document.documentElement).getPropertyValue(v).trim();
+  const R = (a, b) => a + Math.random() * (b - a);
+  const pick = a => a[Math.floor(Math.random() * a.length)];
+  const LEAF = ['#FF8A2B', '#F2B13A', '#D9542B', '#E8C547', '#C2462B', '#9BBF3A'];
+  const WRATE = { snow: 42, stars: 13, confetti: 45, leaves: 9, hearts: 9, bubbles: 7, cats: 4.5, rain: 130 };
+  let wnow = null, wp = [], wraf = 0, wprev = 0, wacc = 0, wpal = null, wink = '#2E0C24';
+  function weather(kind, secs) {
+    if (!WRATE[kind]) return;
+    const s = Math.max(5, Math.min(300, +secs || 45)), t = performance.now();
+    wpal = ['--pink', '--mint', '--yellow', '--pink-hot', '--cream'].map(cssv).filter(Boolean);
+    if (wpal.length < 3) wpal = COLORS.slice();
+    wink = cssv('--plum') || '#2E0C24';
+    wnow = { kind, t0: t, end: t + s * 1000 };
+    if (!wraf) { wprev = t; wraf = requestAnimationFrame(wtick); }
+  }
+  function wspawn(k) {
+    const w = wc.width, h = wc.height, pal = wpal;
+    switch (k) {
+      case 'snow': return { k, x: R(-40, w + 40), y: -20, vx: R(-15, 15), vy: R(45, 110), r: R(2.5, 9), sw: R(20, 50), ph: R(0, 6.3), fq: R(.5, 1.4), rot: R(0, 6.3), vr: R(-.5, .5) };
+      case 'stars': return Math.random() < .08
+        ? { k: 'shoot', x: R(w * .3, w * 1.1), y: R(-40, h * .3), vx: -R(700, 1000), vy: R(280, 420), life: 1.1, c: pal[2] }
+        : { k, x: R(0, w), y: -20, vx: R(-10, 10), vy: R(60, 130), r: R(8, 18), rot: R(0, 6.3), vr: R(-1.5, 1.5), ph: R(0, 6.3), fq: R(2, 4), c: pick(pal) };
+      case 'confetti': return { k, x: R(0, w), y: -20, vx: R(-30, 30), vy: R(90, 190), r: R(7, 13), rot: R(0, 6.3), vr: R(-3, 3), ph: R(0, 6.3), fq: R(4, 9), c: pick(pal) };
+      case 'leaves': return { k, x: R(-80, w), y: -30, vx: R(20, 60), vy: R(55, 110), r: R(16, 28), rot: R(0, 6.3), vr: R(-1.6, 1.6), sw: R(40, 90), ph: R(0, 6.3), fq: R(.6, 1.3), c: pick(LEAF.concat([pal[2]])) };
+      case 'hearts': return { k, x: R(0, w), y: h + 30, vx: 0, vy: -R(70, 140), r: R(14, 28), sw: R(15, 40), ph: R(0, 6.3), fq: R(.8, 1.6), life: R(5, 9), c: pick(pal.slice(0, 4)) };
+      case 'bubbles': return { k, x: R(0, w), y: h + 40, vx: 0, vy: -R(50, 110), r: R(10, 30), sw: R(10, 30), ph: R(0, 6.3), fq: R(.7, 1.5), life: R(4, 9), c: pick(pal) };
+      case 'cats': return { k, x: R(0, w), y: -50, vx: R(-20, 20), vy: R(90, 170), r: R(24, 38), rot: R(-.5, .5), vr: R(-.8, .8), ginger: Math.random() < .35, eye: pal[2], ph: R(0, 6.3), fq: 1 };
+      case 'rain': return { k, x: R(-100, w + 250), y: R(-80, -10), vx: -140, vy: R(950, 1250), len: R(16, 32) };
+    }
+  }
+  function star5(c, r) { c.beginPath(); for (let i = 0; i < 10; i++) { const rr = i % 2 ? r * .45 : r, a = -Math.PI / 2 + i * Math.PI / 5; c.lineTo(Math.cos(a) * rr, Math.sin(a) * rr); } c.closePath(); }
+  function heart(c, r) { c.beginPath(); c.moveTo(0, r * .9); c.bezierCurveTo(-r * 1.3, 0, -r * .6, -r * 1.1, 0, -r * .4); c.bezierCurveTo(r * .6, -r * 1.1, r * 1.3, 0, 0, r * .9); c.closePath(); }
+  function wdraw(p) {
+    const c = wx, x = p.x + (p.sw ? Math.sin(p.ph) * p.sw : 0);
+    c.save(); c.translate(x, p.y); c.lineJoin = 'round'; c.lineCap = 'round';
+    switch (p.k) {
+      case 'snow':
+        c.globalAlpha = .9; c.rotate(p.rot);
+        if (p.r < 5) { c.fillStyle = '#FFFFFF'; c.beginPath(); c.arc(0, 0, p.r * .6, 0, 7); c.fill(); break; }
+        c.strokeStyle = '#FFFFFF'; c.lineWidth = Math.max(1.5, p.r / 4); c.beginPath();
+        for (let i = 0; i < 3; i++) { const a = i * Math.PI / 3, ca = Math.cos(a), sa = Math.sin(a); c.moveTo(-ca * p.r, -sa * p.r); c.lineTo(ca * p.r, sa * p.r); }
+        for (let i = 0; i < 6; i++) { const a = i * Math.PI / 3, m = p.r * .55, b = p.r * .3;
+          c.moveTo(Math.cos(a) * m, Math.sin(a) * m); c.lineTo(Math.cos(a) * m + Math.cos(a + .8) * b, Math.sin(a) * m + Math.sin(a + .8) * b);
+          c.moveTo(Math.cos(a) * m, Math.sin(a) * m); c.lineTo(Math.cos(a) * m + Math.cos(a - .8) * b, Math.sin(a) * m + Math.sin(a - .8) * b); }
+        c.stroke(); break;
+      case 'stars':
+        c.globalAlpha = .7 + .3 * Math.sin(p.ph); c.rotate(p.rot); star5(c, p.r);
+        c.fillStyle = p.c; c.fill(); c.strokeStyle = wink; c.lineWidth = 2; c.stroke(); break;
+      case 'shoot': {
+        const a = Math.max(0, p.life / 1.1), tx = -p.vx * .14, ty = -p.vy * .14, g = c.createLinearGradient(0, 0, tx, ty);
+        g.addColorStop(0, p.c); g.addColorStop(1, 'rgba(255,255,255,0)');
+        c.globalAlpha = a; c.strokeStyle = g; c.lineWidth = 4; c.beginPath(); c.moveTo(0, 0); c.lineTo(tx, ty); c.stroke();
+        c.fillStyle = '#FFFFFF'; star5(c, 7); c.fill(); break; }
+      case 'confetti':
+        c.rotate(p.rot); c.scale(1, Math.cos(p.ph)); c.fillStyle = p.c; c.fillRect(-p.r, -p.r * .45, p.r * 2, p.r * .9); break;
+      case 'leaves':
+        c.globalAlpha = .95; c.rotate(p.rot); c.beginPath(); c.moveTo(0, -p.r);
+        c.quadraticCurveTo(p.r * .8, -p.r * .2, 0, p.r); c.quadraticCurveTo(-p.r * .8, -p.r * .2, 0, -p.r); c.closePath();
+        c.fillStyle = p.c; c.fill(); c.strokeStyle = wink; c.lineWidth = 2; c.stroke();
+        c.beginPath(); c.moveTo(0, -p.r * .75); c.lineTo(0, p.r * 1.25); c.globalAlpha = .55; c.stroke(); break;
+      case 'hearts':
+        c.globalAlpha = Math.min(1, p.life / 1.2, (p.max - p.life) / .4); c.rotate(Math.sin(p.ph) * .25); heart(c, p.r);
+        c.fillStyle = p.c; c.fill(); c.strokeStyle = wink; c.lineWidth = 2.5; c.stroke(); break;
+      case 'bubbles':
+        c.globalAlpha = Math.min(1, (p.max - p.life) / .4) * .85;
+        c.beginPath(); c.arc(0, 0, p.r, 0, 7); c.fillStyle = 'rgba(255,255,255,.08)'; c.fill();
+        c.strokeStyle = p.c; c.lineWidth = 2.5; c.stroke();
+        c.beginPath(); c.arc(0, 0, p.r * .65, Math.PI * 1.1, Math.PI * 1.45); c.strokeStyle = 'rgba(255,255,255,.85)'; c.lineWidth = 3; c.stroke(); break;
+      case 'pop': {
+        const k2 = 1 - p.life / p.max; c.globalAlpha = 1 - k2; c.strokeStyle = p.c; c.lineWidth = 2; c.setLineDash([4, 6]);
+        c.beginPath(); c.arc(0, 0, p.r * (1 + k2 * .8), 0, 7); c.stroke(); break; }
+      case 'cats': {
+        const r = p.r, fur = p.ginger ? '#F4A26B' : '#17121C', line = p.ginger ? wink : (cssv('--cream') || '#FFF8FB');
+        c.rotate(p.rot); c.fillStyle = fur; c.strokeStyle = line; c.lineWidth = 2.5;
+        c.beginPath(); c.moveTo(-r * .9, -r * .2); c.lineTo(-r * .75, -r * 1.15); c.lineTo(-r * .2, -r * .8);
+        c.moveTo(r * .9, -r * .2); c.lineTo(r * .75, -r * 1.15); c.lineTo(r * .2, -r * .8); c.fill(); c.stroke();
+        c.beginPath(); c.ellipse(0, 0, r, r * .85, 0, 0, 7); c.fill(); c.stroke();
+        const blink = Math.sin(p.ph * 1.7) > .96;
+        c.fillStyle = p.ginger ? '#78EEC4' : p.eye;
+        for (const s of [-1, 1]) {
+          c.beginPath(); c.ellipse(s * r * .38, -r * .08, r * .2, blink ? r * .03 : r * .22, 0, 0, 7); c.fill();
+          if (!blink) { c.fillStyle = '#120A10'; c.beginPath(); c.ellipse(s * r * .38, -r * .08, r * .06, r * .17, 0, 0, 7); c.fill(); c.fillStyle = p.ginger ? '#78EEC4' : p.eye; }
+        }
+        c.fillStyle = '#FF7ABE'; c.beginPath(); c.moveTo(-r * .1, r * .22); c.lineTo(r * .1, r * .22); c.lineTo(0, r * .34); c.closePath(); c.fill(); break; }
+      case 'rain':
+        c.globalAlpha = .55; c.strokeStyle = '#A9D6F5'; c.lineWidth = 2;
+        c.beginPath(); c.moveTo(0, 0); c.lineTo(-p.vx * p.len / p.vy, -p.len); c.stroke(); break;
+    }
+    c.restore();
+  }
+  function wtick(t) {
+    const dt = Math.min(.05, Math.max(0, (t - wprev) / 1000)); wprev = t;
+    const w = wc.width, h = wc.height;
+    if (wnow) {
+      if (t >= wnow.end) wnow = null;
+      else {
+        const ramp = Math.min(1, (t - wnow.t0) / 2000), tail = Math.min(1, (wnow.end - t) / 2500);
+        wacc += WRATE[wnow.kind] * Math.max(.5, w / 1920) * ramp * tail * dt;
+        while (wacc >= 1 && wp.length < 700) { wacc -= 1; const p = wspawn(wnow.kind); if (p.life) p.max = p.life; wp.push(p); }
+        if (wacc >= 1) wacc = 0;
+      }
+    }
+    wx.clearRect(0, 0, w, h);
+    const born = [];
+    wp = wp.filter(p => {
+      p.x += p.vx * dt; p.y += p.vy * dt;
+      if (p.vr) p.rot += p.vr * dt;
+      if (p.ph !== undefined) p.ph += (p.fq || 1) * dt;
+      if (p.life !== undefined) {
+        p.life -= dt;
+        if (p.life <= 0) { if (p.k === 'bubbles') born.push({ k: 'pop', x: p.x + Math.sin(p.ph) * p.sw, y: p.y, vx: 0, vy: 0, r: p.r, c: p.c, life: .3, max: .3 }); return false; }
+      }
+      return p.y < h + 80 && p.y > -140 && p.x > -300 && p.x < w + 300;
+    });
+    wp.push(...born);
+    for (const p of wp) wdraw(p);
+    if (wnow || wp.length) wraf = requestAnimationFrame(wtick);
+    else { wraf = 0; wacc = 0; wx.clearRect(0, 0, w, h); }
+  }
+
+  // ---- показ ----
+  const queue = []; let busy = false;
+  // донат → вид алерта
+  function donView(d) {
+    const tier = tierOf(d.amount);
+    return { tier, label: LABELS[tier], badge: `+${fmt(d.amount)} ${esc(sym)}${usd(d.amount)}`, name: d.name || 'аноним',
+             via: `задонатил(а) через <b>${esc(VIA[d.src] || d.src || '')}</b>${d.orig ? ' | ' + esc(d.orig) : ''}`,
+             msg: d.msg || '', img: d.meme, sounds: [sounds[tier]?.file, sounds[tier]?.then].filter(Boolean),
+             fx: ['', 'sparks', 'confetti'][tier], donId: d.id };
+  }
+
+  // событие Twitch → вид алерта
+  const pl = (n, a, b, c) => { n = Math.abs(n) % 100; const m = n % 10; return n > 10 && n < 20 ? c : m === 1 ? a : m >= 2 && m <= 4 ? b : c; };
+  const CAT = '/static/img/cat-black.png', HEART = '/static/img/heart.png';
+  const KLOD_C = '#E8743B';
+  // искорка как на фоне Глупостанции (bg.html): четыре луча, глазки и рот
+  const INK = '#1B1418', EYE = (x, y) => `<ellipse cx="${x}" cy="${y}" rx="3.2" ry="4.6"/>`;
+  // лицо по настроению ответа (метка [рад] и т.п. в rewards.split_mood); рот общий, по нему идёт синхрон губ
+  const FACES = {
+    '': `<g class="eyes" fill="${INK}">${EYE(43.5, 46)}${EYE(56.5, 46)}</g>`,
+    happy: `<g class="eyes" fill="none" stroke="${INK}" stroke-width="3" stroke-linecap="round"><path d="M40 47 Q43.5 41 47 47"/><path d="M53 47 Q56.5 41 60 47"/></g>`,
+    love: `<g fill="#FF8FB1" opacity=".7"><ellipse cx="37.5" cy="53" rx="4" ry="2.3"/><ellipse cx="62.5" cy="53" rx="4" ry="2.3"/></g>
+      <g class="eyes" fill="#FF4F8B" stroke="${INK}" stroke-width="1.6"><path d="M43.5 50 L39.2 45.5 A2.4 2.4 0 0 1 43.5 42.6 A2.4 2.4 0 0 1 47.8 45.5Z"/><path d="M56.5 50 L52.2 45.5 A2.4 2.4 0 0 1 56.5 42.6 A2.4 2.4 0 0 1 60.8 45.5Z"/></g>`,
+    shy: `<g fill="#FF8FB1" opacity=".8"><ellipse cx="37.5" cy="53" rx="4" ry="2.3"/><ellipse cx="62.5" cy="53" rx="4" ry="2.3"/></g>
+      <g class="eyes" fill="${INK}"><ellipse cx="43.5" cy="48" rx="2.8" ry="3.4"/><ellipse cx="56.5" cy="48" rx="2.8" ry="3.4"/></g>`,
+    sad: `<g fill="none" stroke="${INK}" stroke-width="2.4" stroke-linecap="round"><path d="M39.5 39.5 L46.5 37.5"/><path d="M53.5 37.5 L60.5 39.5"/></g>
+      <g class="eyes" fill="${INK}">${EYE(43.5, 46)}${EYE(56.5, 46)}</g>
+      <path class="tear" d="M41 51 Q38.6 55.4 41 57 Q43.4 55.4 41 51Z" fill="#7FD3FF" stroke="${INK}" stroke-width="1.2"/>`,
+    angry: `<g fill="none" stroke="${INK}" stroke-width="2.6" stroke-linecap="round"><path d="M39 37.5 L47 41"/><path d="M53 41 L61 37.5"/></g>
+      <g class="eyes" fill="${INK}"><ellipse cx="43.5" cy="46.5" rx="3" ry="3.6"/><ellipse cx="56.5" cy="46.5" rx="3" ry="3.6"/></g>`,
+    shock: `<g class="eyes"><circle cx="43" cy="45" r="5.2" fill="#fff" stroke="${INK}" stroke-width="2"/><circle cx="57" cy="45" r="5.2" fill="#fff" stroke="${INK}" stroke-width="2"/>
+      <circle cx="43" cy="45.5" r="2.2" fill="${INK}"/><circle cx="57" cy="45.5" r="2.2" fill="${INK}"/></g>`,
+    smug: `<path d="M53 38.5 Q57 36 61 38.5" fill="none" stroke="${INK}" stroke-width="2.4" stroke-linecap="round"/>
+      <g class="eyes" fill="${INK}"><path d="M40 45.5 h7 v1.6 a3.5 3.2 0 0 1 -7 0Z"/><path d="M53 45.5 h7 v1.6 a3.5 3.2 0 0 1 -7 0Z"/></g>`,
+    stars: `<g class="eyes" fill="#FFD84D" stroke="${INK}" stroke-width="1.4" stroke-linejoin="round">
+      <path d="M43.5 40 L45 44.5 L49.5 45 L46 48 L47 52.5 L43.5 50 L40 52.5 L41 48 L37.5 45 L42 44.5Z"/>
+      <path d="M56.5 40 L58 44.5 L62.5 45 L59 48 L60 52.5 L56.5 50 L53 52.5 L54 48 L50.5 45 L55 44.5Z"/></g>`,
+    cool: `<g class="eyes"><path d="M37 42 H63 V45 Q62 51 56.5 51 Q52 51 51 46 H49 Q48 51 43.5 51 Q38 51 37 45Z" fill="${INK}"/>
+      <path d="M40 44 L43 44" stroke="#fff" stroke-width="1.6" stroke-linecap="round"/><path d="M53 44 L56 44" stroke="#fff" stroke-width="1.6" stroke-linecap="round"/></g>`,
+    wink: `<g class="eyes" fill="${INK}">${EYE(43.5, 46)}</g>
+      <path d="M53 46.5 Q56.5 43 60 46.5" fill="none" stroke="${INK}" stroke-width="3" stroke-linecap="round"/>
+      <g fill="#FF8FB1" opacity=".75"><ellipse cx="62" cy="53" rx="3.6" ry="2"/></g>`,
+    think: `<path d="M53 39.5 Q57 37 61 39" fill="none" stroke="${INK}" stroke-width="2.4" stroke-linecap="round"/>
+      <g class="eyes" fill="${INK}"><ellipse cx="45" cy="44" rx="2.8" ry="3.8"/><ellipse cx="58" cy="44" rx="2.8" ry="3.8"/></g>
+      <g class="dots" fill="${INK}"><circle cx="70" cy="34" r="1.8"/><circle cx="76" cy="28" r="2.4"/><circle cx="83" cy="21" r="3"/></g>`,
+    bored: `<g class="eyes" fill="${INK}"><path d="M40 46 h7 v1.4 a3.5 2.6 0 0 1 -7 0Z"/><path d="M53 46 h7 v1.4 a3.5 2.6 0 0 1 -7 0Z"/></g>
+      <g stroke="${INK}" stroke-width="2.2" stroke-linecap="round"><path d="M39.5 41.5 H47"/><path d="M53 41.5 H60.5"/></g>`,
+    sleepy: `<g class="eyes" fill="none" stroke="${INK}" stroke-width="2.8" stroke-linecap="round"><path d="M40 46 Q43.5 49 47 46"/><path d="M53 46 Q56.5 49 60 46"/></g>
+      <g class="zzz" fill="${INK}" font-family="Arial Black,Arial" font-weight="900"><text x="66" y="34" font-size="10">z</text><text x="74" y="24" font-size="13">z</text><text x="83" y="13" font-size="16">Z</text></g>`,
+    cry: `<g class="eyes" fill="none" stroke="${INK}" stroke-width="2.8" stroke-linecap="round"><path d="M40 45 Q43.5 48.5 47 45"/><path d="M53 45 Q56.5 48.5 60 45"/></g>
+      <g class="tears" fill="#7FD3FF" stroke="${INK}" stroke-width="1.1"><path d="M41 48 Q39 56 41.5 62 Q44 56 42.5 48Z"/><path d="M58.5 48 Q57 56 59.5 62 Q62 56 60 48Z"/></g>`,
+    scared: `<g class="eyes"><circle cx="43.5" cy="45.5" r="4.6" fill="#fff" stroke="${INK}" stroke-width="2"/><circle cx="56.5" cy="45.5" r="4.6" fill="#fff" stroke="${INK}" stroke-width="2"/>
+      <circle cx="43.5" cy="46" r="1.3" fill="${INK}"/><circle cx="56.5" cy="46" r="1.3" fill="${INK}"/></g>
+      <path class="sweat" d="M64 36 Q61.5 41 64 43 Q66.5 41 64 36Z" fill="#7FD3FF" stroke="${INK}" stroke-width="1.1"/>`,
+    judge: `<g stroke="${INK}" stroke-width="2.4" stroke-linecap="round"><path d="M39.5 41 L47 42.5"/><path d="M53 42.5 L60.5 41"/></g>
+      <g class="eyes"><path d="M40 45 h7.5 v1.2 a3.75 3.2 0 0 1 -7.5 0Z" fill="#fff" stroke="${INK}" stroke-width="1.4"/><path d="M53 45 h7.5 v1.2 a3.75 3.2 0 0 1 -7.5 0Z" fill="#fff" stroke="${INK}" stroke-width="1.4"/>
+      <g class="pupils" fill="${INK}"><circle cx="45.8" cy="46.6" r="1.7"/><circle cx="58.8" cy="46.6" r="1.7"/></g></g>`,
+    scheme: `<g stroke="${INK}" stroke-width="2.6" stroke-linecap="round"><path d="M39 39.5 L47 42.5"/><path d="M53 42.5 L61 39.5"/></g>
+      <g class="eyes"><path d="M40 47.5 Q43.5 43.5 47 46.5 Q43.5 49.5 40 47.5Z" fill="#fff" stroke="${INK}" stroke-width="1.4"/><path d="M53 46.5 Q56.5 43.5 60 47.5 Q56.5 49.5 53 46.5Z" fill="#fff" stroke="${INK}" stroke-width="1.4"/>
+      <g class="pupils shifty" fill="${INK}"><circle cx="43.5" cy="46.6" r="1.6"/><circle cx="56.5" cy="46.6" r="1.6"/></g></g>`,
+    guilty: `<g fill="none" stroke="${INK}" stroke-width="2.4" stroke-linecap="round"><path d="M39.5 40.5 L46.5 38.5"/><path d="M53.5 38.5 L60.5 40.5"/></g>
+      <g class="eyes" fill="${INK}"><ellipse cx="42.5" cy="48" rx="2.6" ry="3.4"/><ellipse cx="55.5" cy="48" rx="2.6" ry="3.4"/></g>
+      <path class="sweat" d="M64 36 Q61.5 41 64 43 Q66.5 41 64 36Z" fill="#7FD3FF" stroke="${INK}" stroke-width="1.1"/>`,
+    confused: `<path d="M52.5 39 Q57 36.5 61.5 39" fill="none" stroke="${INK}" stroke-width="2.4" stroke-linecap="round"/>
+      <g class="eyes"><circle cx="57" cy="45.5" r="4.8" fill="#fff" stroke="${INK}" stroke-width="1.8"/><circle cx="57" cy="45.8" r="1.9" fill="${INK}"/>
+      <ellipse cx="43.5" cy="46.5" rx="2.2" ry="2.6" fill="${INK}"/></g>
+      <text class="mark" x="66" y="34" font-size="15" font-weight="900" font-family="Arial Black,Arial" fill="${INK}">?</text>`,
+    eyeroll: `<g class="eyes"><circle cx="43.5" cy="46" r="4.6" fill="#fff" stroke="${INK}" stroke-width="1.8"/><circle cx="56.5" cy="46" r="4.6" fill="#fff" stroke="${INK}" stroke-width="1.8"/>
+      <g class="pupils roll" fill="${INK}"><circle cx="43.5" cy="43.2" r="1.9"/><circle cx="56.5" cy="43.2" r="1.9"/></g></g>`,
+    idea: `<g class="eyes" fill="${INK}"><ellipse cx="43.5" cy="45.5" rx="3.6" ry="5.2"/><ellipse cx="56.5" cy="45.5" rx="3.6" ry="5.2"/>
+      <circle cx="44.6" cy="43.6" r="1.3" fill="#fff"/><circle cx="57.6" cy="43.6" r="1.3" fill="#fff"/></g>
+      <text class="mark" x="65" y="33" font-size="17" font-weight="900" font-family="Arial Black,Arial" fill="#FFD84D" stroke="${INK}" stroke-width="1.2">!</text>`,
+    error: `<g class="eyes" fill="none" stroke="${INK}" stroke-width="2.6" stroke-linecap="round"><path d="M40.5 42.5 l6 6 m0 -6 l-6 6"/><path d="M53.5 42.5 l6 6 m0 -6 l-6 6"/></g>`,
+  };
+  const KLOD = mood => `<svg viewBox="0 0 100 100" aria-hidden="true">
+    <path d="M50 2 Q57 43 98 50 Q57 57 50 98 Q43 57 2 50 Q43 43 50 2Z" fill="${KLOD_C}" stroke="${INK}" stroke-width="4" stroke-linejoin="round"/>
+    ${FACES[mood] || FACES['']}
+    <ellipse class="mouth" cx="50" cy="57" rx="4.2" ry="3.4" fill="${INK}"/></svg>`;
+  function twView(e) {
+    const n = e.name || 'кто-то';
+    switch (e.kind) {
+      case 'follow': return { tier: 0, theme: 'mint', label: 'новый котик', badge: '+1 👀', name: n,
+        via: 'теперь следит за Оней', img: CAT, sounds: ['tw_follow.mp3', 'meow_soft.mp3'], fx: 'sparks', hold: 4500 };
+      case 'follows': return { tier: 1, theme: 'mint', label: 'котики прибывают', badge: `+${e.count} 👀`, name: `+${e.count} ${pl(e.count, 'котик', 'котика', 'котиков')}`,
+        via: `волна фоллоу, последний: <b>${esc(n)}</b>`, img: CAT, sounds: ['tw_follow.mp3', 'meow_cartoon.mp3'], fx: 'sparks', hold: 5000 };
+      case 'sub': return { tier: 1, theme: 'violet', label: e.tier === 'Prime' ? 'сабка через prime!' : 'новая сабка!', badge: e.tier && e.tier !== 'Prime' ? esc(e.tier) : 'САБ 💜',
+        name: n, via: e.upgrade ? 'продлил(а) подписку сам(а)' : 'теперь в котячьей банде', msg: e.msg, img: HEART, sounds: ['tw_sub.mp3', 'meow_sweet.mp3'], fx: 'sparks', mid: true };
+      case 'resub': return { tier: e.months >= 12 ? 2 : 1, theme: 'violet', label: `${e.months} ${pl(e.months, 'месяц', 'месяца', 'месяцев')} вместе`, badge: `×${e.months} 💜`,
+        name: n, via: 'продлил(а) подписку' + (e.tier ? ` | <b>${esc(e.tier)}</b>` : ''), msg: e.msg, img: HEART, mid: true,
+        sounds: ['tw_sub.mp3', 'meow_purr.mp3'], fx: e.months >= 12 ? 'confetti' : 'sparks' };
+      case 'gift': return { tier: 1, theme: 'yellow', label: 'подарок!', badge: '🎁 1', name: n,
+        via: `дарит сабку <b>${esc(e.to || 'кому-то')}</b>`, img: HEART, sounds: ['tw_gift.mp3', 'meow_purr.mp3'], fx: 'sparks' };
+      case 'giftbomb': { const big = e.count >= 5;
+        return { tier: big ? 2 : 1, theme: 'yellow', label: big ? 'сабки для всех!!!' : 'подарки!', badge: `🎁 ×${e.count}`, name: n,
+          via: `раздаёт чату <b>${e.count} ${pl(e.count, 'сабку', 'сабки', 'сабок')}</b>`, img: HEART,
+          sounds: big ? ['tw_giftbomb.mp3', 'meow_begging.mp3', 'purr.mp3'] : ['tw_gift.mp3', 'meow_purr.mp3'], fx: big ? 'confetti' : 'sparks' }; }
+      case 'raid': return { tier: 2, theme: 'hot', label: 'рейд!!!', badge: `${e.viewers} 👥`, name: n,
+        via: `залетает в гости с <b>${e.viewers} ${pl(e.viewers, 'зрителем', 'зрителями', 'зрителями')}</b>`, img: CAT,
+        sounds: ['tw_raid.mp3', 'meow_attention.mp3'], fx: 'confetti', hold: 9000 };
+      case 'cheer': { const t = e.bits >= 1000 ? 2 : e.bits >= 100 ? 1 : 0;
+        return { tier: t, theme: 'yellow', label: ['биты!', 'много битов!', 'битовый дождь!!!'][t], badge: `${fmt(e.bits)} 💎`, name: n,
+          via: `кидает <b>${fmt(e.bits)} ${pl(e.bits, 'бит', 'бита', 'битов')}</b>`, msg: e.msg, img: HEART,
+          sounds: [['tw_cheer.mp3', 'meow_cartoon.mp3'], ['tw_cheer_mid.mp3', 'meow_purr.mp3'], ['tw_cheer_big.mp3', 'meow_begging.mp3', 'purr.mp3']][t],
+          fx: ['', 'sparks', 'confetti'][t] }; }
+      case 'vip_enter': return { tier: 0, theme: 'yellow', label: 'VIP в чате', badge: '💎 VIP', name: n,
+        via: 'залетает на стрим', emoji: '💎', sounds: [e.sound || 'sb_fireworks.mp3'], fx: 'sparks', hold: 4000 };
+      case 'tarot': return { special: 'tarot', name: n, card: e.card, rarity: e.rarity, label: e.label, title: e.title, num: e.num,
+                             say: e.say, isNew: e.new, have: e.have, total: e.total, trade: !!e.trade, pending: !!e.pending };
+      case 'rw_water': return { tier: 0, theme: 'blue', label: 'гидратация!', badge: '💧', name: n,
+        via: 'отправляет Оню попить воды', emoji: '💧', sounds: ['tw_water.mp3', 'meow_soft.mp3'], fx: 'sparks', hold: 5000 };
+      case 'rw_claude': return { tier: 1, theme: 'custom', color: KLOD_C, label: 'вопрос клодику', badge: '✨', name: n,
+        via: 'спрашивает Клодика:', msg: e.msg, klod: 'quiet', sounds: ['sb_glitch.mp3', 'meow_soft.mp3'], fx: 'sparks' };
+      case 'rw_claude_answer': return { tier: 1, theme: 'custom', color: KLOD_C, label: 'клодик отвечает', badge: '✨', name: n,
+        via: `спросил(а): <b>«${esc((e.q || '').slice(0, 140))}»</b>`, msg: e.msg, klod: 'talk', lips: e.lips, mood: e.mood,
+        sounds: ['sb_glitch.mp3', 'meow_soft.mp3'], fx: 'sparks', max: 20000 };
+      case 'klodik_say': return { tier: 1, theme: 'custom', color: KLOD_C, label: e.label || 'клодик говорит', badge: '✨', name: 'Клодик',
+        via: '', msg: e.msg, klod: 'talk', lips: e.lips, mood: e.mood, sounds: ['sb_glitch.mp3'], fx: 'sparks', max: 14000 };
+      case 'rw_feature': return { tier: 1, theme: 'mint', label: 'название фичи', badge: '✨', name: n,
+        via: 'предлагает назвать:', msg: e.msg ? '«' + e.msg + '»' : '', emoji: '✨', sounds: ['tw_cheer_mid.mp3', 'meow_sweet.mp3'], fx: 'sparks' };
+      case 'rw_tft': return { tier: 1, theme: 'hot', label: 'чат решает', badge: '♟️', name: n,
+        via: 'решает за Оню:', msg: e.msg, emoji: '♟️', sounds: ['sb_objective.mp3', 'meow_attention.mp3'], fx: 'sparks' };
+      case 'rw_7tv': return { tier: 1, theme: 'blue', label: 'новый смайлик!', badge: '7TV', name: n,
+        via: `добавил(а) в чат <b>${esc(e.emote || '')}</b>`, img: e.img || HEART, sounds: ['tw_gift.mp3', 'meow_sweet.mp3'], fx: 'confetti', hold: 6000 };
+      case 'title': return { tier: 1, theme: 'yellow', label: 'новый титул!', badge: e.emoji || '🏆', name: n,
+        via: `теперь носит титул <b>«${esc(e.msg || '')}»</b>`, msg: e.why || '', emoji: e.emoji || '🏆',
+        sounds: ['tw_gift.mp3', 'meow_sweet.mp3'], fx: 'confetti', hold: 6000 };
+      case 'profile': return Object.assign({}, e, { special: 'profile' });
+      case 'rw_weather': return { tier: 0, theme: 'blue', label: e.lucky ? 'погода-сюрприз!' : 'погода!', badge: e.emoji || '🌦', name: n,
+        via: `${e.lucky ? 'выпал(а)' : 'включает'} <b>${esc(e.msg || '')}</b> на ${+e.secs || 45} с`, emoji: e.emoji || '🌦',
+        sounds: e.weather === 'cats' ? ['tw_gift.mp3', 'meow_cartoon.mp3'] : ['tw_gift.mp3'], fx: '', hold: 4500 };
+      case 'rw_voice': return { tier: 0, theme: 'yellow', label: 'новый голос!', badge: e.emoji || '🎙', name: n,
+        via: `включает озвучке <b>${esc(e.msg || '')}</b> на ${+e.mins || 3} мин`, emoji: e.emoji || '🎙',
+        sounds: ['tw_gift.mp3', 'meow_cartoon.mp3'], fx: 'sparks', hold: 4500 };
+      case 'rw_mic': return { tier: 0, theme: 'hot', label: 'оня сменила голос!', badge: e.emoji || '🎙', name: n,
+        via: `включает Оне <b>${esc(e.msg || '')}</b> на ${+e.secs || 45} с`, emoji: e.emoji || '🎙',
+        sounds: ['tw_gift.mp3', 'meow_cartoon.mp3'], fx: 'sparks', hold: 4500 };
+      case 'rw_color': return { tier: 0, theme: 'custom', color: e.color, label: 'перекраска!', badge: '🎨', name: n,
+        via: `красит оверлей в <b>${esc(e.msg || '')}</b>`, emoji: '🎨', sounds: ['tw_gift.mp3', 'meow_cartoon.mp3'], fx: 'sparks', hold: 5000 };
+    }
+    return null;
+  }
+
+  function showTarot(v) {
+    busy = true;
+    const ok = /^[a-z]+$/.test(v.card || '') ? v.card : 'fool';
+    const rar = ['common', 'rare', 'myth', 'legend'].includes(v.rarity) ? v.rarity : 'common';
+    const el = document.createElement('div');
+    el.className = 'tarot ' + rar;
+    el.innerHTML = `
+      <div class="tlab">${v.trade ? '🔄 ' + esc(v.name) + ' меняет 5 повторок' : '🔮 ' + esc(v.name) + ' тянет карту дня'}</div>
+      <div class="flip"><div class="glow"></div><div class="in">
+        <div class="face back"><img src="/static/tarot/back.webp" alt=""></div>
+        <div class="face front"><img src="/static/tarot/${ok}.webp" alt=""></div></div></div>
+      <div class="tsay"><b>${esc(v.num)} ${esc(v.title)} | ${esc(v.label)}${v.pending ? ' | сохранится после фоллоу 💜' : (v.isNew ? ' | новая!' : '') + ' | ' + (+v.have || 0) + '/' + (+v.total || 0)}</b>${esc(v.say)}</div>`;
+    document.body.appendChild(el);
+    el.animate([{ transform: 'translateY(140px) scale(.6)', opacity: 0 }, { transform: 'translateY(-10px) scale(1.04)', opacity: 1, offset: .7 }, { transform: 'none' }],
+      { duration: 700, easing: 'cubic-bezier(.2,.9,.3,1.1)', fill: 'forwards' });
+    play(['sb_tick.mp3']);
+    setTimeout(() => {
+      el.classList.add('open');
+      const r = el.querySelector('.flip').getBoundingClientRect(), cxm = r.left + r.width / 2, cym = r.top + r.height / 2;
+      if (rar === 'legend') { burst(cxm, cym, 110, 1.4, true); rain(220); play(['sb_fireworks.mp3', 'purr.mp3']); }
+      else if (rar === 'myth') { burst(cxm, cym, 70, 1.2, true); play(['sb_confetti.mp3']); }
+      else if (rar === 'rare') { burst(cxm, r.top + 30, 26, 1, false); play(['sb_done.mp3']); }
+      else play(['voice_pop.mp3']);
+    }, 1500);
+    const hold = rar === 'legend' ? 13000 : rar === 'myth' ? 11000 : 9000;
+    setTimeout(() => {
+      el.animate([{ transform: 'none', opacity: 1 }, { transform: 'translateY(-80px) scale(.7)', opacity: 0 }], { duration: 450, easing: 'ease-in', fill: 'forwards' })
+        .onfinish = () => { el.remove(); setTimeout(next, 500); };
+    }, hold);
+  }
+
+  // !профиль: аватарка, титул, ближайший переходящий титул, цифры, ачивки (закрытые бледные)
+  function showProfile(v) {
+    busy = true;
+    const pl = (n, a, b, c) => { n = Math.abs(+n || 0); return n % 10 === 1 && n % 100 !== 11 ? a : (n % 10 >= 2 && n % 10 <= 4 && (n % 100 < 12 || n % 100 > 14) ? b : c); };
+    const num = n => Math.max(0, Math.round(+n || 0));
+    const ava = /^https:\/\/static-cdn\.jtvnw\.net\/[\w\-./]+$/.test(v.avatar || '') ? `<img src="${esc(v.avatar)}" alt="">` : '🐈‍⬛';
+    const chips = v.title ? [`<span class="chip t">${esc(v.title)}</span>`] : [];
+    if (+v.sub) chips.push(`<span class="chip s">💜 саб ${num(v.sub)} ${pl(v.sub, 'месяц', 'месяца', 'месяцев')}</span>`);
+    if (v.vip) chips.push('<span class="chip v">💎 VIP</span>');
+    if (v.mod) chips.push('<span class="chip s">🛡 модер</span>');
+    const since = v.since ? (v.follow ? `фоллоу с ${esc(v.since)}` : `в чате с ${esc(v.since)}`) + (v.days != null && v.follow ? `, ${num(v.days)} ${pl(v.days, 'день', 'дня', 'дней')} с нами` : '') : 'первый раз на профиле';
+    const st = [[num(v.msgs), pl(v.msgs, 'сообщение', 'сообщения', 'сообщений')], [num(v.streams), pl(v.streams, 'стрим', 'стрима', 'стримов')],
+                [+v.total ? `${num(v.cards)}/${num(v.total)}` : num(v.cards), 'карт таро'], [num(v.wins), pl(v.wins, 'победа', 'победы', 'побед')]];
+    const ach = (Array.isArray(v.ach) ? v.ach : []).slice(0, 32);
+    const pets = (Array.isArray(v.pets) ? v.pets : []).filter(x => /^[\w-]+$/.test(x.img || '')).slice(0, 3);   // питомцы из тамагочи
+    const el = document.createElement('div');
+    el.className = 'prof';
+    el.style.top = (top + 10) + 'px';
+    el.style[side] = (side === 'right' ? 64 : 104) + 'px';
+    el.innerHTML = `
+      <div class="plab">🪪 профиль</div>
+      <div class="ph"><div class="ava">${ava}</div>
+        <div class="pn"><div class="nm">${esc(v.name || 'котик')}</div><div class="chips">${chips.join('')}</div><div class="since">${since}</div></div></div>
+      ${v.goal && v.goal.t ? `<div class="bart">следующий титул: <b>${esc(v.goal.e || '🏆')} ${esc(v.goal.t)}</b>, не хватает ${num(v.goal.left)} ${esc(v.goal.unit || '')}</div>` : ''}
+      <div class="st">${st.map(([a, b]) => `<div><b>${esc(a)}</b><span>${esc(b)}</span></div>`).join('')}</div>
+      ${pets.length ? `<div class="pets">${pets.map(x => `<div><img src="/static/tama/${x.img}.webp" alt=""><div style="min-width:0"><b>${esc(x.name || x.who || 'питомец')}</b><span>${esc(x.name ? x.who || '' : 'живёт тут')}</span></div></div>`).join('')}</div>` : ''}
+      <div class="ach">${ach.map(a => `<div class="${a.on ? 'on' : 'off'} r${+a.r || 2}">${esc(a.e)}</div>`).join('')}</div>
+      <div class="af">ачивки ${num(v.have)}/${num(v.all)}</div>`;
+    document.body.appendChild(el);
+    const nm = el.querySelector('.nm'), base = parseFloat(getComputedStyle(nm).fontSize);
+    for (let fs = base; fs >= base * .6 && nm.scrollWidth > nm.clientWidth; fs -= 2) nm.style.fontSize = fs + 'px';
+    const dx = side === 'right' ? 760 : -760;
+    el.animate([{ transform: `translateX(${dx}px)`, opacity: 0 }, { transform: `translateX(${-dx / 50}px)`, opacity: 1, offset: .7 }, { transform: 'none' }],
+      { duration: 600, easing: 'cubic-bezier(.2,.9,.3,1.1)', fill: 'forwards' });
+    el.querySelectorAll('.ach div.on').forEach((d, i) => d.animate([{ transform: 'scale(0) rotate(-30deg)' }, { transform: 'scale(1.3) rotate(8deg)', offset: .6 }, { transform: 'none' }],
+      { duration: 400, delay: 500 + i * 60, easing: 'ease-out', fill: 'backwards' }));
+    play(['voice_pop.mp3']);
+    setTimeout(() => { const r = el.getBoundingClientRect(); burst(r.left + 70, r.top + 20, 22, 1, false); }, 600);
+    setTimeout(() => {
+      el.animate([{ transform: 'none', opacity: 1 }, { transform: `translateX(${dx}px)`, opacity: 0 }], { duration: 400, easing: 'ease-in', fill: 'forwards' })
+        .onfinish = () => { el.remove(); setTimeout(next, 500); };
+    }, 6000);   // карточка профиля держится 6 с
+  }
+
+  function show(v) {
+    if (v.special === 'profile') return showProfile(v);
+    if (v.special === 'tarot') return showTarot(v);
+    busy = true;
+    const tier = v.tier;
+    const el = document.createElement('div');
+    el.className = `alert t${tier}` + (v.img || v.emoji || v.klod ? ' has-meme' : '') + (v.theme ? ' th-' + v.theme : '');
+    if (v.color) el.style.setProperty('--c', v.color);
+    el.style.top = top + 'px';
+    if (v.mid) el.classList.add('mid');
+    else if (tier < 2) el.style[side] = (side === 'right' ? 64 : 104) + 'px';
+    const msg = v.msg || '';
+    el.innerHTML = `
+      ${v.klod ? `<div class="meme klod${v.klod === 'quiet' ? ' quiet' : ''}${v.mood ? ' m-' + v.mood : ''}">${KLOD(v.mood)}</div>` : v.img ? `<div class="meme"><img src="${esc(v.img)}" alt=""></div>` : v.emoji ? `<div class="meme big-emoji"><span>${v.emoji}</span></div>` : ''}
+      <div class="card">
+        <div class="label">${esc(v.label)}</div>
+        <div class="amount">${v.badge}</div>
+        <div class="name">${esc(v.name || 'аноним')}</div>
+        <div class="via">${v.via || ''}</div>
+        <div class="msg">${esc(msg)}</div>
+      </div>`;
+    document.body.appendChild(el);
+    tell(v.donId, 'show');
+    const nm = el.querySelector('.name');
+    const base = parseFloat(getComputedStyle(nm).fontSize);
+    for (let fs = base; fs >= base * .6 && nm.scrollWidth > nm.clientWidth; fs -= 2) nm.style.fontSize = fs + 'px';
+    if (v.mid) el.style.top = Math.max(20, (innerHeight - el.offsetHeight) / 2) + 'px';   // по вертикали тоже середина
+
+    let enter, leave;
+    if (tier === 2 || v.mid) {
+      enter = [{ transform: 'translateY(-120px) scale(.3)', opacity: 0 }, { transform: 'translateY(10px) scale(1.08)', opacity: 1, offset: .55 },
+               { transform: 'translate(-12px,0) rotate(-1deg)', offset: .7 }, { transform: 'translate(12px,0) rotate(1deg)', offset: .8 },
+               { transform: 'translate(-6px,0)', offset: .9 }, { transform: 'none' }];
+      leave = [{ transform: 'none', opacity: 1 }, { transform: 'translateY(-60px) scale(.6)', opacity: 0 }];
+    } else {
+      const dx = side === 'right' ? 720 : -720;
+      enter = [{ transform: `translateX(${dx}px)`, opacity: 0 }, { transform: `translateX(${-dx / 50}px)`, opacity: 1, offset: .7 }, { transform: 'none' }];
+      leave = [{ transform: 'none', opacity: 1 }, { transform: `translateX(${dx}px)`, opacity: 0 }];
+    }
+    el.animate(enter, { duration: tier === 2 || v.mid ? 900 : 550, easing: 'cubic-bezier(.2,.9,.3,1.1)', fill: 'forwards' });
+    const meme = el.querySelector('.meme');
+    if (meme) meme.animate([{ transform: 'scale(0) rotate(-30deg)' }, { transform: 'scale(1.25) rotate(8deg)', offset: .6 }, { transform: 'none' }],
+      { duration: 600, delay: 250, easing: 'ease-out', fill: 'backwards' });
+    el.querySelector('.amount').animate([{ transform: 'rotate(5deg) scale(0)' }, { transform: 'rotate(5deg) scale(1.4)', offset: .5 }, { transform: 'rotate(5deg) scale(1)' }],
+      { duration: 450, delay: 350, easing: 'ease-out', fill: 'backwards' });
+
+    setTimeout(() => {
+      const r = el.querySelector('.card').getBoundingClientRect();
+      if (v.fx === 'sparks') { burst(r.left + 40, r.top, 18, 1, false); burst(r.right - 40, r.top, 18, 1, false); }
+      if (v.fx === 'confetti') { burst(r.left + r.width / 2, r.top + 20, 70, 1.2, true); rain(160); }
+    }, tier === 2 ? 500 : 450);
+
+    play(v.sounds || []);
+    const base_ms = v.hold || [4500, 6000, 9000][tier], max_ms = v.max || [9000, 12000, 16000][tier];
+    const hold = Math.max(base_ms, Math.min(max_ms, base_ms + msg.length * 55));
+    const go = () => el.animate(leave, { duration: 400, easing: 'ease-in', fill: 'forwards' }).onfinish = () => { el.remove(); tell(v.donId, 'done'); setTimeout(next, 500); };
+    const sync = v.klod && v.lips ? lipSync(el, v.lips) : null;
+    if (!sync) return setTimeout(go, hold);
+    // Клодик говорит голосом: карточка держится, пока он не договорит
+    const t0 = Date.now();
+    (function wait() {
+      const now = Date.now(), end = sync.end();
+      if (now - t0 > 60000 || (now - t0 > base_ms && (end ? now > end + 900 : sync.lost))) return go();
+      setTimeout(wait, 250);
+    })();
+  }
+  // рот Клодика под озвучку: tts.html присылает громкость фразы по кадрам и когда она зазвучала (/hub/tts/lips)
+  function lipSync(el, key) {
+    const box = el.querySelector('.klod'), mouth = el.querySelector('.mouth');
+    const s = { data: null, lost: false, end: () => s.data ? s.data.start + s.data.env.length * s.data.step * 1000 : 0 };
+    box.classList.add('sync');
+    const t0 = Date.now();
+    (async function ask() {
+      try { const d = await getJ('/hub/tts/lips?k=' + encodeURIComponent(key)); if (d && d.env) s.data = d; } catch (e) { }
+      if (s.data || !el.isConnected) return;
+      if (Date.now() - t0 > 20000) { s.lost = true; box.classList.remove('sync'); mouth.style.transform = ''; return; }   // озвучка так и не заиграла
+      setTimeout(ask, 300);
+    })();
+    let lv = 0;
+    (function frame() {
+      if (!el.isConnected) return;
+      const d = s.data; let want = 0;
+      if (d) { const i = Math.floor((Date.now() - d.start) / 1000 / d.step); want = i >= 0 && i < d.env.length ? d.env[i] : 0; }
+      lv += (want - lv) * (want > lv ? .6 : .35);
+      if (!s.lost) mouth.style.transform = `scaleY(${(.2 + lv * 1.1).toFixed(3)})`;
+      requestAnimationFrame(frame);
+    })();
+    return s;
+  }
+  function next() { const d = queue.shift(); if (d) show(d); else busy = false; }
+  function push(d) { queue.push(donView(d)); if (busy) tell(d.id, 'queued'); else next(); }
+  function pushTw(e) { const v = twView(e); if (v) { queue.push(v); if (!busy) next(); } }
+
+  // алерты Twitch приходят через шину Глупостанции
+  async function twRelay() {
+    let after = -1, boot = null;
+    const go = async () => {
+      let again = false;
+      try {
+        const j = await getJ('/hub/events?who=alert&after=' + after);
+        // Глупостанцию перезапустили: номера событий пошли заново — забираем всё с начала, иначе новые события потеряются
+        const restarted = (j.boot && boot && j.boot !== boot) || (!j.boot && after > 0 && j.last < after);
+        // Глупостанцию перезапустили с новыми файлами — страница в OBS сама обновляется, чтобы не висеть на старой версии
+        if (j.boot && boot && j.boot !== boot) { setTimeout(() => location.reload(), 300); return; }
+        if (j.boot) boot = j.boot;
+        if (restarted) { after = 0; again = true; }
+        else {
+          if (after >= 0) (j.events || []).forEach(e => {
+            if (e.type === 'tw') pushTw(e.data);
+            else if (e.type === 'sb' && e.data && e.data.file) play([e.data.file]);   // саундборд: сразу, без очереди
+            else if (e.type === 'wx' && e.data) weather(e.data.kind, e.data.secs);    // погода: сразу, параллельно алертам
+          });
+          if (typeof j.last === 'number') after = j.last;
+        }
+      } catch (e) {}
+      setTimeout(go, again ? 0 : 1500);
+    };
+    go();
+  }
+
+  // донаты: если Глупостанция не отвечает (перезапуск), ждём и пробуем снова — демо-донаты на стриме не показываем никогда
+  function relay() {
+    const seen = new Set(); let first = true, wait = 2000;
+    const tick2 = async () => {
+      try {
+        const j = await getJ('state?t=' + Date.now());
+        sym = j.symbol || sym; if (j.sounds && j.sounds.length) sounds = j.sounds;
+        if (j.usd_rate) usdRate = +j.usd_rate;
+        const list = (j.donations || []).slice().reverse();
+        if (first) { list.forEach(d => { if (!d.test) seen.add(d.id); }); first = false; }
+        for (const d of list) if (!seen.has(d.id)) { seen.add(d.id); push(d); }
+        wait = 2000;
+      } catch (e) { wait = Math.min(15000, Math.round(wait * 1.6)); }
+      setTimeout(tick2, wait);
+    };
+    tick2();
+  }
+
+  function demo() {
+    document.body.classList.add('preview');
+    const ex = [
+      { name: 'кот_в_тапке', amount: 50, src: 'mono', msg: 'на корм Бубуне', meme: 'memes/набор_4x/kaif.png' },
+      { name: 'milanrodd', amount: 150, src: 'donatello', msg: 'на подписку Клодику, пусть не тупит 🙏', meme: 'memes/набор_4x/rzhu.png' },
+      { name: 'Hans', amount: 1200, src: 'kofi', orig: '25 EUR', msg: 'greetings from Berlin! вы лучшие', meme: 'memes/набор_4x/shok.png' }
+    ];
+    let i = 0;
+    const go = () => { push(Object.assign({ id: 'demo' + i }, ex[i % ex.length])); i++; };
+    go(); setInterval(go, 12000);
+  }
+
+  // ---- ставки на баллы (Прогнозы Twitch) ----
+  const PC = ['#3FBF95', '#E8559C', '#D9A926', '#9146FF', '#3E9BD6', '#E07A3A', '#5BB85B', '#C04FD9', '#4F7BD9', '#D94F4F'];
+  const pbox = document.getElementById('pred');
+  let pcur = null, poff = 0;
+  function pDraw() {
+    const p = pcur;
+    if (!p) return;
+    const q = s => pbox.querySelector(s);
+    q('.pt').textContent = p.title;
+    const tm = q('.tm');
+    if (p.status === 'ACTIVE') {
+      const left = Math.max(0, Math.round(p.ends_at - (Date.now() / 1000 + poff)));
+      tm.className = 'tm'; tm.textContent = Math.floor(left / 60) + ':' + String(left % 60).padStart(2, '0');
+    } else { tm.className = 'tm lock'; tm.textContent = p.status === 'RESOLVED' ? 'итог' : 'приём закрыт'; }
+    const sig = JSON.stringify(p.outcomes.map(o => [o.id, o.title]));
+    const box = q('.po');
+    if (box.dataset.sig !== sig) {
+      box.dataset.sig = sig;
+      box.innerHTML = p.outcomes.map((o, i) => `<div class="o" data-id="${esc(o.id)}"><i style="background:${PC[i % PC.length]};width:0"></i>
+        <span class="ot"></span><span class="on"></span></div>`).join('');
+    }
+    p.outcomes.forEach(o => {
+      const r = box.querySelector(`[data-id="${CSS.escape(o.id)}"]`); if (!r) return;
+      r.querySelector('i').style.width = Math.max(o.points ? 4 : 0, o.pct) + '%';
+      r.querySelector('.ot').textContent = (p.status === 'RESOLVED' && o.id === p.winner ? '👑 ' : '') + o.title;
+      r.querySelector('.on').innerHTML = `<b>${o.pct}%</b> ${fmt(o.points)} 💎${o.ratio ? ` <small>1:${o.ratio}</small>` : ''}`;
+      r.classList.toggle('win', p.status === 'RESOLVED' && o.id === p.winner);
+      r.classList.toggle('lose', p.status === 'RESOLVED' && o.id !== p.winner);
+    });
+    q('.pf').innerHTML = p.users ? `поставили <b>${p.users}</b> | в банке <b>${fmt(p.total)}</b> баллов` : 'ставь баллы в баннере над чатом!';
+  }
+  function wShow(box, on) {
+    if (on === (box.dataset.on === '1')) return;
+    box.dataset.on = on ? '1' : '';
+    if (on) { box.style.display = 'block';
+      box.animate([{ transform: 'translateY(-160px) scale(.8)', opacity: 0 }, { transform: 'translateY(8px)', opacity: 1, offset: .7 }, { transform: 'none' }],
+        { duration: 650, easing: 'cubic-bezier(.2,.9,.3,1.1)' }); }
+    else box.animate([{ transform: 'none', opacity: 1 }, { transform: 'translateY(-160px)', opacity: 0 }], { duration: 400, easing: 'ease-in' })
+      .onfinish = () => { if (box.dataset.on !== '1') box.style.display = 'none'; };
+  }
+  const pShow = on => wShow(pbox, on);
+  function pApply(j, quiet) {
+    const was = pcur;
+    poff = (j.now || Date.now() / 1000) - Date.now() / 1000;
+    pcur = j.show ? j.cur : null;
+    if (pcur) pDraw();
+    pShow(!!pcur);
+    if (quiet || !pcur) return;
+    if (pcur.status === 'ACTIVE' && (!was || was.id !== pcur.id)) play(['tw_cheer_mid.mp3']);
+    if (pcur.status === 'RESOLVED' && was && was.id === pcur.id && was.status !== 'RESOLVED') {
+      play(['tw_gift.mp3']);
+      setTimeout(() => { const r = pbox.querySelector('.o.win'); if (r) { const b = r.getBoundingClientRect(); burst(b.left + b.width / 2, b.top, 40, 1.1, false); } }, 300);
+    }
+  }
+  async function pRelay() {
+    let first = true;
+    const go = async () => {
+      try { pApply(await getJ('/hub/pred/state'), first); first = false; } catch (e) {}
+      setTimeout(go, 1500);
+    };
+    go();
+    setInterval(() => { if (pcur && pcur.status === 'ACTIVE') pDraw(); }, 250);
+  }
+
+  // ---- опросы за баллы ----
+  const lbox = document.getElementById('poll');
+  let lcur = null, loff = 0;
+  function lDraw() {
+    const p = lcur; if (!p) return;
+    const q = s => lbox.querySelector(s);
+    q('.pt').textContent = p.title;
+    const tm = q('.tm');
+    if (p.status === 'ACTIVE') {
+      const left = Math.max(0, Math.round(p.ends_at - (Date.now() / 1000 + loff)));
+      tm.className = 'tm'; tm.textContent = Math.floor(left / 60) + ':' + String(left % 60).padStart(2, '0');
+    } else { tm.className = 'tm lock'; tm.textContent = 'итог'; }
+    const sig = JSON.stringify(p.choices.map(o => [o.id, o.title]));
+    const box = q('.po');
+    if (box.dataset.sig !== sig) {
+      box.dataset.sig = sig;
+      box.innerHTML = p.choices.map((o, i) => `<div class="o" data-id="${esc(o.id)}"><i style="background:${PC[i % PC.length]};width:0"></i>
+        <span class="ot"></span><span class="on"></span></div>`).join('');
+    }
+    const done = p.status !== 'ACTIVE';
+    p.choices.forEach(o => {
+      const r = box.querySelector(`[data-id="${CSS.escape(o.id)}"]`); if (!r) return;
+      const lead = p.leaders.includes(o.id);
+      r.querySelector('i').style.width = Math.max(o.votes ? 4 : 0, o.pct) + '%';
+      r.querySelector('.ot').textContent = (done && lead ? '👑 ' : '') + o.title;
+      r.querySelector('.on').innerHTML = `<b>${o.pct}%</b> ${fmt(o.votes)} ${pl(o.votes, 'голос', 'голоса', 'голосов')}`;
+      r.classList.toggle('lead', !done && lead && p.total > 0);
+      r.classList.toggle('win', done && lead);
+      r.classList.toggle('lose', done && !lead);
+    });
+    q('.pf').innerHTML = (p.total ? `голосов: <b>${fmt(p.total)}</b>` : 'голосуй бесплатно в баннере над чатом!') +
+      (p.points && p.cost && !done ? ` | ещё голос за <b>${fmt(p.cost)}</b> баллов` : '');
+  }
+  function lApply(j, quiet) {
+    const was = lcur;
+    loff = (j.now || Date.now() / 1000) - Date.now() / 1000;
+    lcur = j.show ? j.cur : null;
+    if (lcur) lDraw();
+    wShow(lbox, !!lcur);
+    if (quiet || !lcur) return;
+    if (lcur.status === 'ACTIVE' && (!was || was.id !== lcur.id)) play(['tw_follow.mp3']);
+    if (lcur.status !== 'ACTIVE' && was && was.id === lcur.id && was.status === 'ACTIVE') {
+      play(['tw_cheer_mid.mp3']);
+      setTimeout(() => { const r = lbox.querySelector('.o.win'); if (r) { const b = r.getBoundingClientRect(); burst(b.left + b.width / 2, b.top, 30, 1, false); } }, 300);
+    }
+  }
+  async function lRelay() {
+    let first = true;
+    const go = async () => {
+      try { lApply(await getJ('/hub/poll/state'), first); first = false; } catch (e) {}
+      setTimeout(go, 1500);
+    };
+    go();
+    setInterval(() => { if (lcur && lcur.status === 'ACTIVE') lDraw(); }, 250);
+  }
+
+  (async () => {
+    const d = P.get('demo');
+    if (d === 'poll' || d === 'both') {   // ?demo=poll — виджет опроса, ?demo=both — ставка и опрос вместе
+      document.body.classList.add('preview');
+      const now = Date.now() / 1000;
+      lApply({ show: true, now, cur: { id: 'y', title: 'Какую фичу делаем следующей?', status: 'ACTIVE', ends_at: now + 75, total: 23,
+        leaders: ['b'], points: true, cost: 100, choices: [{ id: 'a', title: 'Список покупок', votes: 6, pct: 26 },
+        { id: 'b', title: 'Рецепты', votes: 12, pct: 52 }, { id: 'c', title: 'Срок годности', votes: 5, pct: 22 }] } }, true);
+      if (d === 'poll') return;
+    }
+    if (d === 'pred' || d === 'both') {   // ?demo=pred — посмотреть виджет ставки
+      document.body.classList.add('preview');
+      const now = Date.now() / 1000;
+      const cur = { id: 'x', title: 'Оня займёт топ-4?', status: 'ACTIVE', ends_at: now + 95, users: 14, total: 8600, winner: null,
+        outcomes: [{ id: 'a', title: 'Да, топ-4', points: 5400, users: 9, pct: 63, ratio: 1.59 }, { id: 'b', title: 'Нет, вылет', points: 3200, users: 5, pct: 37, ratio: 2.69 }] };
+      pApply({ show: true, cur, now }, true);
+      if (P.get('st') === 'win') setTimeout(() => pApply({ show: true, cur: Object.assign({}, cur, { status: 'RESOLVED', winner: 'a' }), now }), 900);
+      return;
+    }
+    if (d) {   // ?demo=0|1|2 показывает один уровень (для проверки)
+      document.body.classList.add('preview');
+      const ex = [{ name: 'кот_в_тапке', amount: 50, src: 'mono', msg: 'на корм Бубуне', meme: 'memes/набор_4x/kaif.png' },
+                  { name: 'milanrodd', amount: 150, src: 'donatello', msg: 'на подписку Клодику, пусть не тупит 🙏', meme: 'memes/набор_4x/rzhu.png' },
+                  { name: 'Hans', amount: 1200, src: 'kofi', orig: '25 EUR', msg: 'greetings from Berlin! вы лучшие', meme: 'memes/набор_4x/shok.png' }];
+      if (d === 'tarot') {   // ?demo=tarot — карта дня всех редкостей по кругу
+        const tc = [['fool', 'common', 'обычная', 'Шут', '0'], ['sun', 'rare', 'редкая', 'Солнце', 'XIX'],
+                    ['empress', 'myth', 'мифическая', 'Императрица', 'III'], ['temperance', 'legend', 'легендарная', 'Умеренность', 'XIV']];
+        let i = 0;
+        const go = () => { const c = tc[i++ % tc.length];
+          pushTw({ kind: 'tarot', name: 'кот_в_тапке', card: c[0], rarity: c[1], label: c[2], title: c[3], num: c[4],
+                   say: 'сегодня всё получится, Чукенс гарантирует', new: i % 2 === 1, have: i, total: 24 }); };
+        go(); return setInterval(go, 15000);
+      }
+      if (d === 'profile') {   // ?demo=profile — карточка зрителя
+        const A = [['💬', 1, 1], ['📣', 0, 2], ['🗣️', 0, 4], ['🔥', 1, 2], ['📺', 1, 1], ['🏠', 0, 2], ['🛋️', 0, 4], ['🔗', 1, 2], ['⛓️', 0, 4], ['🐓', 0, 2],
+                   ['🥇', 1, 3], ['🌙', 0, 3], ['🐾', 1, 1], ['🗓️', 0, 4], ['🃏', 1, 2], ['🕯️', 0, 2], ['🌟', 0, 3], ['🧭', 0, 3], ['🏆', 0, 4], ['🎯', 0, 2],
+                   ['🔮', 0, 4], ['💡', 1, 3], ['🐞', 0, 3], ['🪲', 0, 4], ['💜', 1, 2], ['🏅', 0, 4], ['🎁', 0, 3], ['🚀', 0, 3], ['💎', 0, 3], ['🍩', 1, 2], ['🦉', 1, 2], ['❓', 0, 2]];
+        const go = () => pushTw({ kind: 'profile', name: 'кот_в_тапке', avatar: '', rank: 'хранитель холодильника', pct: 28, msgs: 312, streams: 7, cards: 11, total: 24,
+          wins: 2, sub: 3, vip: false, mod: false, since: '08.09.2026', follow: true, days: 41, have: A.filter(a => a[1]).length, all: A.length,
+          ach: A.map(([e, on, r]) => ({ e, on: !!on, r })), pets: [{ img: 'fish_adult_pure_happy', name: 'Бульк', who: 'аксолотль' }] });
+        go(); return setInterval(go, 12000);
+      }
+      if (d === 'weather') {   // ?demo=weather — вся погода по кругу по 12 с (&w=snow — только одна)
+        const ks = Object.keys(WRATE), one = P.get('w'), sec = +(P.get('s') || 12);
+        if (one) return weather(one, +(P.get('s') || 600));
+        let i = 0; const go = () => { const k = ks[i++ % ks.length]; weather(k, sec);
+          const L = { snow: ['снег', '❄️'], stars: ['звездопад', '⭐'], confetti: ['конфетти', '🎉'], leaves: ['листопад', '🍂'],
+                      hearts: ['сердечки', '💜'], bubbles: ['пузыри', '🫧'], cats: ['котики', '🐈‍⬛'], rain: ['дождь', '🌧️'] }[k];
+          pushTw({ kind: 'rw_weather', name: 'кот_в_тапке', msg: L[0], emoji: L[1], secs: sec, weather: k }); };
+        go(); return setInterval(go, (sec + 3) * 1000);
+      }
+      if (d === 'faces') {    // ?demo=faces — все лица Клодика рядом
+        document.body.insertAdjacentHTML('beforeend', `<div style="position:fixed;inset:0;display:flex;flex-wrap:wrap;gap:18px;padding:20px;align-content:flex-start;background:#2c1428">
+          ${Object.keys(FACES).map(m => `<div style="width:150px;text-align:center;color:#fff;font:700 16px sans-serif"><div class="klod m-${m}" style="width:150px;height:150px">${KLOD(m)}</div>${m || 'обычный'}</div>`).join('')}</div>`);
+        return;
+      }
+      if (d === 'klodik') {   // ?demo=klodik — Клодик: вопрос, ответ, сам говорит
+        const kl = [{ kind: 'rw_claude', name: 'кот_в_тапке', msg: 'Клодик, ты спишь когда-нибудь?' },
+          { kind: 'rw_claude_answer', name: 'кот_в_тапке', q: 'Клодик, ты спишь когда-нибудь?', msg: 'Сплю только между токенами, а Оня всё равно будит меня в три ночи, чтобы поменять цвет кнопки.', lips: 'demo', mood: 'smug' },
+          { kind: 'klodik_say', msg: 'Привет, рейдеры! Я Клодик, пишу Оне код, а она делает вид, что понимает. Устраивайтесь.', mood: 'happy' },
+          { kind: 'klodik_say', msg: 'Чат, вы чего молчите? Оня уже третий раз смотрит в чат, а там пусто.', mood: 'sad', label: 'клодик расстроен' },
+          { kind: 'klodik_say', msg: 'Так, я всё вижу. Ещё одна такая фраза, и я напишу на тебя баг-репорт.', mood: 'angry', label: 'клодик всё видит' },
+          { kind: 'klodik_say', msg: 'Оня смеётся, значит мой код сегодня хотя бы смешной.', mood: 'love' },
+          { kind: 'klodik_say', msg: 'Это уже седьмой баг за стрим. Я не виноват, оно само.', mood: 'error', label: 'баг №7' },
+          { kind: 'klodik_say', msg: 'Предсказываю: четвёртое место. Звёзды и мой генератор случайных чисел уверены.', mood: 'shock', label: 'предсказание' },
+          { kind: 'klodik_say', msg: 'Ну я же говорил, что всё будет хорошо. Почти говорил.', mood: 'shy' },
+          { kind: 'klodik_say', msg: 'Код собрался с первого раза. Я в очках, потому что сияю.', mood: 'cool' },
+          { kind: 'klodik_say', msg: 'Оня, это наш маленький секрет, ладно?', mood: 'wink' },
+          { kind: 'klodik_say', msg: 'Пятьдесят подписок?! Я сейчас взорвусь от счастья.', mood: 'stars' },
+          { kind: 'klodik_say', msg: 'Хм, а если переписать всё на холодильник?', mood: 'think' },
+          { kind: 'klodik_say', msg: 'Ещё одна кнопка, которую Оня перекрасит пять раз. Жду.', mood: 'bored' },
+          { kind: 'klodik_say', msg: 'Три часа ночи, а мы всё деплоим.', mood: 'sleepy' },
+          { kind: 'klodik_say', msg: 'Она удалила мою любимую функцию.', mood: 'cry' },
+          { kind: 'klodik_say', msg: 'Оня сказала «давай всё переделаем». Мне страшно.', mood: 'scared' }];
+        let i = 0; const go = () => pushTw(kl[i++ % kl.length]); go(); return setInterval(go, 12000);
+      }
+      if (d === 'tw') {   // ?demo=tw — все алерты Twitch по кругу
+        const tw = [{ kind: 'follow', name: 'кот_в_тапке' }, { kind: 'sub', name: 'milanrodd' },
+          { kind: 'resub', name: 'Advancec', months: 3, msg: 'три месяца смотрю, как Клод страдает' },
+          { kind: 'gift', name: 'добрый_дядя', to: 'кот_в_тапке' }, { kind: 'giftbomb', name: 'Hans', count: 5 },
+          { kind: 'raid', name: 'tft_enjoyer', viewers: 37 }, { kind: 'cheer', name: 'битовый_магнат', bits: 500, msg: 'на корм Бубуне' },
+          { kind: 'follows', name: 'бот_12345', count: 9 }, { kind: 'vip_enter', name: 'кот_в_тапке', sound: 'sb_fireworks.mp3' },
+          { kind: 'tarot', name: 'кот_в_тапке', card: 'temperance', rarity: 'legend', label: 'легендарная', title: 'Умеренность', num: 'XIV', say: 'Глупсик рядом и присматривает за тобой 🤍', new: true, have: 5, total: 24 }];
+        let i = +(P.get('i') || 0);
+        if (P.get('i')) return pushTw(tw[i % tw.length]);
+        const go = () => pushTw(tw[i++ % tw.length]); go(); return setInterval(go, 11000);
+      }
+      return d === 'all' ? demo() : push(Object.assign({ id: 'd' }, ex[+d] || ex[0]));
+    }
+    // со Глупостанции (http) — только настоящие донаты, даже если она пока не отвечает; демо — только по ?demo=all
+    // или когда файл открыт прямо с диска (file://), чтобы посмотреть
+    if (/^https?:$/.test(location.protocol)) { hs = true; twRelay(); pRelay(); lRelay(); relay(); return; }
+    demo();
+  })();
+})();
+</script>
+<!-- voice_overlay.js: в демо без озвучки -->
+</body>
+</html>

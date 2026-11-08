@@ -1,0 +1,61 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<script src="/st/mock_hub.js"></script>
+<title>Рамка терминала</title>
+<style>
+  /* gluponya — переливающаяся рамка вокруг терминала для OBS (Источник «Браузер»).
+     URL: http://127.0.0.1:8765/static/terminal_frame.html — цвета берёт у Глупостанции (/hub/theme):
+     настроение с пульта, голосовая команда или цвет от зрителя. ?pad=14&w=6&r=16&speed=6 — поля, толщина, скругление, секунды на оборот.
+     Ширину/высоту источника ставь = размеру захвата терминала + 2*pad. */
+  :root{
+    --pad: 12px; --w: 4px; --r: 14px; --speed: 6s;
+    --c1:#FF7ABE; --c2:#FF4FA3; --c3:#9146FF; --c4:#78EEC4; --c5:#FFD84D;
+  }
+  @property --a { syntax: '<angle>'; inherits: false; initial-value: 0deg; }
+  html,body{margin:0;width:100%;height:100%;background:transparent;overflow:hidden}
+  .f{
+    position:absolute; inset:var(--pad); border-radius:var(--r); padding:var(--w);
+    background:conic-gradient(from var(--a), var(--c1), var(--c2), var(--c3), var(--c4), var(--c5), var(--c1));
+    -webkit-mask:linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+    -webkit-mask-composite:xor; mask-composite:exclude;
+    animation:spin var(--speed) linear infinite;
+  }
+  .glow{ position:absolute; inset:0; filter:blur(7px); opacity:.55; }
+  @keyframes spin{ to{ --a:360deg } }
+  @media (prefers-reduced-motion: reduce) { .f { animation: none } }
+  /* Скин «Терминал» (07.11): ровная светящаяся рамка без радужного вращения, почти прямые углы */
+  :root[data-skin="terminal"] .f { animation: none; background: var(--c1); border-radius: 3px; }
+  :root[data-skin="terminal"] .glow { opacity: .8; }
+  /* Формы оверлея (07.11): рамка без радужного вращения — обычная граница, без маски, свечение выключено */
+  :root[data-skin="notebook"] .f, :root[data-skin="polaroid"] .f, :root[data-skin="vhs"] .f, :root[data-skin="receipt"] .f {
+     animation: none; background: none; padding: 0; -webkit-mask: none; mask: none; border: var(--w) solid var(--c2); }
+  :root[data-skin="notebook"] .glow, :root[data-skin="polaroid"] .glow, :root[data-skin="vhs"] .glow, :root[data-skin="receipt"] .glow { display: none; }
+  :root[data-skin="notebook"] .f { border-style: dashed; border-radius: 8px; }                                   /* ручкой по тетради */
+  :root[data-skin="polaroid"] .f { border-color: #fff; border-width: calc(var(--w) * 2); border-radius: 4px; box-shadow: 0 8px 20px -6px rgba(40,10,40,.5); }  /* белый кант снимка */
+  :root[data-skin="vhs"] .f { border-color: #fff; border-radius: 0; box-shadow: 4px 0 0 var(--c2), -4px 0 0 var(--c4); }   /* цветной сдвиг кассеты */
+  :root[data-skin="receipt"] .f { border-color: #FBF7EE; border-style: dashed; border-radius: 0; }                 /* пунктир ленты */
+</style>
+<script src="/static/theme.js"></script>
+</head>
+<body>
+  <div class="glow"><div class="f"></div></div>
+  <div class="f"></div>
+<script>
+  const P = new URLSearchParams(location.search), R = document.documentElement.style;
+  if (P.has('pad')) R.setProperty('--pad', +P.get('pad') + 'px');
+  if (P.has('w')) R.setProperty('--w', +P.get('w') + 'px');
+  if (P.has('r')) R.setProperty('--r', +P.get('r') + 'px');
+  if (P.has('speed')) R.setProperty('--speed', +P.get('speed') + 's');
+  const BASE = { pink: '#FF7ABE', hot: '#FF4FA3', line: '#9146FF', mint: '#78EEC4', yellow: '#FFD84D' };
+  function paint(p) {
+    [['--c1', p.pink], ['--c2', p.hot], ['--c3', p.line], ['--c4', p.mint], ['--c5', p.yellow]]
+      .forEach(([k, v]) => v && R.setProperty(k, v));
+  }
+  paint(BASE);
+  // палитру приносит общий опрос Глупостанции из theme.js; фирменное настроение приходит как pal = null
+  if (window.gluTheme) gluTheme.on(j => paint(j.pal ? j.pal : j.color ? { pink: j.color, hot: j.dark, mint: j.light, line: j.dark, yellow: BASE.yellow } : BASE));
+</script>
+</body>
+</html>

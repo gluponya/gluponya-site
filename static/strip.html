@@ -1,0 +1,273 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<script src="/st/mock_hub.js"></script>
+<title>Нижняя полоса</title>
+<link rel="stylesheet" href="/static/hub.css">
+<style>
+  /* Нижняя полоса, вариант D «стикеры без подложки» (22.10). OBS: Браузер, URL http://127.0.0.1:8765/static/strip.html, 1280×240, под экраном.
+     Плиты нет: наклейка-заголовок, карточка с прогрессом, наклейка-команда и таблетка с музыкой, под наклоном, с тенью.
+     Слева вкладки по очереди: ДОНАТ → МАЛЫШ → ПОДПИСКИ (при смене наклейки прилетают заново). Справа всегда — что играет.
+     Вкладка без данных (тамагочи выключен, Twitch не отдал фолловеров) пропускается.
+     ?preview — шахматный фон и тестовые данные, ?tab=sub — держать одну вкладку (fund / pet / sub), ?order — пример заказанного трека.
+     Прошлая версия (одна плита) — _до_раскладки/static/strip_v2_plita.html. */
+  html, body { margin: 0; height: 100%; overflow: hidden; background: transparent; }
+  body.preview { background: repeating-conic-gradient(#241020 0 25%, #2c1428 0 50%) 0 0/40px 40px; }
+  #fit { position: absolute; left: 0; top: 0; width: 1280px; height: 240px; transform-origin: 0 0; color: var(--cream); }
+  .sh { box-shadow: 0 12px 28px rgba(10, 2, 10, .5); }
+  .pane { display: none; position: absolute; inset: 0; }
+  .pane.on { display: block; }
+  .kick { position: absolute; left: 10px; top: 14px; transform: rotate(-3deg); font: 900 22px/1 var(--display); text-transform: uppercase;
+          color: var(--plum); border-radius: 12px; padding: 10px 16px 8px; letter-spacing: .02em; white-space: nowrap; z-index: 2; }
+  .card { position: absolute; left: 40px; top: 62px; width: 680px; box-sizing: border-box; background: var(--card); border-radius: 20px;
+          padding: 16px 24px 14px; display: flex; flex-direction: column; gap: 9px; }
+  .row { display: flex; justify-content: space-between; align-items: baseline; gap: 16px; }
+  .t { font: 900 25px/1.1 var(--display); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; min-width: 0; }
+  .v { font: 900 23px/1.1 var(--display); white-space: nowrap; font-variant-numeric: tabular-nums; }
+  .track { height: 12px; border-radius: 999px; background: color-mix(in srgb, var(--line) 85%, transparent); overflow: hidden; }
+  .fill { height: 100%; width: 0; border-radius: 999px; transition: width 1.2s cubic-bezier(.2,1,.3,1); }
+  .tx { font: 800 18px/1.2 var(--body); color: var(--muted); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .last { font: 800 16px/1.2 var(--body); color: var(--muted); opacity: .85; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .last b { color: var(--cream); font-weight: 900; }
+  .last:empty { display: none; }
+  .cmd { position: absolute; left: 642px; top: 30px; transform: rotate(4deg); font: 900 20px/1 var(--display); color: var(--plum);
+         border-radius: 12px; padding: 9px 14px 7px; white-space: nowrap; z-index: 2; }
+  #fund .kick, #fund .cmd, #fund .fill { background: var(--pink); } #fund .v { color: var(--pink); }
+  #pet .kick, #pet .cmd, #pet .fill { background: var(--mint); } #pet .v { color: var(--mint); }
+  #sub .kick, #sub .cmd, #sub .fill { background: var(--yellow); } #sub .v { color: var(--yellow); }
+  /* наклейки прилетают по очереди при смене вкладки */
+  .pane.pop .kick { animation: slap .5s cubic-bezier(.2,1.5,.4,1) both; }
+  .pane.pop .card { animation: rise .55s cubic-bezier(.2,1.2,.4,1) .08s both; }
+  .pane.pop .cmd  { animation: slap2 .5s cubic-bezier(.2,1.5,.4,1) .22s both; }
+  @keyframes slap  { from { opacity: 0; transform: rotate(-14deg) scale(.6); } }
+  @keyframes slap2 { from { opacity: 0; transform: rotate(16deg) scale(.6); } }
+  @keyframes rise  { from { opacity: 0; transform: translateY(14px); } }
+  .tabs { position: absolute; left: 40px; width: 680px; top: 208px; display: flex; justify-content: center; gap: 8px; }
+  .tabs span { font: 900 14px/1 var(--display); letter-spacing: .06em; padding: 6px 13px 5px; border-radius: 999px;
+               background: var(--card); color: var(--muted); border: 1px solid rgba(255, 255, 255, .12);
+               box-shadow: 0 6px 14px rgba(10, 2, 10, .45); transition: background .4s, color .4s; }
+  .tabs span.off { display: none; }
+  .tabs span.on { color: var(--plum); }
+  .tabs span.on[data-t=fund] { background: var(--pink); } .tabs span.on[data-t=pet] { background: var(--mint); }
+  .tabs span.on[data-t=sub] { background: var(--yellow); }
+  /* музыка — таблетка справа */
+  .music { position: absolute; right: 20px; top: 52px; transform: rotate(-2deg); width: 450px; box-sizing: border-box; background: var(--card);
+           border: 3px solid var(--mint); border-radius: 999px; padding: 12px 30px 12px 12px; display: flex; align-items: center; gap: 16px;
+           transition: border-color .6s, width .5s cubic-bezier(.3,1.2,.4,1), padding .5s; overflow: hidden; }
+  .disc { width: 74px; height: 74px; border-radius: 50%; flex: none; box-sizing: border-box;
+          background: color-mix(in srgb, var(--line) 85%, transparent) center/cover; display: grid; place-items: center; }
+  .disc.spin { animation: spin 8s linear infinite; }
+  @keyframes spin { to { transform: rotate(360deg); } }
+  .disc svg { width: 28px; height: 28px; fill: none; stroke: var(--cream); stroke-width: 2.2; stroke-linecap: round; stroke-linejoin: round; }
+  .disc.img svg { display: none; }
+  .mi { display: flex; flex-direction: column; gap: 6px; min-width: 0; flex: 1 1 auto; }
+  .who { font: 800 15px/1 var(--body); color: var(--muted); white-space: nowrap; }
+  .who b { color: var(--cream); }
+  .who .ord { display: inline-block; font: 900 12px/1 var(--display); letter-spacing: .05em; color: var(--plum); background: var(--yellow);
+              border-radius: 6px; padding: 4px 7px 3px; margin-right: 6px; vertical-align: 1px; }
+  .song { font: 900 21px/1.12 var(--display); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .mt { display: flex; align-items: center; gap: 10px; }
+  .mt .track { flex: 1 1 auto; height: 5px; }
+  .mt .fill { background: var(--mint); transition: width .5s linear; }
+  .time { font: 800 14px/1 var(--body); color: var(--muted); font-variant-numeric: tabular-nums; }
+  .queue { position: absolute; right: 44px; top: 160px; transform: rotate(-2deg); font: 900 14px/1 var(--display); color: var(--plum);
+           background: var(--yellow); border-radius: 8px; padding: 6px 10px 5px; }
+  .queue:empty { display: none; }
+  .music.idle .song { color: var(--muted); font-size: 18px; }
+  .music.idle .mt { visibility: hidden; }
+  .music.ordered { border-color: var(--yellow); }
+  .music.ordered .mt .fill { background: var(--yellow); }
+  @media (prefers-reduced-motion: reduce) { *, *::before { animation: none !important; transition: none !important; } }
+  /* Скин «Терминал» (07.11) */
+  :root[data-skin="terminal"] .card { background-color: color-mix(in srgb, var(--card) 92%, transparent); }
+  /* Формы оверлея (07.11): плашка музыки — не круглая тёмная, а в форме скина (у .card в hub.css её нет, поэтому отдельно) */
+  :root[data-skin="notebook"] .last b, :root[data-skin="polaroid"] .last b, :root[data-skin="receipt"] .last b { color: var(--ink); }
+  :root[data-skin="notebook"] .last, :root[data-skin="polaroid"] .last, :root[data-skin="receipt"] .last,
+  :root[data-skin="notebook"] .tx, :root[data-skin="polaroid"] .tx, :root[data-skin="receipt"] .tx { color: var(--soft); opacity: 1; }
+  :root[data-skin="vhs"] .music .song { font-size: 18px; }
+  :root[data-skin="notebook"] .music { background: #fff; color: var(--ink); border: 2px dashed var(--pen); border-radius: 8px; box-shadow: none; }
+  :root[data-skin="notebook"] .music.ordered { border-color: var(--pen); }
+  :root[data-skin="polaroid"] .music { background: #fff; color: var(--ink); border: 0; border-radius: 4px; padding-bottom: 18px; box-shadow: 0 8px 20px -8px rgba(40,10,40,.45); }
+  :root[data-skin="receipt"] .music { background: var(--paper); color: var(--ink); border: 0; border-radius: 0; box-shadow: none; transform: none; -webkit-mask: var(--zig); mask: var(--zig); padding-bottom: 24px; }
+  :root[data-skin="notebook"] .music :is(.song, .who b), :root[data-skin="polaroid"] .music :is(.song, .who b), :root[data-skin="receipt"] .music :is(.song, .who b) { color: var(--ink); }
+  :root[data-skin="notebook"] .music .who, :root[data-skin="polaroid"] .music .who, :root[data-skin="receipt"] .music .who,
+  :root[data-skin="notebook"] .music .time, :root[data-skin="polaroid"] .music .time, :root[data-skin="receipt"] .music .time,
+  :root[data-skin="notebook"] .music.idle .song, :root[data-skin="polaroid"] .music.idle .song, :root[data-skin="receipt"] .music.idle .song { color: var(--soft); }
+  :root[data-skin="notebook"] .disc, :root[data-skin="polaroid"] .disc, :root[data-skin="receipt"] .disc { background-color: var(--ink); }
+  :root[data-skin="notebook"] .disc svg, :root[data-skin="polaroid"] .disc svg, :root[data-skin="receipt"] .disc svg { stroke: #fff; }
+  :root[data-skin="vhs"] .music { background: color-mix(in srgb, var(--plum) 80%, transparent); border: 2px solid #fff; border-radius: 0; transform: none; box-shadow: none; }
+  :root[data-skin="vhs"] .music .song { text-shadow: var(--chroma); text-transform: uppercase; letter-spacing: .03em; }
+  :root[data-skin="vhs"] .disc { border-radius: 0; }
+  :root[data-skin="vhs"] .disc.spin { animation: none; }
+  :root[data-skin="vhs"] .music .who .ord, :root[data-skin="vhs"] .queue { background: none; border: 2px solid #fff; color: #fff; border-radius: 0; }
+  :root[data-skin="terminal"] .music { border-width: 2px !important; box-shadow: 0 0 20px -5px var(--mint); }
+  :root[data-skin="terminal"] .disc { box-shadow: 0 0 0 2px var(--mint); }
+  :root[data-skin="terminal"] .tabs span { border-color: color-mix(in srgb, var(--pink) 35%, transparent); }
+  :root[data-skin="terminal"] .sh { box-shadow: 0 0 18px -5px var(--pink); }
+  :root[data-skin="terminal"] .pane.pop .kick, :root[data-skin="terminal"] .pane.pop .cmd { animation: t-type .4s steps(12, end) both; }
+  @keyframes t-type { from { clip-path: inset(0 100% 0 0); } to { clip-path: inset(0 0 0 0); } }
+</style>
+<script src="/static/theme.js"></script>
+</head>
+<body>
+<div id="fit">
+  <div class="pane" id="fund">
+    <span class="kick sh" id="fundK">Дайте Оне деняк</span>
+    <div class="card sh">
+      <div class="row"><span class="t" id="fundT"></span><span class="v" id="fundV"></span></div>
+      <div class="track"><div class="fill" id="fundF"></div></div>
+      <span class="tx">пиши в чат — бот пришлёт ссылку</span>
+      <div class="last" id="fundL"></div>
+    </div>
+    <span class="cmd sh">!донат</span>
+  </div>
+  <div class="pane" id="pet">
+    <span class="kick sh">Тамагочи чата</span>
+    <div class="card sh">
+      <div class="row"><span class="t" id="petT"></span><span class="v" id="petV"></span></div>
+      <div class="track"><div class="fill" id="petF"></div></div>
+      <span class="tx" id="petH">награда «Покормить питомца»</span>
+      <div class="last" id="petL"></div>
+    </div>
+    <span class="cmd sh">за баллы</span>
+  </div>
+  <div class="pane" id="sub">
+    <span class="kick sh">Подпишись на Онечку</span>
+    <div class="card sh">
+      <div class="row"><span class="t">Цель по подпискам</span><span class="v" id="subV"></span></div>
+      <div class="track"><div class="fill" id="subF"></div></div>
+      <span class="tx">жмякай, не расстраивай Оню</span>
+      <div class="last" id="subL"></div>
+    </div>
+    <span class="cmd sh">отслеживать</span>
+  </div>
+  <div class="tabs" id="tabs"><span data-t="fund">ДОНАТ</span><span data-t="pet">МАЛЫШ</span><span data-t="sub">ПОДПИСКИ</span></div>
+  <div class="music sh idle" id="music">
+    <div class="disc" id="disc"><svg viewBox="0 0 24 24"><path d="M9 18V5l12-2v13"/><circle cx="6" cy="18" r="3"/><circle cx="18" cy="16" r="3"/></svg></div>
+    <div class="mi">
+      <span class="who" id="who">у Они сейчас играет</span>
+      <span class="song" id="song">музыка на паузе</span>
+      <div class="mt"><div class="track"><div class="fill" id="mF"></div></div><span class="time" id="mT"></span></div>
+    </div>
+  </div>
+  <span class="queue sh" id="mQ"></span>
+</div>
+<script>
+(() => {
+  const P = new URLSearchParams(location.search);
+  const $ = id => document.getElementById(id);
+  const TABS = ['fund', 'pet', 'sub'], EVERY = 12000;
+  const has = { fund: true, pet: false, sub: false };
+  let tab = TABS.includes(P.get('tab')) ? P.get('tab') : 'fund';
+  const esc = s => String(s ?? '').replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
+  const num = n => Math.round(+n || 0).toLocaleString('ru-RU').replace(/ /g, ' ');
+  const pct = (a, b) => Math.max(0, Math.min(100, b > 0 ? a / b * 100 : 0));
+  const mmss = s => { s = Math.max(0, Math.floor(s)); return `${Math.floor(s / 60)}:${String(s % 60).padStart(2, '0')}`; };
+  const WHO = { sweet: 'Зефирка', spicy: 'Дракончик', fish: 'Аксолотль', green: 'Росток' };
+  const STAGE = { baby: 'малыш', child: 'ребёнок', teen: 'подросток', adult: 'взрослый' };
+
+  function fit() { const k = Math.min(innerWidth / 1280, innerHeight / 240); $('fit').style.transform = k > 0 ? `scale(${k})` : 'none'; }
+  function show() {
+    fit();
+    const forced = TABS.includes(P.get('tab')) ? P.get('tab') : '';
+    if (forced) tab = has[forced] ? forced : 'fund';
+    else if (!has[tab]) tab = 'fund';
+    TABS.forEach(t => {
+      const was = $(t).classList.contains('on');
+      $(t).classList.toggle('on', t === tab);
+      if (t === tab && !was) { $(t).classList.remove('pop'); void $(t).offsetWidth; $(t).classList.add('pop'); }
+      const pill = document.querySelector(`.tabs span[data-t=${t}]`);
+      pill.classList.toggle('on', t === tab); pill.classList.toggle('off', !has[t]);
+    });
+  }
+  function next() {
+    if (P.has('tab')) return;
+    const live = TABS.filter(t => has[t]);
+    tab = live[(live.indexOf(tab) + 1) % live.length] || 'fund';
+    show();
+  }
+
+  function fund(j) {
+    $('fundK').textContent = 'Дайте Оне деняк';
+    $('fundT').textContent = j.title || '';
+    $('fundV').textContent = `${num(j.raised)} / ${num(j.goal)} ${j.symbol || '₴'}`;
+    $('fundF').style.width = pct(j.raised, j.goal) + '%';
+    const d = (j.donations || []).find(x => !x.test && x.name);
+    $('fundL').innerHTML = d ? `последний донат: <b>${esc(d.name)}</b> | ${num(d.amount)} ${esc(j.symbol || '₴')}` : '';
+  }
+  function pet(j) {
+    has.pet = !!j.on;
+    if (!j.on) return;
+    const name = j.name || WHO[j.family] || 'Малыш';
+    if (j.phase === 'egg') {
+      $('petT').textContent = j.ready ? 'Яйцо вылупляется!' : 'Яйцо греется';
+      $('petV').textContent = `тепло ${Math.floor(j.pct || 0)}%`;
+      $('petH').textContent = 'награда «Покормить питомца»';
+    } else {
+      $('petT').textContent = `${name} ${STAGE[j.phase] || ''}`.trim();
+      $('petV').textContent = j.phase === 'adult' ? 'вырос!' : `рост ${Math.floor(j.pct || 0)}%`;
+      $('petH').textContent = j.locked ? 'растёт на следующем стриме' : 'награда «Покормить питомца»';
+    }
+    const f = [...(j.ev || [])].reverse().find(e => e.kind === 'feed' && e.name && !e.test);
+    $('petL').innerHTML = f ? `последним кормил(а): <b>${esc(f.name)}</b>` : '';
+    $('petF').style.width = (j.phase === 'adult' ? 100 : pct(j.pct, 100)) + '%';
+  }
+  function sub(j) {
+    has.sub = Number.isFinite(+j.follow) && j.follow !== null && +j.goal > 0;
+    if (!has.sub) return;
+    $('subV').textContent = `${num(j.follow)} / ${num(j.goal)}`;
+    $('subF').style.width = pct(j.follow, j.goal) + '%';
+    $('subL').innerHTML = j.last ? `последний фолловер: <b>${esc(j.last)}</b>` : '';
+  }
+  let sp = null;
+  function music(j) {
+    const box = $('music'), cur = j.current && !j.paused ? j.current : null;
+    const b = j.beat || {};
+    // заказ: позиция из пульса плеера /music, иначе — Spotify Они
+    sp = cur ? (b.dur > 0 ? { pos: b.pos, dur: b.dur, at: Date.now() - Math.max(0, Date.now() / 1000 - (b.t || 0)) * 1000 } : null)
+             : j.spotify ? { ...j.spotify, at: Date.now() } : null;
+    const title = cur ? (cur.title || 'трек за баллы') : sp ? (sp.artist ? `${sp.artist} — ${sp.title}` : sp.title) : '';
+    box.classList.toggle('idle', !title);
+    box.classList.toggle('ordered', !!cur);
+    $('who').innerHTML = cur ? `<span class="ord">ЗАКАЗ</span>от <b>${esc(cur.name || 'зрителя')}</b>` : 'у Они сейчас играет';
+    $('song').textContent = title || 'музыка на паузе';
+    $('mQ').textContent = cur && j.queued ? `ещё ${j.queued} в очереди` : '';
+    const thumb = cur ? cur.thumb : sp && sp.thumb;
+    $('disc').style.backgroundImage = thumb ? `url("${thumb}")` : '';
+    $('disc').classList.toggle('img', !!thumb); $('disc').classList.toggle('spin', !!title);
+  }
+  setInterval(() => {
+    if (!sp || !(sp.dur > 0)) { $('mF').style.width = '0'; $('mT').textContent = ''; return; }
+    const pos = sp.pos + (Date.now() - sp.at) / 1000;
+    $('mF').style.width = pct(pos, sp.dur) + '%'; $('mT').textContent = mmss(sp.dur - pos);
+  }, 500);
+
+  const T = ms => { if (window.AbortSignal && AbortSignal.timeout) return AbortSignal.timeout(ms);
+                    const c = new AbortController(); setTimeout(() => c.abort(), ms); return c.signal; };
+  const get = async u => (await fetch(u, { cache: 'no-store', signal: T(4000) })).json();
+  function loop(u, fn, ms) {
+    const go = async () => { try { fn(await get(u)); show(); } catch (e) {} setTimeout(go, ms); };
+    go();
+  }
+  addEventListener('resize', fit); fit(); show();
+  if (P.has('preview')) {
+    document.body.classList.add('preview');
+    fund({ kicker: 'СБОР', title: 'На подписку Клодика', raised: 1240, goal: 5000, symbol: '₴', donations: [{ name: 'кот_в_тапке', amount: 150 }] });
+    pet({ on: true, phase: 'baby', name: 'Дурилка', pct: 37, ev: [{ kind: 'feed', name: 'Advancec' }] });
+    sub({ follow: 143, goal: 150, last: 'sid_hikaruuuuuu' });
+    if (P.has('order')) music({ current: { title: 'Radiohead — Weird Fishes', name: 'кот_в_тапке', thumb: '' },
+                                beat: { pos: 42, dur: 318, t: Date.now() / 1000 }, queued: 2 });
+    else music({ spotify: { artist: 'Acid Ghost', title: 'Idaho, pt. 2', pos: 64, dur: 210 } });
+    show(); setInterval(next, 4000);
+  } else if (/^https?:$/.test(location.protocol)) {
+    loop('/state', fund, 5000);
+    loop('/hub/tama/state', pet, 5000);
+    loop('/hub/overlay/strip', sub, 30000);
+    loop('/hub/music/state', music, 2000);
+    setInterval(next, EVERY);
+  }
+})();
+</script>
+</body>
+</html>

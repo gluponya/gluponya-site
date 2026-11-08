@@ -1,0 +1,116 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<script src="/st/mock_hub.js"></script>
+<title>Рамка камеры</title>
+<link rel="stylesheet" href="/static/hub.css">
+<style>
+  /* Рамка вокруг камеры. Браузер-источник 1920×1080 поверх камеры (под котом и плашкой).
+     Положение окна камеры: ?x=1343&y=756&w=577&h=324 (по умолчанию — как сейчас в «Основной»).
+     Цвет — фирменный розовый, а когда зритель берёт «Сменить цвет оверлея», рамка, пунктир и обе искорки в его палитре. */
+  html, body { margin: 0; height: 100%; overflow: hidden; background: transparent; }
+  #f { position: absolute; box-sizing: border-box; border: 8px solid var(--pink); border-radius: 30px;
+       box-shadow: 0 0 22px 2px var(--pink), inset 0 0 18px rgba(20, 4, 15, .35); }
+  #f::after { content: ""; position: absolute; inset: calc(5px * var(--k, 1)); border: calc(2px * var(--k, 1)) dashed var(--mint);
+              border-radius: calc(24px * var(--k, 1)); opacity: .55; }
+  .sp { position: absolute; width: 34px; height: 34px; background: var(--yellow);
+        clip-path: polygon(50% 0, 61% 39%, 100% 50%, 61% 61%, 50% 100%, 39% 61%, 0 50%, 39% 39%);
+        animation: tw 2.4s ease-in-out infinite; filter: drop-shadow(0 0 8px var(--yellow)); }
+  .sp.b { width: 22px; height: 22px; background: var(--mint); filter: drop-shadow(0 0 6px var(--mint)); animation-delay: -1.2s; }
+  @keyframes tw { 0%, 100% { transform: scale(.55) rotate(0); opacity: .6 } 50% { transform: scale(1.1) rotate(45deg); opacity: 1 } }
+  @media (prefers-reduced-motion: reduce) { .sp { animation: none } }
+  /* Скин «Терминал» (07.11): почти прямые углы, окно с подписью webcam.exe, без искорок */
+  :root[data-skin="terminal"] #f { border-radius: calc(4px * var(--k, 1)) !important; }
+  :root[data-skin="terminal"] #f::after { border-style: solid; border-radius: calc(2px * var(--k, 1)); opacity: .45; }
+  :root[data-skin="terminal"] #f::before { content: "webcam.exe"; position: absolute; left: calc(26px * var(--k, 1)); top: calc(-13px * var(--k, 1));
+       font: 800 calc(18px * var(--k, 1))/1 "JetBrains Mono", Consolas, monospace; color: var(--plum); background: currentColor;
+       padding: calc(4px * var(--k, 1)) calc(10px * var(--k, 1)); border-radius: calc(2px * var(--k, 1)); }
+  :root[data-skin="terminal"] #f::before { background: var(--tbg, #FF7ABE); }
+  :root[data-skin="terminal"] .sp { display: none; }
+  /* ===== Формы оверлея (07.11). Тетрадь: рамка пунктиром ручкой и подпись от руки ===== */
+  :root[data-skin="notebook"] #f { border: calc(4px * var(--k, 1)) dashed var(--pink-hot) !important; border-radius: calc(8px * var(--k, 1)) !important; box-shadow: none !important; }
+  :root[data-skin="notebook"] #f::after { display: none; }
+  :root[data-skin="notebook"] #f::before { content: "Оня"; position: absolute; right: calc(22px * var(--k, 1)); bottom: calc(-6px * var(--k, 1));
+       font: 700 calc(30px * var(--k, 1))/1 "Caveat", "Nunito", sans-serif; font-style: italic; color: var(--pink-hot); background: #fff;
+       padding: calc(2px * var(--k, 1)) calc(12px * var(--k, 1)); border-radius: calc(4px * var(--k, 1)); transform: rotate(-4deg); }
+  :root[data-skin="notebook"] .sp { display: none; }
+  /* Полароид: белая рамка снимка, широкое поле снизу с подписью от руки */
+  :root[data-skin="polaroid"] #f { border: 0 !important; border-radius: calc(4px * var(--k, 1)) !important;
+       box-shadow: inset 0 0 0 calc(12px * var(--k, 1)) #fff, 0 calc(10px * var(--k, 1)) calc(30px * var(--k, 1)) rgba(0,0,0,.3) !important; }
+  :root[data-skin="polaroid"] #f::after { display: none; }
+  :root[data-skin="polaroid"] #f::before { content: "Оня"; position: absolute; left: 0; right: 0; bottom: 0; height: calc(58px * var(--k, 1)); background: #fff;
+       font: 700 calc(34px * var(--k, 1))/calc(58px * var(--k, 1)) "Caveat", "Nunito", sans-serif; font-style: italic; color: var(--plum); text-align: center; }
+  :root[data-skin="polaroid"] .sp { display: none; }
+  /* Кассета VHS: тонкая белая рамка, ● REC и настоящее время справа внизу */
+  :root[data-skin="vhs"] #f { border: calc(2px * var(--k, 1)) solid #fff !important; border-radius: 0 !important;
+       box-shadow: calc(4px * var(--k, 1)) 0 0 color-mix(in srgb, var(--pink-hot) 80%, transparent), calc(-4px * var(--k, 1)) 0 0 color-mix(in srgb, var(--mint) 80%, transparent) !important; }   /* тот же цветной сдвиг, что у рамки терминала */
+  :root[data-skin="vhs"] #f::before { content: "REC"; position: absolute; left: calc(16px * var(--k, 1)); top: calc(12px * var(--k, 1));
+       font: 800 calc(20px * var(--k, 1))/1 "JetBrains Mono", Consolas, monospace; color: #fff; padding-left: 1.2em;
+       background: radial-gradient(circle, var(--pink-hot) 45%, transparent 52%) left center/.85em .85em no-repeat; animation: rec 1.1s steps(1) infinite; }
+  :root[data-skin="vhs"] #f::after { inset: auto; border: 0; opacity: 1; content: attr(data-tc); right: calc(16px * var(--k, 1)); bottom: calc(12px * var(--k, 1));
+       font: 800 calc(20px * var(--k, 1))/1 "JetBrains Mono", Consolas, monospace; color: #fff; letter-spacing: .06em; }
+  @keyframes rec { 50% { background-size: 0 0; } }
+  :root[data-skin="vhs"] .sp { display: none; }
+  /* Чек из магазина: рамка как ценник со строкой товара */
+  :root[data-skin="receipt"] { --mark: color-mix(in srgb, var(--yellow) 70%, var(--pen)); --paper: #FBF7EE; }
+  :root[data-skin="receipt"] #f { border: calc(6px * var(--k, 1)) dashed var(--paper) !important; border-radius: 0 !important; box-shadow: none !important; }   /* пунктир ленты, как у рамки терминала */
+  :root[data-skin="receipt"] #f::after { display: none; }
+  :root[data-skin="receipt"] #f::before { content: "ОНЯ   1 шт   0.00 ₴"; position: absolute; left: calc(20px * var(--k, 1)); top: calc(-14px * var(--k, 1));
+       font: 800 calc(17px * var(--k, 1))/1 "JetBrains Mono", Consolas, monospace; color: #222; background: var(--paper); letter-spacing: .06em;
+       padding: calc(5px * var(--k, 1)) calc(12px * var(--k, 1)); white-space: pre; }
+  :root[data-skin="receipt"] .sp { display: none; }
+</style>
+<script src="/static/theme.js"></script>
+</head>
+<body>
+<div id="f"></div>
+<div class="sp" id="s1"></div><div class="sp b" id="s2"></div>
+<script>
+  const P = new URLSearchParams(location.search), n = (k, d) => +(P.get(k) || d);
+  const f = document.getElementById('f'), s1 = document.getElementById('s1'), s2 = document.getElementById('s2');
+  // форма «Кассета» (07.11): настоящее время в углу камеры, обновляется раз в секунду, только когда скин включён
+  setInterval(() => {
+    if (document.documentElement.dataset.skin !== 'vhs') return;
+    const d = new Date(), z = n => String(n).padStart(2, '0');
+    f.dataset.tc = `${z(d.getHours())}:${z(d.getMinutes())}:${z(d.getSeconds())}`;
+  }, 1000);
+  if (P.has('fit')) {
+    // ?fit — рамка по краям самой страницы: источник того же размера, что камера, с той же трансформацией
+    const b = n('b', 20), r = n('r', 70), k = b / 8;
+    // наружного свечения тут нет: его обрезает край источника, и в углах оставался квадрат цвета
+    Object.assign(f.style, { left: 0, top: 0, width: '100vw', height: '100vh', borderWidth: b + 'px', borderRadius: r + 'px',
+                             boxShadow: `inset 0 0 ${18 * k}px rgba(20,4,15,.35)` });
+    document.documentElement.style.setProperty('--k', k);
+    [s1, s2].forEach(s => { s.style.width = s.style.height = (s === s1 ? 34 : 22) * k + 'px'; });
+    Object.assign(s1.style, { left: b * .6 + 'px', top: b * .6 + 'px' });
+    Object.assign(s2.style, { left: b * .6 + 60 * k + 'px', top: b * .5 + 'px' });
+  } else {
+    const x = n('x', 1343), y = n('y', 756), w = n('w', 1920 - x + 40), h = n('h', 1080 - y + 40);
+    Object.assign(f.style, { left: x + 'px', top: y + 'px', width: w + 'px', height: h + 'px' });
+    Object.assign(s1.style, { left: (x - 17) + 'px', top: (y - 17) + 'px' });
+    Object.assign(s2.style, { left: (x + 30) + 'px', top: (y - 28) + 'px' });
+  }
+  // цвет напрямую со Глупостанции (не только через CSS-переменные: так надёжнее в OBS)
+  const BASE = { pink: '#FF7ABE', mint: '#78EEC4', yellow: '#FFD84D', plum: '#2E0C24' };
+  f.style.transition = 'border-color 1.6s ease, box-shadow 1.6s ease';
+  [s1, s2].forEach(s => s.style.transition = 'background 1.6s ease, filter 1.6s ease');
+  let last = '';
+  function paint(c) {
+    const key = JSON.stringify(c); if (key === last) return; last = key;
+    const inner = f.style.boxShadow.split('inset')[1] ? 'inset' + f.style.boxShadow.split('inset')[1] : 'inset 0 0 18px rgba(20,4,15,.35)';
+    f.style.borderColor = c.pink;
+    document.documentElement.style.setProperty('--tbg', c.pink);
+    f.style.boxShadow = P.has('fit') ? inner : '0 0 22px 2px ' + c.pink + ', ' + inner;
+    document.documentElement.style.setProperty('--mint', c.mint);
+    if (c.plum) document.documentElement.style.setProperty('--plum', c.plum);
+    s2.style.background = c.mint; s2.style.filter = `drop-shadow(0 0 6px ${c.mint})`;
+    s1.style.background = c.yellow; s1.style.filter = `drop-shadow(0 0 8px ${c.yellow})`;
+  }
+  paint(BASE);
+  // палитру приносит общий опрос из theme.js (один запрос на страницу), своего опроса Глупостанции тут нет
+  if (window.gluTheme) gluTheme.on(j => paint(j.pal ? { pink: j.pal.pink, mint: j.pal.mint, yellow: j.pal.yellow, plum: j.pal.plum }
+                                              : j.color ? { pink: j.color, mint: j.light, yellow: BASE.yellow, plum: BASE.plum } : BASE));
+</script>
+</body>
+</html>

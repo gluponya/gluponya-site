@@ -1,0 +1,363 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<script src="/st/mock_hub.js"></script>
+<title>Чат gluponya</title>
+<link rel="stylesheet" href="/static/hub.css">
+<style>
+  /* Свой чат на экране. OBS: Браузер, URL http://127.0.0.1:8765/static/chat.html, 400×700 (масштабируй в OBS как угодно).
+     Сообщения приходят от бота Глупостанции и уже прошли фильтр. ?preview — шахматный фон и тестовые сообщения. */
+  html, body { margin: 0; height: 100%; overflow: hidden; background: transparent; }
+  body.preview { background: repeating-conic-gradient(#241020 0 25%, #2c1428 0 50%) 0 0/40px 40px; }
+  #list { position: absolute; left: 10px; right: 10px; top: 0; bottom: 10px; display: flex; flex-direction: column; justify-content: flex-end; gap: 8px;
+ }
+  body { -webkit-mask-image: linear-gradient(to bottom, transparent 0, #000 56px); mask-image: linear-gradient(to bottom, transparent 0, #000 56px); }
+  /* .w — обёртка сообщения (её схлопываем, когда модер удалил сообщение) */
+  .w { flex: none; }
+  .m { position: relative; background: color-mix(in srgb, var(--card) 90%, transparent); border-radius: 16px;
+       border: 2px solid color-mix(in srgb, var(--line) 45%, transparent); padding: 9px 12px 10px;
+       box-shadow: 0 6px 16px rgba(20,4,15,.35); color: var(--cream); font: 800 19px/1.3 var(--body);
+       overflow-wrap: anywhere; transform-origin: 0 100%; animation: pop .45s cubic-bezier(.22,1.12,.36,1) both; }
+  @keyframes pop { from { opacity: 0; transform: translateX(-26px) scale(.96); } }
+  .m.out { animation: out .32s ease-in forwards; }
+  /* пачка сразу (открыли страницу, вернулись после паузы) — просто мягко проявляется, без выезда */
+  .w.soft { animation: soft .7s ease both; }
+  @keyframes soft { from { opacity: 0; } }
+  .w.soft .m:not(.vip):not(.out) { animation: none; }
+  .w.soft .m.vip:not(.out) { animation: vipb 4s linear infinite; }
+  @keyframes out { to { opacity: 0; transform: translateX(-20px) scale(.97); } }
+  .h { display: flex; align-items: center; gap: 7px; margin-bottom: 4px; flex-wrap: wrap; }
+  .n { font: 900 23px/1.1 var(--display); letter-spacing: .01em; }
+  /* теги 22.10: крупнее, в ОБС мелкие не читались */
+  .b { font: 900 15px/1 var(--body); text-transform: uppercase; padding: 5px 8px 4px; border-radius: 7px;
+       background: var(--line); color: var(--cream); }
+  .b.title { background: var(--yellow); color: var(--plum); font-size: 16px; transform: rotate(-3deg); box-shadow: 0 2px 0 var(--plum); }
+  .b.broadcaster { background: var(--pink); color: var(--plum); }
+  .b.moderator { background: var(--mint); color: var(--plum); }
+  .b.vip { position: relative; overflow: hidden; color: var(--plum); font-size: 16px; padding: 5px 10px 4px;
+           background: linear-gradient(110deg, var(--yellow), var(--pink), #C59BFF, var(--mint), var(--yellow)) 0 0/300% 100%;
+           box-shadow: 0 0 10px -1px color-mix(in srgb, var(--yellow) 75%, transparent), inset 0 0 0 1.5px rgba(255,248,251,.55);
+           animation: vipbg 3s linear infinite, vipglow 1.6s ease-in-out infinite alternate; }
+  /* блик, который пробегает по плашке */
+  .b.vip::before { content: ""; position: absolute; top: -50%; bottom: -50%; left: -60%; width: 40%;
+                   background: linear-gradient(90deg, transparent, rgba(255,255,255,.85), transparent); transform: skewX(-20deg);
+                   animation: vipshine 2.2s ease-in-out infinite; }
+  @keyframes vipbg { to { background-position: 300% 0; } }
+  @keyframes vipglow { to { box-shadow: 0 0 16px 1px color-mix(in srgb, var(--pink) 80%, transparent), inset 0 0 0 1.5px rgba(255,248,251,.8); } }
+  @keyframes vipshine { 0%, 35% { left: -60%; } 75%, 100% { left: 130%; } }
+  .b.subscriber, .b.founder { background: var(--yellow); color: var(--plum); }
+  .b.first { background: var(--mint); color: var(--plum); }
+  .b.donor { background: var(--pink-hot); color: var(--cream); }
+  .m.donor { border-color: var(--pink); box-shadow: 0 0 16px -2px var(--pink), 0 6px 16px rgba(20,4,15,.35); }
+  .m.sub { border-color: color-mix(in srgb, var(--yellow) 30%, transparent); }
+  /* раскладка 22.10: рамки старых сообщений бледные, ярко обведено только самое новое */
+  .w:last-child .m:not(.vip):not(.donor):not(.bot) { border-color: var(--pink); }
+  /* сообщения Они (22.10): розовая заливка и рамка, чтобы отличались от зрителей */
+  .m.me { background: linear-gradient(135deg, color-mix(in srgb, var(--pink) 42%, var(--card)), color-mix(in srgb, var(--pink-hot) 28%, var(--card)));
+          border-color: var(--pink); box-shadow: 0 0 18px -3px var(--pink), 0 6px 16px rgba(20,4,15,.35); }
+  .m.me .n { color: var(--cream) !important; text-shadow: 0 0 10px color-mix(in srgb, var(--pink) 70%, transparent); }
+  .m.me .b.broadcaster { background: var(--cream); color: var(--plum); }
+  .m.bot { background: color-mix(in srgb, var(--plum) 88%, transparent); font-size: 17px; color: var(--muted); }
+  .m.bot .n { font-size: 16px; }
+  .m.bits { border-color: var(--yellow); }
+  /* VIP: золотая рамка с бегущим бликом и ромбик в углу (цвет — жёлтый из темы, перекрашивается) */
+  .m.vip { border: 2px solid transparent;
+           background: linear-gradient(color-mix(in srgb, var(--card) 94%, transparent), color-mix(in srgb, var(--card) 94%, transparent)) padding-box,
+                       linear-gradient(110deg, var(--yellow), var(--pink), var(--yellow), var(--mint), var(--yellow)) border-box;
+           background-size: 100% 100%, 300% 100%; animation: pop .45s cubic-bezier(.22,1.12,.36,1) both, vipb 4s linear infinite;
+           box-shadow: 0 0 18px -4px var(--yellow), 0 6px 16px rgba(20,4,15,.35); }
+  @keyframes vipb { from { background-position: 0 0, 0 0; } to { background-position: 0 0, 300% 0; } }
+  .m.vip::after { content: "💎"; position: absolute; right: -6px; top: -10px; font-size: 20px; transform: rotate(12deg);
+                  filter: drop-shadow(0 2px 3px rgba(20,4,15,.5)); }
+  .m.vip.out { animation: out .32s ease-in forwards; }
+  .m.vip .n { text-shadow: 0 0 10px color-mix(in srgb, var(--yellow) 60%, transparent); }
+  .em { height: 1.55em; vertical-align: -.42em; margin: 0 1px; }
+  .m.only-emotes .em { height: 2.4em; }
+  /* ===== Скин «Терминал» (07.11): строки консоли с «>», печать слева направо, курсор на последнем сообщении ===== */
+  :root[data-skin="terminal"] .m { border-radius: 3px; border: 1.5px solid color-mix(in srgb, var(--pink) 30%, transparent);
+       background: color-mix(in srgb, var(--plum) 86%, transparent); padding: 7px 11px 8px; font: 700 18px/1.35 var(--body);
+       text-shadow: 0 0 6px color-mix(in srgb, var(--pink) 45%, transparent);
+       box-shadow: 0 0 12px -4px color-mix(in srgb, var(--pink) 60%, transparent); animation: typein .55s steps(22, end) both; }
+  @keyframes typein { from { clip-path: inset(0 100% 0 0); } to { clip-path: inset(0 0 0 0); } }
+  :root[data-skin="terminal"] .m.out { animation: out .32s ease-in forwards; }
+  :root[data-skin="terminal"] .h { margin-bottom: 2px; gap: 6px; }
+  :root[data-skin="terminal"] .h::before { content: ">"; font: 800 20px/1 var(--body); color: var(--mint);
+       text-shadow: 0 0 8px color-mix(in srgb, var(--mint) 70%, transparent); }
+  :root[data-skin="terminal"] .n { font: 400 24px/1 var(--display); letter-spacing: .02em; }
+  :root[data-skin="terminal"] .n::after { content: ":"; color: var(--muted); }
+  :root[data-skin="terminal"] .b { border-radius: 2px; font: 800 13px/1 var(--body); padding: 4px 6px 3px; text-shadow: none; }
+  :root[data-skin="terminal"] .b::before { content: "["; } :root[data-skin="terminal"] .b::after { content: "]"; }
+  :root[data-skin="terminal"] .b.vip::before { content: ""; }
+  :root[data-skin="terminal"] .b.title { transform: none; box-shadow: none; }
+  :root[data-skin="terminal"] .w:last-child .m:not(.vip):not(.donor):not(.bot) { border-color: var(--pink); }
+  :root[data-skin="terminal"] .w:last-child .x::after { content: ""; display: inline-block; width: .55em; height: 1.05em; margin-left: 5px;
+       vertical-align: -.18em; background: var(--mint); box-shadow: 0 0 8px var(--mint); animation: blink 1.05s steps(1) infinite; }
+  @keyframes blink { 50% { opacity: 0; } }
+  :root[data-skin="terminal"] .m.me { background: color-mix(in srgb, var(--pink) 22%, var(--plum)); }
+  :root[data-skin="terminal"] .m.bot { font-size: 16px; color: var(--mint); text-shadow: 0 0 6px color-mix(in srgb, var(--mint) 40%, transparent); }
+  :root[data-skin="terminal"] .m.bot .h::before { content: "$"; color: var(--yellow); }
+  :root[data-skin="terminal"] .m.vip { border-radius: 3px; animation: typein .55s steps(22, end) both, vipb 4s linear infinite; }
+  :root[data-skin="terminal"] .m.vip.out { animation: out .32s ease-in forwards; }
+  :root[data-skin="terminal"] .m.vip::after { content: "★"; color: var(--yellow); font-size: 22px; right: 8px; top: 4px; transform: none;
+       text-shadow: 0 0 8px var(--yellow); filter: none; }
+  @media (prefers-reduced-motion: reduce) { .m, .m.out, .m.vip, .b.vip, .b.vip::before { animation: none; }
+       :root[data-skin="terminal"] .m, :root[data-skin="terminal"] .w:last-child .x::after { animation: none; } }
+  /* ===== Формы оверлея (07.11). Тетрадь: записки на бумаге, имена ручкой от руки, сообщения Они маркером ===== */
+  :root[data-skin="notebook"] .m { background: #fff; border: 2px dashed var(--pen); border-radius: 6px; color: var(--ink);
+       box-shadow: 0 3px 0 color-mix(in srgb, var(--muted) 60%, transparent); }
+  :root[data-skin="notebook"] .w:nth-child(odd) .m { transform: rotate(-.4deg); } :root[data-skin="notebook"] .w:nth-child(even) .m { transform: rotate(.4deg); }
+  :root[data-skin="notebook"] .m .n { color: var(--pen) !important; font: 700 27px/1 var(--hand); font-style: var(--hand-style, italic); text-shadow: none; }
+  :root[data-skin="notebook"] .b { border-radius: 4px; background: var(--ink); color: #fff; box-shadow: none; transform: none; animation: none; }
+  :root[data-skin="notebook"] .m.me { background: color-mix(in srgb, var(--mark) 55%, white); border-color: var(--mark); box-shadow: none; }
+  :root[data-skin="notebook"] .m.me .b.broadcaster, :root[data-skin="polaroid"] .m.me .b.broadcaster, :root[data-skin="receipt"] .m.me .b.broadcaster { background: var(--ink); color: #fff; }
+  :root[data-skin="notebook"] .m.bot { background: var(--paper); color: var(--soft); }
+  :root[data-skin="notebook"] .m.vip { border: 2px dashed var(--mark); background: #fff; animation: pop .45s cubic-bezier(.22,1.12,.36,1) both; box-shadow: none; }
+  :root[data-skin="notebook"] .m.vip::after { content: "★"; color: var(--pen); filter: none; font-size: 24px; }
+  :root[data-skin="notebook"] .m.donor { border-style: solid; box-shadow: 0 0 0 4px color-mix(in srgb, var(--mark) 60%, transparent); }
+  :root[data-skin="notebook"] .w:last-child .m:not(.vip):not(.donor):not(.bot) { border-color: var(--pen); }
+
+  /* Полароид: белые карточки на скотче, лёгкие повороты, имена от руки */
+  :root[data-skin="polaroid"] #list { gap: 14px; }
+  :root[data-skin="polaroid"] .m { background: #fff; border: 0; border-radius: 4px; color: var(--ink); padding: 11px 14px 12px; box-shadow: 0 6px 16px rgba(0,0,0,.2); }
+  :root[data-skin="polaroid"] .w:nth-child(odd) .m { transform: rotate(1.2deg); } :root[data-skin="polaroid"] .w:nth-child(even) .m { transform: rotate(-1.4deg); }
+  :root[data-skin="polaroid"] .m::before { content: ""; position: absolute; left: 36%; top: -8px; width: 28%; height: 16px; background: var(--tape); transform: rotate(-3deg); }
+  :root[data-skin="polaroid"] .w:nth-child(even) .m::before { background: var(--tape2); transform: rotate(3deg); left: 30%; }
+  :root[data-skin="polaroid"] .m .n { color: var(--pen) !important; font: 700 27px/1 var(--hand); font-style: var(--hand-style, italic); text-shadow: none; }
+  :root[data-skin="polaroid"] .b { border-radius: 4px; background: var(--ink); color: #fff; box-shadow: none; transform: none; animation: none; }
+  :root[data-skin="polaroid"] .m.me { background: color-mix(in srgb, var(--pink) 28%, white); box-shadow: 0 6px 16px rgba(0,0,0,.2); }
+  :root[data-skin="polaroid"] .m.bot { background: color-mix(in srgb, var(--muted) 30%, white); color: var(--soft); }
+  :root[data-skin="polaroid"] .m.vip { border: 0; background: #fff; animation: pop .45s cubic-bezier(.22,1.12,.36,1) both; box-shadow: 0 0 0 3px var(--mark), 0 6px 16px rgba(0,0,0,.2); }
+  :root[data-skin="polaroid"] .m.donor { border: 0; box-shadow: 0 0 0 3px var(--pen), 0 6px 16px rgba(0,0,0,.2); }
+  :root[data-skin="polaroid"] .w:last-child .m:not(.vip):not(.donor):not(.bot) { border: 0; }
+
+  /* Кассета VHS: без рамок, строки с ▶, цветной сдвиг, у Они ● REC */
+  :root[data-skin="vhs"] .m { background: none; border: 0; box-shadow: none; padding: 2px 0 5px; color: #fff; font: 700 19px/1.3 var(--body); text-shadow: var(--chroma); }
+  :root[data-skin="vhs"] .h { gap: 8px; margin-bottom: 2px; }
+  :root[data-skin="vhs"] .h::before { content: "▶"; font: 700 14px/1 var(--body); color: var(--yellow); text-shadow: none; }
+  :root[data-skin="vhs"] .m .n { font: 700 20px/1 var(--body); text-transform: uppercase; letter-spacing: .04em; color: var(--yellow) !important; text-shadow: none; }
+  :root[data-skin="vhs"] .b { border-radius: 0; background: none; border: 1.5px solid #fff; color: #fff; font: 700 12px/1 var(--body); padding: 3px 6px; text-shadow: none; box-shadow: none; transform: none; animation: none; }
+  :root[data-skin="vhs"] .m.me .h::before { content: "● REC"; color: var(--pink-hot); animation: blink 1.1s steps(1) infinite; }
+  :root[data-skin="vhs"] .m.bot { background: none; color: var(--muted); font-size: 16px; }
+  :root[data-skin="vhs"] .m.vip { border: 0; background: none; animation: pop .45s cubic-bezier(.22,1.12,.36,1) both; box-shadow: none; }
+  :root[data-skin="vhs"] .m.vip::after { content: "★"; color: var(--yellow); right: 4px; top: 0; transform: none; filter: none; font-size: 20px; }
+  :root[data-skin="vhs"] .m.donor { border: 0; border-left: 4px solid var(--pink-hot); padding-left: 10px; box-shadow: none; }
+  :root[data-skin="vhs"] .w:last-child .m:not(.vip):not(.donor):not(.bot) { border: 0; }
+
+  /* Чек из магазина: весь чат как кассовая лента с зубчатым низом и шапкой магазина, строки через пунктир */
+  :root[data-skin="receipt"] body { -webkit-mask-image: none; mask-image: none; }
+  :root[data-skin="receipt"] #list { --cut: 46px; left: 0; right: 0; bottom: 0; top: auto; max-height: 100%; overflow: hidden; gap: 0; background: var(--paper); padding: 50px 14px 22px; -webkit-mask: var(--zig); mask: var(--zig); }
+  /* шапка на собственной бумаге и поверх сообщений: при переполнении ленты верхние строки уходят под неё, а не сквозь неё */
+  :root[data-skin="receipt"] #list::before { content: "ГЛУПОМАРКЕТ        ЧЕК"; position: absolute; left: 0; right: 0; top: 0; height: 44px; box-sizing: border-box; z-index: 2;
+       margin: 0 14px; padding: 14px 0 7px; background: var(--paper); box-shadow: 0 -14px 0 14px var(--paper);
+       border-bottom: 2px dashed var(--ink); color: var(--ink); font: 700 16px/1 var(--body); letter-spacing: .08em; white-space: pre; }
+  :root[data-skin="receipt"] .m { background: none; border: 0; border-radius: 0; box-shadow: none; padding: 7px 0 8px; border-bottom: 1px dotted #999;
+       color: var(--ink); font: 700 18px/1.3 var(--body); }
+  :root[data-skin="receipt"] .m .n { color: var(--pen) !important; font: 700 18px/1 var(--body); text-transform: uppercase; letter-spacing: .04em; text-shadow: none; }
+  :root[data-skin="receipt"] .b { border-radius: 0; background: var(--ink); color: #fff; font: 700 12px/1 var(--body); padding: 3px 6px; box-shadow: none; transform: none; animation: none; }
+  :root[data-skin="receipt"] .m.me { background: color-mix(in srgb, var(--mark) 40%, white); box-shadow: none; }
+  :root[data-skin="receipt"] .m.bot { background: none; color: var(--soft); font-size: 16px; }
+  :root[data-skin="receipt"] .m.vip { border: 0; border-bottom: 1px dotted #999; background: none; animation: pop .45s cubic-bezier(.22,1.12,.36,1) both; box-shadow: none; }
+  :root[data-skin="receipt"] .m.vip::after { content: "★"; color: var(--ink); right: 4px; top: 4px; transform: none; filter: none; font-size: 18px; }
+  :root[data-skin="receipt"] .m.donor { border: 0; border-bottom: 1px dotted #999; background: color-mix(in srgb, var(--pink) 25%, white); box-shadow: none; }
+  :root[data-skin="receipt"] .w:last-child .m:not(.vip):not(.donor):not(.bot) { border-color: #999; }
+</style>
+<script src="/static/theme.js"></script>
+</head>
+<body>
+<div id="list"></div>
+<script>
+(() => {
+  const P = new URLSearchParams(location.search);
+  const list = document.getElementById('list');
+  const esc = s => String(s ?? '').replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
+  const BADGE = { broadcaster: '👑 стримерка', moderator: '🗡 модер', vip: '💎 vip', subscriber: '★ саб', founder: '★ саб', partner: '✔', staff: 'twitch' };
+  let stv = Object.create(null), stvRoom = '';   // без прототипа: слова вроде «constructor» не считаются смайлами
+
+  // 7TV: смайлы канала + глобальные (картинки с cdn.7tv.app)
+  async function load7tv(room) {
+    if (!room || room === stvRoom) return;
+    stvRoom = room;
+    const add = set => (set && set.emotes || []).forEach(e => {
+      const h = e.data && e.data.host; if (!h || !h.url) return;
+      stv[e.name] = 'https:' + h.url + '/2x.webp';
+    });
+    try { add(await (await fetch('https://7tv.io/v3/emote-sets/global')).json()); } catch (e) {}
+    try { const u = await (await fetch('https://7tv.io/v3/users/twitch/' + encodeURIComponent(room))).json(); add(u.emote_set); } catch (e) {}
+  }
+
+  // светлее, если ник слишком тёмный на тёмной карточке
+  function nameColor(c) {
+    if (!/^#[0-9a-f]{6}$/i.test(c || '')) return 'var(--pink)';
+    const n = parseInt(c.slice(1), 16), r = n >> 16, g = (n >> 8) & 255, b = n & 255;
+    const L = (0.2126 * r + 0.7152 * g + 0.0722 * b) / 255;
+    if (L >= .5) return c;
+    const k = (.62 - L) / (1 - L);
+    return `rgb(${Math.round(r + (255 - r) * k)},${Math.round(g + (255 - g) * k)},${Math.round(b + (255 - b) * k)})`;
+  }
+
+  function body(parts) {
+    let html = '', words = 0, emos = 0;
+    for (const p of parts) {
+      if (p.e) { html += `<img class="em" src="${esc(p.e)}" alt="${esc(p.n)}">`; emos++; continue; }
+      html += String(p.t).split(/(\s+)/).map(w => {
+        if (stv[w]) { emos++; return `<img class="em" src="${esc(stv[w])}" alt="${esc(w)}">`; }
+        if (w.trim()) words++;
+        return esc(w);
+      }).join('');
+    }
+    return { html, onlyEmotes: emos > 0 && words === 0 };
+  }
+
+  function node(m) {
+    const d = document.createElement('div');
+    const cls = ['m'];
+    if (m.donor) cls.push('donor');
+    if (m.badges.includes('subscriber') || m.badges.includes('founder')) cls.push('sub');
+    if (m.badges.includes('vip') && !m.bot) cls.push('vip');
+    const me = m.badges.includes('broadcaster') && !m.bot;
+    if (me) cls.push('me');
+    // у стримера не показываем «саб»/«фаундер» — и так понятно, чей канал
+    if (me) m = { ...m, badges: m.badges.filter(x => x !== 'subscriber' && x !== 'founder') };
+    if (m.bot) cls.push('bot');
+    if (m.bits) cls.push('bits');
+    const b = body(m.parts);
+    if (b.onlyEmotes) cls.push('only-emotes');
+    d.className = cls.join(' ');
+    d.dataset.id = m.id; d.dataset.t = m.t;
+    const badges = (m.bot ? ['<span class="b">🤖 бот</span>'] : m.badges.map(x => `<span class="b ${esc(x)}">${esc(BADGE[x] || x)}</span>`))
+      .concat(m.donor ? ['<span class="b donor">💜 донатер</span>'] : [])
+      .concat(m.first ? ['<span class="b first">👋 впервые</span>'] : [])
+      .concat(m.title ? [`<span class="b title">${esc(m.title)}</span>`] : [])
+      .concat(m.bits ? [`<span class="b subscriber">💎 ${m.bits}</span>`] : []);
+    d.innerHTML = `<div class="h"><span class="n" style="color:${nameColor(m.color)}">${esc(m.name)}</span>${badges.join('')}</div><div class="x">${b.html}</div>`;
+    return d;
+  }
+
+  const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  // В DOM только добавляем новые сообщения, старые не пересоздаём и не трогаем.
+  // Сдвиг вверх — одной анимацией всего списка: он стартует ниже на высоту новых сообщений и доезжает на место.
+  function listY() {
+    const t = getComputedStyle(list).transform;
+    return t && t !== 'none' ? new DOMMatrixReadOnly(t).m42 : 0;
+  }
+  function slideUp(px) {
+    if (reduce || !px) return;
+    const y = listY() + px;                 // если прошлая анимация ещё едет — продолжаем с текущего места
+    list.style.transition = 'none';
+    list.style.transform = `translateY(${y}px)`;
+    list.offsetHeight;
+    list.style.transition = 'transform .45s cubic-bezier(.22,1,.36,1)';
+    list.style.transform = 'translateY(0)';
+  }
+
+  function wrap(m) {
+    const w = document.createElement('div');
+    w.className = 'w'; w.dataset.id = m.id; w.dataset.t = m.t; w.dataset.ts = m.ts || m.t || 0; if (m.bot) w.dataset.bot = '1';
+    w.appendChild(node(m));
+    return w;
+  }
+
+  // ждём смайлы (до 0,6 с), чтобы сообщение не меняло высоту уже на экране
+  function ready(w) {
+    const imgs = [...w.querySelectorAll('img')].filter(i => !i.complete);
+    if (!imgs.length) return Promise.resolve();
+    return Promise.race([
+      Promise.all(imgs.map(i => new Promise(r => { i.addEventListener('load', r, { once: true }); i.addEventListener('error', r, { once: true }); }))),
+      new Promise(r => setTimeout(r, 600)),
+    ]);
+  }
+
+  // id всех сообщений, которые уже были на экране: второй раз их не показываем никогда
+  // (иначе после удаления модером/таймаута старые сообщения снова попадают в последние 12 и всплывают)
+  const seen = new Set();
+  const markSeen = id => { seen.add(id); if (seen.size > 1000) seen.delete(seen.values().next().value); };
+  let first = true;
+  function remove(w, local) {
+    if (w.dataset.gone) return;
+    w.dataset.gone = '1';
+    if (w.firstElementChild) w.firstElementChild.classList.add('out');
+    setTimeout(() => {
+      // ушло за верх — просто убираем; удалено модером посередине — схлопываем по высоте, без прыжка соседей
+      if (reduce || w.getBoundingClientRect().bottom <= 0) return w.remove();
+      w.style.height = w.offsetHeight + 'px'; w.style.overflow = 'hidden';
+      w.offsetHeight;
+      w.style.transition = 'height .3s ease, margin .3s ease';
+      w.style.height = '0px'; w.style.marginTop = '-8px';
+      setTimeout(() => w.remove(), 320);
+    }, reduce ? 0 : 330);
+  }
+
+  let v = -1, fade = 0, botFade = 0, page = 0;   // page: версия файла страницы, новая — перезагружаемся   // botFade: ответы бота уходят сами, даже когда чат стоит
+  async function render(msgs, goneIds) {
+    // Убираем только то, что модер удалил или забанили. Если Глупостанция перезапустилась и прислала пустой список,
+    // экран не чистим: старые сообщения спокойно уезжают вверх, когда приходят новые.
+    const goneSet = new Set(goneIds || []);
+    [...list.children].forEach(w => { if (goneSet.has(w.dataset.id)) remove(w); });
+    const have = new Set([...list.children].map(w => w.dataset.id));
+    // при открытии страницы (перезапуск Глупостанции, обновление в OBS) — только свежее, за последние 2 минуты
+    const now = Date.now() / 1000;
+    const fresh = msgs.filter(m => !have.has(m.id) && !seen.has(m.id) && !goneSet.has(m.id) && (!first || now - (+m.t || 0) < 120)).map(wrap);
+    const opening = first, batch = first || fresh.length > 3;
+    first = false;
+    fresh.forEach(w => markSeen(w.dataset.id));
+    if (!fresh.length) return;
+    await Promise.all(fresh.map(ready));
+    // по порядку прихода; обычно это просто конец списка
+    let px = 0;
+    fresh.forEach(w => {
+      const after = [...list.children].find(x => !x.dataset.gone && +x.dataset.ts > +w.dataset.ts);
+      list.insertBefore(w, after || null);
+    });
+    if (batch) fresh.forEach(w => w.classList.add('soft'));
+    if (opening) return;                    // при открытии сдвигать нечего
+    fresh.forEach(w => { px += w.offsetHeight + 8; });
+    slideUp(px);
+  }
+  // запрос не висит дольше 4 с, иначе опрос встанет навсегда (AbortSignal.timeout есть не во всех версиях OBS)
+  const T = ms => { if (window.AbortSignal && AbortSignal.timeout) return AbortSignal.timeout(ms);
+                    const c = new AbortController(); setTimeout(() => c.abort(), ms); return c.signal; };
+  // верх самого верхнего сообщения на странице (без учёта анимации сдвига); пусто — вся высота.
+  // Глупостанция отдаёт его компактному плану: тот стоит раскрытым, пока не залезает на сообщения.
+  function msgTop() {
+    const w = [...list.children].find(x => !x.dataset.gone);
+    return Math.round(w ? Math.max(0, list.offsetTop + w.offsetTop) : innerHeight);
+  }
+  async function poll() {
+    try {
+      const j = await (await fetch('/hub/overlay/chat?v=' + v + '&top=' + msgTop() + '&h=' + innerHeight, { cache: 'no-store', signal: T(4000) })).json();
+      if (j.page && page && j.page !== page) return location.reload();
+      if (j.page) page = j.page;
+      if (!j.same) { v = j.v; fade = +j.fade || 0; botFade = +j.bot_fade || 0; load7tv(j.room); await render(j.msgs || [], j.gone); }
+    } catch (e) {}
+    setTimeout(poll, 700);
+  }
+  setInterval(() => {
+    [...list.children].forEach(w => {
+      const life = w.dataset.bot && botFade > 0 ? (fade > 0 ? Math.min(fade, botFade) : botFade) : fade;
+      if (life > 0 && Date.now() / 1000 - +w.dataset.t > life) remove(w, true);
+    });
+    // всё, что уехало за верх, тихо гаснет (сверху и так мягкое затухание)
+    const kids = [...list.children];
+    // --cut (px) у #list: порог сверху, выше которого сообщения считаются ушедшими (у «Чека» там шапка ленты)
+    const cut = parseFloat(getComputedStyle(list).getPropertyValue('--cut')) || 0;
+    kids.forEach((w, i) => { if (i < kids.length - 1 && w.getBoundingClientRect().top < cut) remove(w, true); });
+  }, 500);
+
+  if (P.has('preview')) {
+    document.body.classList.add('preview');
+    render([
+      { id: 'a', name: 'Advancec', color: '#1E90FF', badges: ['subscriber'], title: '🏆 Чепуха', parts: [{ t: 'Оня, Клод опять сломал холодильник 😂' }], t: Date.now() / 1000 },
+      { id: 'b', name: 'кот_в_тапке', color: '#2E0C24', badges: [], donor: true, parts: [{ t: 'держи на корм Бубуне' }], t: Date.now() / 1000 },
+      { id: 'v', name: 'кот_в_тапке_VIP', color: '#9ACD32', badges: ['vip', 'subscriber'], parts: [{ t: 'ОНЯ ПРИВЕТ!!! я с вкусняшками' }], t: Date.now() / 1000 },
+      { id: 'c', name: 'ModOnya', color: '#00FF7F', badges: ['moderator'], parts: [{ t: 'чат, не спамим ' }, { e: 'https://static-cdn.jtvnw.net/emoticons/v2/25/default/dark/2.0', n: 'Kappa' }], t: Date.now() / 1000 },
+      { id: 'd', name: 'новенький', color: '', badges: [], first: true, parts: [{ t: 'привет! а что за прога?' }], t: Date.now() / 1000 },
+      { id: 'o', name: 'gluponya', color: '#FF7ABE', badges: ['broadcaster', 'subscriber'], parts: [{ t: 'ща починим, не паникуйте' }], t: Date.now() / 1000 },
+      { id: 'e', name: 'gluponya', color: '#FF7ABE', badges: ['broadcaster'], bot: true, parts: [{ t: '🤖 Привет! Это VS Code и Claude 💜' }], t: Date.now() / 1000 },
+    ]);
+  } else if (/^https?:$/.test(location.protocol)) poll();
+})();
+</script>
+</body>
+</html>

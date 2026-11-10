@@ -105,6 +105,7 @@
       <div class="svc"><b>Supabase</b><span class="uk">база даних, вхід, файли</span><span lang="en">database, sign-in, files</span><span class="where eu uk">Ірландія, ЄС</span><span class="where eu" lang="en">Ireland, EU</span></div>
       <div class="svc"><b>OpenRouter, Alibaba Cloud</b><span class="uk">розпізнавання фото (Qwen)</span><span lang="en">reading photos (Qwen)</span><span class="where far uk">США, Китай</span><span class="where far" lang="en">USA, China</span></div>
       <div class="svc"><b>Expo, Apple, Google</b><span class="uk">push-сповіщення</span><span lang="en">push notifications</span><span class="where far uk">США</span><span class="where far" lang="en">USA</span></div>
+      <div class="svc"><b>Apple</b><span class="uk">вхід через Apple на iPhone</span><span lang="en">Sign in with Apple on iPhone</span><span class="where far uk">США</span><span class="where far" lang="en">USA</span></div>
       <div class="svc"><b>Google</b><span class="uk">вхід через Google на Android</span><span lang="en">Google sign-in on Android</span><span class="where far uk">США</span><span class="where far" lang="en">USA</span></div>
       <div class="svc"><b>Open Food Facts, DeepL</b><span class="uk">товар за штрихкодом і переклад</span><span lang="en">barcode lookup and translation</span><span class="where eu uk">ЄС</span><span class="where eu" lang="en">EU</span></div>
       <div class="svc"><b>RevenueCat, Apple, Google</b><span class="uk">оплата й перевірка підписки</span><span lang="en">payment and subscription checks</span><span class="where far uk">США</span><span class="where far" lang="en">USA</span></div>
@@ -167,9 +168,10 @@
 
     <section id="account">
       <h2>З акаунтом</h2>
-      <p>Якщо ти входиш (кодом на пошту або через Google на Android), ми зберігаємо на сервері:</p>
+      <p>Якщо ти входиш (кодом на пошту, через Apple на iPhone або через Google на Android), ми зберігаємо на сервері:</p>
       <ul>
         <li>адресу пошти та, якщо входиш через Google, ідентифікатор акаунта Google;</li>
+        <li>якщо входиш через Apple: ідентифікатор акаунта Apple, адресу пошти, яку передає Apple (справжню або приховану, як ти обереш), імʼя, якщо ти ним ділишся, і токен Apple, потрібний лише для того, щоб відкликати вхід під час видалення акаунта;</li>
         <li>імʼя й аватар, які ти вказуєш у профілі;</li>
         <li>вміст холодильників: продукти, кількість, дати, місця на полицях, історію (зʼїли, викинули) і статистику;</li>
         <li>учасників спільних холодильників і коди запрошень;</li>
@@ -220,6 +222,7 @@
         <tr><td>Supabase (сервери в Ірландії, ЄС)</td><td>база даних, вхід, зберігання файлів</td></tr>
         <tr><td>OpenRouter, Alibaba Cloud (Qwen)</td><td>розпізнавання фото</td></tr>
         <tr><td>Expo (Expo Push Service), Apple, Google (FCM)</td><td>push-сповіщення</td></tr>
+        <tr><td>Apple</td><td>вхід через Apple (iPhone)</td></tr>
         <tr><td>Google</td><td>вхід через Google (Android)</td></tr>
         <tr><td>Open Food Facts, DeepL</td><td>пошук і переклад товарів за штрихкодом</td></tr>
         <tr><td>RevenueCat, Apple, Google</td><td>оплата й перевірка підписки</td></tr>
@@ -231,7 +234,7 @@
 
     <section id="delete">
       <h2>Як довго і як видалити</h2>
-      <p>Дані зберігаються, доки існує твій акаунт. Видалити акаунт можна в застосунку: «Налаштування» → «Я» → «Видалити акаунт». Тоді профіль, холодильники, яких більше ніхто не використовує, токени сповіщень, відгуки й адреса в списку учасників «Каталогу» видаляються з сервера. Копії відгуків у Telegram і листування поштою видаляються на запит. Сторінки товарів, які ти додав(-ла) до спільного каталогу, лишаються без привʼязки до тебе. Дані на телефоні видаляються разом із застосунком.</p>
+      <p>Дані зберігаються, доки існує твій акаунт. Видалити акаунт можна в застосунку: «Налаштування» → «Я» → «Видалити акаунт». Тоді профіль, холодильники, яких більше ніхто не використовує, токени сповіщень, відгуки й адреса в списку учасників «Каталогу» видаляються з сервера. Якщо ти входив(-ла) через Apple, ми відкликаємо вхід в Apple і видаляємо його токен. Копії відгуків у Telegram і листування поштою видаляються на запит. Сторінки товарів, які ти додав(-ла) до спільного каталогу, лишаються без привʼязки до тебе. Дані на телефоні видаляються разом із застосунком.</p>
       <p>Також можна написати на <a href="mailto:hello@gluponya.tv">hello@gluponya.tv</a>, щоб отримати копію своїх даних або видалити їх. Відгуки без акаунта зберігаються, доки потрібні, щоб відповісти й виправити те, про що в них ідеться. Щоб видалити їх раніше, напиши на цю ж пошту.</p>
     </section>
 
@@ -281,9 +284,10 @@
 
     <section id="en-account">
       <h2>With an account</h2>
-      <p>If you sign in (with an email code, or with Google on Android), we store on our server:</p>
+      <p>If you sign in (with an email code, with Apple on iPhone, or with Google on Android), we store on our server:</p>
       <ul>
         <li>your email address and, for Google sign-in, your Google account identifier;</li>
+        <li>for Sign in with Apple: your Apple account identifier, the email address Apple passes on (your real one or a hidden one, as you choose), your name if you share it, and an Apple token needed only to revoke the sign-in when you delete your account;</li>
         <li>the name and avatar you set in your profile;</li>
         <li>the contents of your fridges: food, amounts, dates, places on shelves, history (eaten, thrown out) and statistics;</li>
         <li>the members of shared fridges and invite codes;</li>
@@ -334,6 +338,7 @@
         <tr><td>Supabase (servers in Ireland, EU)</td><td>database, sign-in, file storage</td></tr>
         <tr><td>OpenRouter, Alibaba Cloud (Qwen)</td><td>reading photos</td></tr>
         <tr><td>Expo (Expo Push Service), Apple, Google (FCM)</td><td>push notifications</td></tr>
+        <tr><td>Apple</td><td>Sign in with Apple (iPhone)</td></tr>
         <tr><td>Google</td><td>Google sign-in (Android)</td></tr>
         <tr><td>Open Food Facts, DeepL</td><td>barcode lookup and translation</td></tr>
         <tr><td>RevenueCat, Apple, Google</td><td>payment and subscription checks</td></tr>
@@ -345,7 +350,7 @@
 
     <section id="en-delete">
       <h2>Retention and deletion</h2>
-      <p>Data is kept while your account exists. You can delete your account in the app: Settings → Me → “Delete account” («Налаштування» → «Я» → «Видалити акаунт»). Your profile, fridges no one else uses, notification tokens, feedback and your address on the list of Catalogue members are then deleted from the server. Copies of feedback in Telegram and email correspondence are deleted on request. Product pages you added to the shared catalogue stay, no longer linked to you. Data on your phone is removed with the app.</p>
+      <p>Data is kept while your account exists. You can delete your account in the app: Settings → Me → “Delete account” («Налаштування» → «Я» → «Видалити акаунт»). Your profile, fridges no one else uses, notification tokens, feedback and your address on the list of Catalogue members are then deleted from the server. If you signed in with Apple, we revoke that sign-in at Apple and delete its token. Copies of feedback in Telegram and email correspondence are deleted on request. Product pages you added to the shared catalogue stay, no longer linked to you. Data on your phone is removed with the app.</p>
       <p>You can also write to <a href="mailto:hello@gluponya.tv">hello@gluponya.tv</a> for a copy of your data or to have it deleted. Feedback sent without an account is kept for as long as it is needed to reply and to fix what it is about. To have it deleted sooner, write to the same address.</p>
     </section>
 

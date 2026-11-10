@@ -52,15 +52,15 @@
     </div>
     <div class="card">
       <h3><img src="/freshka/img/ui-start-join.webp" alt=""><span class="uk">На сервері, якщо ввійшов</span><span lang="en">On the server if signed in</span></h3>
-      <div class="list uk"><span class="chip">пошта</span><span class="chip">імʼя й аватар</span><span class="chip">вміст холодильників</span><span class="chip">учасники й коди</span><span class="chip">мова, часовий пояс</span><span class="chip">час нагадування</span><span class="chip">push-токен</span><span class="chip">стан підписки</span></div>
-      <div class="list" lang="en"><span class="chip">email</span><span class="chip">name and avatar</span><span class="chip">fridge contents</span><span class="chip">members and codes</span><span class="chip">language, time zone</span><span class="chip">reminder time</span><span class="chip">push token</span><span class="chip">subscription status</span></div>
+      <div class="list uk"><span class="chip">пошта</span><span class="chip">імʼя й аватар</span><span class="chip">вміст холодильників</span><span class="chip">учасники й коди</span><span class="chip">мова, часовий пояс</span><span class="chip">час нагадування</span><span class="chip">push-токен</span><span class="chip">стан підписки</span><span class="chip">скриншот у відгуку</span><span class="chip">фото упаковки для каталогу</span><span class="chip">адреса, з якої йде запит</span><span class="chip">ідентифікатор пристрою у відгуку</span></div>
+      <div class="list" lang="en"><span class="chip">email</span><span class="chip">name and avatar</span><span class="chip">fridge contents</span><span class="chip">members and codes</span><span class="chip">language, time zone</span><span class="chip">reminder time</span><span class="chip">push token</span><span class="chip">subscription status</span><span class="chip">screenshot in feedback</span><span class="chip">pack photo for the catalogue</span><span class="chip">the address a request comes from</span><span class="chip">device ID in feedback</span></div>
       <p class="foot uk">Щоб холодильник був на кількох телефонах і приходили нагадування</p>
       <p class="foot" lang="en">So the fridge works on several phones and reminders arrive</p>
     </div>
     <div class="card never">
       <h3><img src="/freshka/img/ui-no-picture.webp" alt=""><span class="uk">Ніколи</span><span lang="en">Never</span></h3>
-      <div class="list uk"><span class="chip">реклама</span><span class="chip">трекери</span><span class="chip">аналітика</span><span class="chip">продаж даних</span><span class="chip">дані картки</span><span class="chip">фото в архіві</span></div>
-      <div class="list" lang="en"><span class="chip">ads</span><span class="chip">trackers</span><span class="chip">analytics</span><span class="chip">selling data</span><span class="chip">card details</span><span class="chip">stored photos</span></div>
+      <div class="list uk"><span class="chip">реклама</span><span class="chip">трекери</span><span class="chip">аналітика</span><span class="chip">продаж даних</span><span class="chip">дані картки</span><span class="chip">зберігання фото, які читає ШІ</span></div>
+      <div class="list" lang="en"><span class="chip">ads</span><span class="chip">trackers</span><span class="chip">analytics</span><span class="chip">selling data</span><span class="chip">card details</span><span class="chip">storing photos read by AI</span></div>
       <p class="foot uk">Оплату приймає App Store чи Google Play, ми бачимо лише факт підписки</p>
       <p class="foot" lang="en">Payment is taken by the App Store or Google Play, we only see that you subscribed</p>
     </div>
@@ -118,8 +118,8 @@
       <h3 class="uk">Видалити все</h3>
       <h3 lang="en">Delete everything</h3>
       <p><span class="path"><b class="uk">Налаштування</b><b lang="en">Settings</b><i>→</i><b class="uk">Я</b><b lang="en">Me</b><i>→</i><b class="uk">Видалити акаунт</b><b lang="en">Delete account</b></span></p>
-      <p class="uk">Профіль, холодильники, яких більше ніхто не використовує, токени й відгуки зникають із сервера. Холодильник на телефоні лишається</p>
-      <p lang="en">Your profile, fridges no one else uses, tokens and feedback are removed from the server. The fridge on your phone stays</p>
+      <p class="uk">Профіль, холодильники, яких більше ніхто не використовує, токени й відгуки зникають із сервера. Холодильник на телефоні теж очищається</p>
+      <p lang="en">Your profile, fridges no one else uses, tokens and feedback are removed from the server. The fridge on your phone is cleared too</p>
     </div>
     <div class="card">
       <h3 class="uk">Отримати копію чи спитати</h3>
@@ -200,12 +200,12 @@
 
     <section id="barcode">
       <h2>Пошук за штрихкодом</h2>
-      <p>Відсканований штрихкод надсилається на наш сервер. Якщо товару немає в каталозі, сервер шукає його в Open Food Facts і перекладає назву через DeepL. Передається лише штрихкод і назва товару.</p>
+      <p>Відсканований штрихкод надсилається на наш сервер. Якщо товару немає в каталозі, сервер шукає його в Open Food Facts і перекладає назву через DeepL. Передається лише штрихкод і назва товару. Адреса, з якої прийшов запит, зберігається ненадовго, щоб обмежити зловживання.</p>
     </section>
 
     <section id="feedback">
       <h2>Відгуки</h2>
-      <p>Якщо ти пишеш нам через «Написати нам», ми отримуємо текст, а також пошту для відповіді, знімок екрана й дані про телефон (модель, система, версія застосунку, мова), якщо ти їх додаєш. Повідомлення надходить розробнику в Telegram, а відповідь надсилається поштою.</p>
+      <p>Якщо ти пишеш нам через «Написати нам», ми отримуємо текст, а також пошту для відповіді, знімок екрана й дані про телефон (модель, система, версія застосунку, мова), якщо ти їх додаєш. Разом із листом надсилається випадковий ідентифікатор пристрою, який застосунок створює сам, а адреса, з якої прийшов запит, зберігається ненадовго, щоб обмежити зловживання. Скриншот зберігається на сервері, доки відгук не видалено. Повідомлення надходить розробнику в Telegram, а відповідь надсилається поштою.</p>
     </section>
 
     <section id="pay">
@@ -314,12 +314,12 @@
 
     <section id="en-barcode">
       <h2>Barcode lookup</h2>
-      <p>A scanned barcode is sent to our server. If the product is not in the catalogue, the server looks it up on Open Food Facts and translates its name with DeepL. Only the barcode and the product name are sent.</p>
+      <p>A scanned barcode is sent to our server. If the product is not in the catalogue, the server looks it up on Open Food Facts and translates its name with DeepL. Only the barcode and the product name are sent. The address the request came from is kept briefly, to limit abuse.</p>
     </section>
 
     <section id="en-feedback">
       <h2>Feedback</h2>
-      <p>If you write to us through “Contact us” («Написати нам»), we receive the text, plus a reply email, a screenshot and phone details (model, system, app version, language) if you add them. The message reaches the developer in Telegram; the reply is sent by email.</p>
+      <p>If you write to us through “Contact us” («Написати нам»), we receive the text, plus a reply email, a screenshot and phone details (model, system, app version, language) if you add them. A random device identifier, which the app makes up itself, is sent with the letter, and the address the request came from is kept briefly, to limit abuse. The screenshot is stored on the server until the feedback is deleted. The message reaches the developer in Telegram; the reply is sent by email.</p>
     </section>
 
     <section id="en-pay">

@@ -1,0 +1,1892 @@
+<!doctype html>
+<html lang="uk">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Грошик</title>
+<meta name="description" content="Грошик рахує, скільки можна витратити сьогодні, щоб вистачило до зарплати.">
+<link rel="icon" href="img/mascot.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Onest:wght@400;500;700&family=Unbounded:wght@600;800&display=swap">
+<style>
+/* Лендинг Грошика. Общая часть: токены, типографика, общие детали.
+   Экраны лежат в sections/sN.css, каждый селектор там начинается с .sN */
+:root{
+  /* страница всегда тёмная: светлую тему убрали по решению Ани 12.11, тема зрителя не учитывается */
+  --bg:#000000; --card:#0E0E0E; --fg:#FFF6E5; --muted:#B3AC9F;
+  --c1:#F6CB3C; --c2:#F46A93; --c3:#9186F2; --c4:#46B960; --c5:#F5843B;
+  --ink:#121212; --paper:#FFF6E5; color-scheme:dark;
+  --b:2.5px solid var(--fg); --sh:4px 4px 0 var(--fg);
+  --bi:2.5px solid var(--ink); --shi:4px 4px 0 var(--ink);
+  --display:"Unbounded","Arial Black",sans-serif; --text:"Onest","Segoe UI",Arial,sans-serif;
+  --r:20px; --r-s:12px;
+}
+
+*{box-sizing:border-box}
+/* ширина страницы никогда не больше окна. clip стоит и на html, и на body: значение html уходит окну,
+   а body тогда режет сам (одно body отдаёт своё значение окну и само ничего не режет, а iOS такое окно
+   всё равно двигает пальцем вбок). clip, а не hidden: hidden на body сломал бы position:sticky на экране 3 */
+html{scroll-behavior:smooth;overflow-x:hidden;overflow-x:clip}
+body{margin:0;background:var(--bg);color:var(--fg);font:400 17px/1.5 var(--text);
+  padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));
+  padding-block:0 96px;overflow-x:clip}
+h1,h2,h3{font-family:var(--display);letter-spacing:0;margin:0;text-wrap:balance}
+h1{font-size:clamp(34px,6.4vw,64px);line-height:1.05;font-weight:800}
+h2{font-size:clamp(28px,5vw,48px);line-height:1.08;font-weight:800}
+h3{font-size:18px;line-height:1.25;font-weight:600}
+p{margin:0;max-width:60ch}
+.lead{font-size:clamp(18px,2.2vw,21px)}
+button{font:inherit;color:inherit}
+button:focus-visible,input:focus-visible,a:focus-visible{outline:3px solid var(--c3);outline-offset:3px}
+img{max-width:100%;display:block}
+
+/* колонка и экраны */
+.wrap{max-width:1040px;margin:0 auto;padding-top:clamp(40px,6vw,72px);display:flex;flex-direction:column;gap:clamp(56px,9vw,104px)}
+.scr{display:flex;flex-direction:column;gap:24px;scroll-margin-top:88px}
+/* цветная сцена: большая карточка с обводкой и жёсткой тенью. Внутри всегда тёмный текст (--ink) */
+.stage{position:relative;color:var(--ink);border:var(--b);border-radius:var(--r);box-shadow:var(--sh);
+  padding:clamp(36px,6vw,64px) clamp(20px,4.5vw,56px) clamp(28px,5vw,56px)}
+.stage.v{background:var(--c3)} .stage.y{background:var(--c1)} .stage.g{background:var(--c4)}
+.stage.o{background:var(--c5)} .stage.p{background:var(--c2)}
+/* бумажная плашка внутри сцены: одинаково светлая в обеих темах */
+.plate{background:var(--paper);color:var(--ink);border:var(--bi);border-radius:var(--r);box-shadow:var(--shi)}
+/* карточка на фоне страницы: меняется с темой */
+.card{background:var(--card);color:var(--fg);border:var(--b);border-radius:var(--r);box-shadow:var(--sh)}
+
+.big{font:800 clamp(44px,8vw,84px)/1 var(--display);font-variant-numeric:tabular-nums;white-space:nowrap}
+.num{font-variant-numeric:tabular-nums;white-space:nowrap}
+
+.badge{display:inline-block;font:700 14px/1 var(--text);padding:7px 11px;border:var(--bi);border-radius:99px;background:var(--c1);color:var(--ink);white-space:nowrap}
+.badge.g{background:var(--c4)} .badge.p{background:var(--c2)} .badge.v{background:var(--c3)} .badge.o{background:var(--c5)}
+.badge.w{background:var(--paper)} .badge.k{background:var(--ink);color:var(--paper)}
+
+/* кнопки. .btn тёмная для цветных сцен, .btn.l светлая */
+.btn{display:inline-flex;align-items:center;gap:10px;text-decoration:none;font:700 16px/1 var(--text);padding:16px 22px;min-height:52px;
+  border:var(--bi);border-radius:99px;background:var(--ink);color:var(--paper);box-shadow:4px 4px 0 var(--paper);cursor:pointer;
+  transition:transform .12s,box-shadow .12s;white-space:nowrap}
+.btn:hover{transform:translate(2px,2px);box-shadow:2px 2px 0 var(--paper)}
+.btn:active{transform:translate(4px,4px);box-shadow:0 0 0 var(--paper)}
+.btn.l{background:var(--paper);color:var(--ink);box-shadow:var(--shi)}
+.btn.l:hover{box-shadow:2px 2px 0 var(--ink)} .btn.l:active{box-shadow:0 0 0 var(--ink)}
+.btn svg{width:20px;height:20px;flex:none}
+
+.chip{font:700 15px/1 var(--text);padding:11px 15px;border:var(--bi);border-radius:99px;background:var(--paper);color:var(--ink);box-shadow:3px 3px 0 var(--ink);white-space:nowrap}
+button.chip{cursor:pointer;min-height:44px;transition:transform .12s,box-shadow .12s}
+button.chip:hover{transform:translate(1px,1px);box-shadow:2px 2px 0 var(--ink)}
+button.chip:active{transform:translate(3px,3px);box-shadow:0 0 0 var(--ink)}
+button.chip.on{background:var(--c4)}
+
+/* шапка */
+.top{position:sticky;top:env(safe-area-inset-top,0px);z-index:20;padding:14px max(16px,calc(50% - 504px));
+  margin-left:calc(-1 * max(16px,env(safe-area-inset-left,0px)));margin-right:calc(-1 * max(16px,env(safe-area-inset-right,0px)));
+  display:flex;align-items:center;justify-content:space-between;gap:12px;background:var(--bg);border-bottom:var(--b)}
+.top .logo{display:flex;align-items:center;gap:10px;font:800 20px/1 var(--display);color:var(--fg);text-decoration:none}
+.top .logo img{width:40px;height:40px}
+.top .r{display:flex;align-items:center;gap:10px}
+.lang{display:flex;border:var(--b);border-radius:99px;overflow:hidden}
+.lang button{border:0;background:transparent;color:var(--fg);font:700 14px/1 var(--text);padding:0 13px;min-height:40px;cursor:pointer}
+.lang button[aria-pressed="true"]{background:var(--fg);color:var(--bg)}
+.top .get{padding:11px 16px;min-height:40px;font-size:14px;box-shadow:none;background:var(--fg);color:var(--bg);border-color:var(--fg)}
+.top .get:hover,.top .get:active{transform:none;box-shadow:none}
+@media (max-width:480px){.top .get{display:none}}
+
+body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset-top,0px);z-index:10;background:var(--bg)}
+
+/* бегущая лента */
+.tape{border-block:var(--b);background:var(--c1);color:var(--ink);overflow:hidden;margin-inline:calc(50% - 50vw);padding-block:12px;transform:rotate(-1.2deg)}
+.tape div{display:flex;gap:36px;width:max-content;font:600 18px/1 var(--display);animation:run 22s linear infinite}
+.tape span{display:flex;gap:36px;align-items:center;white-space:nowrap}
+.tape span::after{content:"";width:16px;height:16px;background:var(--ink);clip-path:polygon(50% 0,62% 38%,100% 50%,62% 62%,50% 100%,38% 62%,0 50%,38% 38%)}
+@keyframes run{to{transform:translateX(-50%)}}
+
+/* Грошик. Позы это готовые картинки из img/, их не перерисовываем и не рисуем в CSS.
+   <span class="gr" data-pose="happy"></span>, ширину задаёт экран. Ставить только на цветную сцену или на .plate */
+.gr{display:block;aspect-ratio:252/264;background:center/contain no-repeat}
+.gr[data-pose="sit"]{background-image:url(img/pose-sit.webp)}
+.gr[data-pose="toss"]{background-image:url(img/pose-toss.webp)}
+.gr[data-pose="happy"]{background-image:url(img/pose-happy.webp)}
+.gr[data-pose="sweat"]{background-image:url(img/pose-sweat.webp)}
+.gr[data-pose="full"]{background-image:url(img/pose-full.webp)}
+.gr[data-pose="jar"]{background-image:url(img/pose-jar.webp)}
+.gr[data-pose="sleep"]{background-image:url(img/pose-sleep.webp)}
+.gr[data-pose="wave"]{background-image:url(img/pose-wave.webp)}
+.gr[data-pose="jump"]{background-image:url(img/pose-jump.webp);aspect-ratio:288/264}
+/* Грошик ест: мягкое сжатие на 4 процента (G.chomp, G.toss). Точка опоры внизу, ноги остаются на месте */
+.gr.chomp{transform-origin:50% 85%;animation:chomp .56s ease-in-out}
+@keyframes chomp{0%{transform:scale(1)}40%{transform:scale(1.04,.96)}100%{transform:scale(1)}}
+
+/* Грошик сидит на верхнем крае плашки: ножки висят, как нарисованы, тело медленно дышит.
+   Дышит вся фигура вместе с ножками (точка опоры на сиденье), поэтому ножки не отрываются.
+   <span class="sit"><b class="ll"></b><b class="lr"></b><i></i></span> внутри position:relative родителя.
+   .sit.paused ставит экран, когда Грошик вне окна */
+.sit{position:absolute;width:197px;aspect-ratio:504/528;right:-32px;top:-146px;z-index:2;pointer-events:none;
+  transform-origin:42% 80%;animation:breathe 3.6s ease-in-out infinite alternate}
+.sit.paused{animation-play-state:paused}
+@keyframes breathe{from{transform:scale(1,1)}to{transform:scale(1.01,1.022)}}
+.sit i,.sit b{position:absolute;inset:0;background:center/100% 100% no-repeat}
+.sit i{background-image:url(img/sit-body.webp);transform-origin:40% 75%}
+.sit i.chomp{animation:chomp .56s ease-in-out}
+.sit .ll{background-image:url(img/sit-legL.webp)}
+.sit .lr{background-image:url(img/sit-legR.webp)}
+
+/* появление при входе в экран: G.reveal ставит .in */
+.rv{opacity:0;transform:translateY(18px);transition:opacity .5s ease,transform .5s cubic-bezier(.2,.9,.3,1.2)}
+.rv.in{opacity:1;transform:none}
+
+/* подвал */
+.foot{display:flex;flex-wrap:wrap;gap:12px 28px;align-items:center;justify-content:space-between;border-top:var(--b);padding-top:24px}
+.foot nav{display:flex;flex-wrap:wrap;gap:8px 24px}
+.foot a{color:var(--fg);font-weight:500;text-underline-offset:4px}
+
+/* без анимации страница стоит на месте и читается целиком */
+@media (prefers-reduced-motion:reduce){
+  html{scroll-behavior:auto}
+  .tape div,.sit,.gr.chomp,.sit i.chomp{animation:none}
+  .rv{opacity:1;transform:none;transition:none}
+}
+:root.still .tape div,:root.still .sit,:root.still .gr.chomp,:root.still .sit i.chomp{animation:none}
+:root.still .rv{opacity:1;transform:none;transition:none}
+
+/* экран 1 */
+.s1 .stage{display:grid;grid-template-columns:minmax(0,1.15fr) minmax(0,1fr);gap:28px 40px;align-items:center;overflow:visible}
+.s1 .l{display:flex;flex-direction:column;gap:20px;align-items:flex-start;min-width:0}
+.s1 .cta{display:flex;flex-wrap:wrap;gap:14px 16px;margin-top:4px}
+.s1 .r{position:relative;justify-self:center;width:min(100%,380px);margin-top:150px}
+.s1 .plate{position:relative;padding:26px 24px 24px;display:flex;flex-direction:column;gap:14px;align-items:flex-start}
+.s1 .plate .badge{min-height:30px}
+.s1 .big .num{display:inline-block}
+.s1 .sit{right:-24px;top:-146px}
+.s1 .fly{position:absolute;left:0;top:0;z-index:3;pointer-events:none;font-variant-numeric:tabular-nums}
+
+@media (max-width:720px){
+  .s1 .stage{grid-template-columns:minmax(0,1fr);gap:0}
+  .s1 .l{gap:16px}
+  .s1 .r{width:100%;margin-top:150px}
+  .s1 .plate{padding:22px 20px 20px;gap:12px}
+  .s1 .sit{right:-34px}
+}
+/* бегущая лента сразу под первым экраном: отступ сверху, чтобы наклонённая лента не задевала тень сцены */
+.s1 .tape{margin-top:clamp(18px,3vw,30px)}
+.s1 .tape div{padding-right:36px}
+
+/* экран 7 */
+.s7{gap:clamp(32px,5vw,48px)}
+.s7 h2{padding-top:clamp(8px,3vw,24px)}
+.s7 .s7-tabs{display:grid;align-items:stretch;grid-template-columns:minmax(0,1fr);gap:28px;padding:8px 6px}
+@media (min-width:1000px){.s7 .s7-tabs{grid-template-columns:repeat(3,minmax(0,1fr));gap:28px;padding:92px 10px 16px}}
+.s7 .s7-tab{position:relative;background:var(--bgc);color:var(--ink);border:var(--b);border-radius:var(--r);box-shadow:var(--sh);padding:28px 22px 26px;
+  display:flex;flex-direction:column;gap:12px;transform:rotate(var(--rot))}
+.s7 .s7-tab h3{font-size:clamp(24px,3.2vw,30px);line-height:1.1;font-weight:800}
+.s7 .s7-tab p{font-size:18px;font-weight:500}
+/* Грошик сидит на верхнем крае первой таблички слева, ножки свисают над её верхним полем.
+   Место под него даёт отступ над всеми табличками, расстояния между табличками одинаковые */
+.s7 .s7-tabs{padding-top:84px}
+.s7 .s7-tab.a{padding-top:44px}
+.s7 .s7-sit{width:120px;right:auto;left:14px;top:-89px}
+@media (min-width:1000px){.s7 .s7-tab h3{font-size:25px}}
+/* в одну колонку на планшете таблички не растягиваются во всю ширину (наклон широкой таблички налезает на соседнюю),
+   а лежат лесенкой: слева, справа, слева */
+@media (max-width:999px){
+  .s7 .s7-tab{width:100%;max-width:580px;justify-self:start}
+  .s7 .s7-tab.b{justify-self:end}
+}
+/* шлёпается на страницу как печать: небольшой разгон сверху, без увеличения за край экрана */
+.s7.arm .s7-tab{opacity:0}
+.s7.arm .s7-tab.in{opacity:1;animation:s7-slam .42s cubic-bezier(.2,.9,.3,1) both}
+@keyframes s7-slam{0%{opacity:0;transform:translateY(-22px) rotate(var(--rot)) scale(1.06);box-shadow:8px 8px 0 var(--fg)}
+  60%{opacity:1;transform:translateY(0) rotate(var(--rot)) scale(.985);box-shadow:2px 2px 0 var(--fg)}
+  100%{opacity:1;transform:rotate(var(--rot));box-shadow:var(--sh)}}
+:root.still .s7 .s7-tab{opacity:1;animation:none}
+@media (prefers-reduced-motion:reduce){.s7 .s7-tab{opacity:1!important;animation:none!important}}
+
+/* экран 2 */
+.s2 .head{display:flex;flex-direction:column;gap:12px}
+/* один путь для глаза: поле, ответ. Обведены только поле ввода и жёлтая плашка ответа */
+.s2 .calc{display:grid;grid-template-columns:minmax(0,1fr);grid-template-areas:"form" "ans" "sw";gap:24px;padding-top:8px}
+@media (min-width:760px){
+  .s2 .calc{grid-template-columns:minmax(0,.9fr) minmax(0,1.1fr);grid-template-areas:"form ans" "sw ans";gap:20px 44px;align-items:start}
+  .s2 .sw{align-self:end}
+}
+.s2 .form{grid-area:form;min-width:0}
+.s2 .pane{display:flex;flex-direction:column;gap:22px}
+.s2 .pane[hidden]{display:none}
+.s2 .two{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:14px;align-items:end}
+.s2 label{display:flex;flex-direction:column;gap:10px;font:600 17px/1.25 var(--text);min-width:0}
+.s2 .inp{position:relative;display:block}
+.s2 input[type="text"]{display:block;width:100%;min-width:0;height:64px;padding:12px 44px 12px 18px;border:var(--b);border-radius:var(--r-s);
+  background:var(--bg);color:var(--fg);font:800 28px/1 var(--display);font-variant-numeric:tabular-nums}
+.s2 #s2-wk{padding-right:18px}
+.s2 .inp span{position:absolute;right:16px;top:50%;transform:translateY(-50%);font:800 22px/1 var(--display);pointer-events:none}
+
+/* процент: тихий ползунок без рамки и тени. Высота 44px под палец, сама дорожка тонкая */
+.s2 .pc span{font-variant-numeric:tabular-nums}
+.s2 input[type="range"]{-webkit-appearance:none;appearance:none;width:100%;height:44px;margin:0;background:transparent;cursor:pointer}
+.s2 input[type="range"]::-webkit-slider-runnable-track{height:6px;border-radius:99px;background:var(--muted)}
+.s2 input[type="range"]::-moz-range-track{height:6px;border-radius:99px;background:var(--muted)}
+.s2 input[type="range"]::-webkit-slider-thumb{-webkit-appearance:none;appearance:none;width:30px;height:30px;margin-top:-12px;border-radius:50%;
+  background:var(--c1);border:var(--bi)}
+.s2 input[type="range"]::-moz-range-thumb{width:26px;height:26px;border-radius:50%;background:var(--c1);border:var(--bi)}
+
+/* ответ: жёлтая плашка, Грошик стоит внутри неё на нижнем крае и держит банку рядом с числом */
+.s2 .ans{grid-area:ans;position:relative;min-width:0;display:flex;flex-direction:column;justify-content:center;gap:8px;
+  min-height:220px;padding:30px 168px 28px 26px;background:var(--c1);color:var(--ink);border:var(--bi);border-radius:var(--r);box-shadow:var(--sh)}
+.s2 .ans .k{font:700 18px/1.25 var(--text)}
+/* размер числа подбирает s2.js: начинает с этого и уменьшает, пока число не влезет */
+.s2 .ans .y{display:block;min-width:0;font:800 clamp(38px,4.6vw,52px)/1.08 var(--display);transform-origin:0 50%}
+.s2 .ans .m{display:block;min-width:0;font:700 18px/1.3 var(--text)}
+.s2 .ans .gr{position:absolute;right:14px;bottom:0;width:148px}
+
+/* второй режим прячется за тихой строкой без рамки, чтобы не плодить плашки */
+.s2 .sw{grid-area:sw;justify-self:start;min-height:44px;padding:8px 0;border:0;background:none;color:var(--fg);cursor:pointer;
+  font:700 17px/1.3 var(--text);text-align:left;text-decoration:underline;text-decoration-thickness:2px;text-underline-offset:5px}
+.s2 .sw:hover{color:var(--c1)}
+
+@media (max-width:720px){
+  .s2 .ans{min-height:184px;padding:24px 118px 22px 18px}
+  .s2 .ans .y{font-size:36px}
+  .s2 .ans .k,.s2 .ans .m{font-size:16px}
+  .s2 .ans .gr{right:8px;width:112px}
+  .s2 input[type="text"]{padding:12px 38px 12px 14px}
+  .s2 .inp span{right:13px}
+}
+
+/* экран 3 */
+/* Экран 3: чат с Грошиком. Нажала заготовку, она ушла сообщением, Грошик ответил новым числом на день.
+   Прежний экран с месяцем по дням лежит в sections/_old_s3 */
+.s3 .s3-st{display:flex;flex-direction:column;gap:clamp(28px,4.5vw,44px);container-type:inline-size;
+  padding:clamp(48px,7vw,76px) clamp(18px,3.5vw,44px) clamp(26px,3.5vw,40px)}
+.s3 .s3-chat{display:flex;flex-direction:column;gap:12px}
+.s3 .s3-chat p{margin:0;max-width:none}
+
+/* Грошик: аватар и тёмный пузырь слева */
+.s3 .s3-g{align-self:flex-start;display:flex;align-items:flex-end;gap:10px;max-width:min(90%,520px)}
+.s3 .s3-g img{flex:none;width:44px;height:44px;border-radius:50%;background:var(--paper);border:var(--bi);object-fit:contain;padding:2px}
+.s3 .s3-g p{padding:13px 18px 14px;background:var(--ink);color:var(--paper);border-radius:20px 20px 20px 6px;font:700 clamp(17px,2.4cqi,20px)/1.3 var(--text)}
+.s3 .s3-g b{font:800 clamp(28px,5.4cqi,38px)/1.1 var(--display);white-space:nowrap;vertical-align:-.06em;font-variant-numeric:tabular-nums}
+
+/* моё сообщение справа. Место под сообщение и ответ занято всегда, чтобы блок не прыгал */
+.s3 .s3-me{display:flex;justify-content:flex-end;align-items:flex-end;min-height:54px;margin-top:10px}
+.s3 .s3-re{display:flex;align-items:flex-end;min-height:72px}
+@container (max-width:560px){.s3 .s3-me{min-height:78px}.s3 .s3-re{min-height:96px}}
+.s3 .s3-m{max-width:min(80%,460px);padding:13px 18px;background:var(--paper);color:var(--ink);border:var(--bi);
+  border-radius:20px 20px 6px 20px;font:700 clamp(17px,2.4cqi,20px)/1.3 var(--text)}
+.s3 .s3-slot{opacity:0;transform:translateY(14px);transition:opacity .4s ease,transform .4s ease}
+.s3 .s3-slot.in{opacity:1;transform:none}
+
+/* заготовки */
+.s3 .s3-opts{display:flex;flex-direction:column;align-items:flex-end;gap:10px;margin-top:6px}
+.s3 .s3-opts button{min-height:48px;padding:12px 18px;background:transparent;color:var(--ink);border:2px dashed var(--ink);
+  border-radius:20px 20px 6px 20px;font:700 clamp(16px,2.3cqi,19px)/1.3 var(--text);text-align:left;cursor:pointer;
+  transition:background-color .15s,opacity .3s}
+.s3 .s3-opts button:hover{background:var(--paper)}
+.s3 .s3-opts button:focus-visible{outline:3px solid var(--ink);outline-offset:3px}
+.s3 .s3-opts button[aria-pressed="true"]{background:transparent;opacity:.35}
+:root.still .s3 .s3-slot,:root.still .s3 .s3-opts button{transition:none}
+
+/* экран 10 */
+/* Экран 10: один день. Утром и днём оплаты телефоном приходят сами (бейдж «Apple Pay»), вечером рынок вносится руками.
+   Перенесён со страницы выбора choices/src6, вариант 5. Форма и строки тут картинка: без теней, наведения и курсора-руки */
+.s10 .s10-st{display:flex;flex-direction:column;gap:clamp(24px,4vw,36px);container-type:inline-size;
+  padding:clamp(48px,7vw,76px) clamp(16px,3.5vw,44px) clamp(24px,3.5vw,40px)}
+.s10 p{margin:0;max-width:none}
+.s10 .s10-sub{font:700 clamp(17px,2.2vw,20px)/1.35 var(--text);margin-top:calc(-1 * clamp(8px,1.6vw,16px))}
+.s10 .num{font-variant-numeric:tabular-nums}
+
+/* шаги: подписи, не кнопки. На узкой сцене три колонки, место под две строки занято всегда */
+.s10 .s10-steps{display:flex;flex-wrap:wrap;gap:10px 26px;margin:0;padding:0;list-style:none;counter-reset:s10st}
+.s10 .s10-steps li{display:flex;align-items:center;gap:10px;font:700 18px/1.1 var(--text);opacity:.5;transition:opacity .3s;counter-increment:s10st}
+.s10 .s10-steps li::before{content:counter(s10st);display:grid;place-items:center;flex:none;width:36px;height:36px;border:var(--bi);border-radius:50%;
+  font:800 15px/1 var(--display);transition:background-color .3s,color .3s}
+.s10 .s10-steps li.on{opacity:1}
+.s10 .s10-steps li.on::before{background:var(--ink);color:var(--paper)}
+@container (max-width:560px){
+  .s10 .s10-steps{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px}
+  .s10 .s10-steps li{flex-direction:column;justify-content:flex-start;gap:8px;min-height:calc(36px + 8px + 2.2em);font-size:16px;text-align:center}
+}
+
+/* раскладка: на телефоне число, день, форма; на широкой день и число слева, форма справа */
+.s10 .s10-k{display:grid;grid-template-columns:minmax(0,1fr);grid-template-areas:"rs" "tl" "fm";gap:20px;align-items:start}
+.s10 .s10-k>*{container-type:inline-size}
+.s10 .s10-rs{grid-area:rs} .s10 .s10-tl{grid-area:tl} .s10 .s10-fm{grid-area:fm}
+@container (min-width:720px){.s10 .s10-k{grid-template-columns:minmax(0,1fr) minmax(0,1fr);grid-template-areas:"tl fm" "rs fm";gap:28px}}
+
+/* бумажные плашки без тени */
+.s10 .s10-rs,.s10 .s10-tl,.s10 .s10-fm{display:flex;flex-direction:column;min-width:0;background:var(--paper);color:var(--ink);border:var(--bi);border-radius:var(--r)}
+.s10 .s10-tl h3,.s10 .s10-fm h3{margin:0;font:800 22px/1.2 var(--display)}
+
+/* ---------- число на сегодня ---------- */
+.s10 .s10-rs{gap:14px;padding:30px 22px 22px}
+.s10 .s10-rt{display:flex;flex-wrap:wrap;align-items:baseline;justify-content:space-between;gap:4px 16px;font:700 17px/1.3 var(--text)}
+.s10 .s10-rt b{font:800 22px/1.1 var(--display)}
+/* большое число: высота строки задана, блок не меняет высоту */
+.s10 .s10-big{display:flex;align-items:baseline;gap:12px;height:66px;white-space:nowrap;font:800 clamp(48px,12cqi,60px)/1 var(--display)}
+.s10 .s10-w{font:800 22px/1 var(--display)}
+.s10 .s10-bar{height:16px;border:var(--bi);border-radius:99px;background:#fff;overflow:hidden}
+.s10 .s10-bar i{display:block;height:100%;width:0;background:var(--ink);transition:width .9s cubic-bezier(.3,.7,.3,1)}
+.s10 .s10-sp{font:700 18px/1.2 var(--text)}
+.s10 .s10-sp b{font:800 20px/1 var(--display)}
+
+/* ---------- траты за день ---------- */
+.s10 .s10-tl{gap:18px;padding:30px 20px 22px}
+.s10 .s10-tl ol{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:12px}
+.s10 .s10-tl li{display:flex;flex-direction:column;gap:6px;min-width:0}
+.s10 .s10-tw{font:800 16px/1.2 var(--display);font-variant-numeric:tabular-nums}
+/* пустое место под трату пунктиром, той же высоты, что и строка */
+.s10 .s10-tr{display:flex;align-items:center;gap:12px;height:62px;min-width:0;padding:0 14px 0 10px;border:2.5px dashed rgba(18,18,18,.35);border-radius:14px;font:600 17px/1.2 var(--text)}
+.s10 .s10-tr.on{border:var(--bi);background:#fff}
+.s10 .s10-tr img{flex:none;width:36px;height:36px}
+.s10 .s10-nm{flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.s10 .s10-sm{flex:none;font:800 18px/1 var(--display);white-space:nowrap}
+.s10 .s10-tr.new{animation:s10in .5s cubic-bezier(.2,.9,.3,1.2)}
+@keyframes s10in{from{opacity:0;transform:translateY(-18px)}to{opacity:1;transform:none}}
+/* бейдж «Apple Pay» под названием, как в приложении; это пометка, без тени */
+.s10 .s10-nm.two{display:flex;flex-direction:column;align-items:flex-start;gap:3px;white-space:normal}
+.s10 .s10-nt{max-width:100%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.s10 .s10-apb{display:inline-block;font:700 13px/1.35 var(--text);padding:1px 9px;border:2px solid var(--ink);border-radius:99px;background:#fff;color:var(--ink);white-space:nowrap}
+
+/* ---------- форма «Новая трата» картинкой ---------- */
+.s10 .s10-fm{gap:18px;padding:30px 20px 22px;cursor:default}
+.s10 .s10-amt{position:relative;display:flex;align-items:baseline;justify-content:center;gap:10px;min-height:84px;padding:16px;border:var(--bi);border-radius:18px;
+  background:var(--c1);color:var(--ink);font:800 40px/1 var(--display);font-variant-numeric:tabular-nums}
+.s10 .s10-cur{font-size:24px}
+.s10 .s10-av.s10-ph{opacity:.4}
+.s10 .s10-caret{display:none;width:3px;height:36px;align-self:center;margin-left:-8px;background:var(--ink);animation:s10blink 1s steps(1) infinite}
+.s10 .s10-amt.typing .s10-caret{display:block}
+@keyframes s10blink{50%{opacity:0}}
+.s10 .s10-desc{display:flex;align-items:center;width:100%;min-height:54px;padding:12px 16px;border:var(--bi);border-radius:14px;background:#fff;color:var(--ink);
+  font:500 17px/1.3 var(--text);white-space:nowrap;overflow:hidden}
+.s10 .s10-desc .s10-ph{color:#5f594e}
+.s10 .s10-cats{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px}
+.s10 .s10-cat{display:flex;flex-direction:column;align-items:center;gap:9px;min-width:0;padding:4px 0;color:var(--ink);font:700 15px/1.2 var(--text)}
+.s10 .s10-cn{max-width:100%;text-align:center;overflow-wrap:anywhere}
+.s10 .s10-sq{position:relative;display:grid;place-items:center;width:66px;height:66px;border:var(--bi);border-radius:16px;background:#fff;transition:background-color .2s}
+.s10 .s10-sq img{width:48px;height:48px}
+.s10 .s10-cat.on .s10-sq{background:var(--c1);outline:3px solid var(--ink);outline-offset:3px}
+.s10 .s10-cat.on .s10-cn{font-weight:800}
+/* «Добавить»: тёмная плашка без тени, не нажимается */
+.s10 .s10-add{position:relative;display:flex;align-items:center;justify-content:center;width:100%;min-height:58px;padding:16px 22px;
+  border:var(--bi);border-radius:99px;background:var(--ink);color:var(--paper);font:700 17px/1 var(--text);white-space:nowrap}
+
+/* касание в показе: кольцо расходится от элемента */
+.s10 .s10-tap::after{content:"";position:absolute;inset:-7px;border:3px solid var(--ink);border-radius:inherit;pointer-events:none;animation:s10tap .6s ease-out forwards}
+@keyframes s10tap{from{opacity:1;transform:scale(.92)}to{opacity:0;transform:scale(1.06)}}
+
+@media (prefers-reduced-motion:reduce){
+  .s10 .s10-sq,.s10 .s10-bar i,.s10 .s10-steps li,.s10 .s10-steps li::before{transition:none}
+  .s10 .s10-tr.new,.s10 .s10-tap::after,.s10 .s10-caret{animation:none}
+}
+:root.still .s10 .s10-sq,:root.still .s10 .s10-bar i,:root.still .s10 .s10-steps li,:root.still .s10 .s10-steps li::before{transition:none}
+:root.still .s10 .s10-tr.new,:root.still .s10 .s10-tap::after,:root.still .s10 .s10-caret{animation:none}
+
+/* экран 4 */
+.s4 .s4-st{display:grid;grid-template-columns:minmax(0,1.05fr) minmax(0,1fr);gap:36px 44px;align-items:end}
+.s4 .s4-l{display:flex;flex-direction:column;gap:16px;min-width:0;align-self:center}
+.s4 .s4-lead{font-weight:500}
+.s4 .s4-sum{display:flex;flex-direction:column;align-items:flex-start;gap:10px;margin-top:8px}
+.s4 .s4-big{font-size:clamp(44px,6.4vw,72px)}
+.s4 .s4-day{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+.s4 .s4-today{font:800 clamp(28px,3.6vw,38px)/1 var(--display);display:inline-block}
+
+/* Грошик стоит на верхней карточке стопки: ступни на её крае (у картинки снизу 5% пустоты) */
+.s4 .s4-r{display:flex;flex-direction:column;align-items:flex-end;min-width:0}
+.s4 .s4-gr{position:relative;z-index:2;width:clamp(150px,16vw,196px);margin:0 clamp(24px,4vw,44px) -9px 0;
+  transition:opacity .35s ease,transform .45s cubic-bezier(.2,.9,.3,1.3)}
+.s4 .s4-r.wait .s4-gr:not(.in){opacity:0;transform:translateY(-28px)}
+
+.s4 .s4-cards{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:0;width:100%}
+.s4 .s4-c{display:flex;align-items:center;justify-content:space-between;gap:14px;padding:16px 18px;
+  transition:transform .5s cubic-bezier(.2,.9,.3,1.2),opacity .35s ease}
+.s4 .s4-c + .s4-c{margin-top:-4px}
+.s4 .s4-c:nth-child(1){transform:rotate(-1.6deg)}
+.s4 .s4-c:nth-child(2){transform:rotate(1.2deg)}
+.s4 .s4-c:nth-child(3){transform:rotate(-.8deg)}
+.s4 .s4-c:nth-child(4){transform:rotate(1.6deg)}
+.s4 .s4-r.wait .s4-c:not(.in){opacity:0;transform:translate(70px,-24px) rotate(8deg)}
+.s4 .s4-ct{display:flex;flex-direction:column;gap:4px;min-width:0}
+.s4 .s4-ct b{font:700 17px/1.25 var(--text)}
+.s4 .s4-ct span{font:500 15px/1.3 var(--text)}
+.s4 .s4-s{flex:none;font:800 17px/1 var(--display);padding:9px 12px;border:var(--bi);border-radius:99px;background:var(--paper);
+  transition:transform .35s cubic-bezier(.2,.9,.3,1.4),background-color .2s,box-shadow .2s}
+.s4 .s4-c.cut .s4-s{background:var(--c2);box-shadow:3px 3px 0 var(--ink);transform:translate(4px,-6px) rotate(6deg)}
+
+@media (max-width:760px){
+  .s4 .s4-st{grid-template-columns:minmax(0,1fr);gap:28px}
+}
+@media (max-width:480px){
+  .s4 .s4-c{padding:14px 14px;gap:10px}
+  .s4 .s4-ct b{font-size:16px}
+  .s4 .s4-ct span{font-size:14px}
+  .s4 .s4-s{font-size:14px;padding:7px 9px}
+}
+
+/* экран 5 */
+.s5 .s5-card{padding:clamp(36px,6vw,64px) clamp(16px,4vw,48px) clamp(24px,4vw,44px);display:flex;flex-direction:column;gap:clamp(28px,4vw,40px)}
+.s5 .s5-head{display:flex;flex-direction:column;gap:24px}
+.s5 .s5-ht{display:flex;flex-direction:column;gap:12px;min-width:0}
+
+/* плашка-приёмник: Грошик стоит на её верхнем крае справа и смотрит, что ему принесли */
+.s5 .s5-plate{position:relative;margin-top:100px;padding:20px 18px 18px;transition:background-color .2s}
+.s5 .s5-gr{position:absolute;right:22px;bottom:calc(100% - 8px);width:112px;z-index:1;pointer-events:none}
+.s5 .s5-plate.arm{outline:3px dashed var(--c1);outline-offset:6px}
+.s5 .s5-plate.arm .s5-slot{border-color:var(--c2);background:color-mix(in srgb,var(--c2) 18%,var(--paper))}
+.s5 .s5-plate.over{background:var(--c1)}
+.s5 .s5-plate.over .s5-slot{background:var(--paper)}
+
+/* все состояния в одной клетке: высота = самое длинное */
+.s5 .s5-say{display:grid;align-items:center}
+.s5 .s5-v{grid-area:1/1;visibility:hidden;opacity:0;transition:opacity .25s ease}
+.s5 .s5-v.on{visibility:visible;opacity:1}
+.s5 .s5-ask{display:flex;align-items:center;gap:14px}
+.s5 .s5-ask b{font:700 18px/1.3 var(--text)}
+.s5 .s5-slot{flex:none;width:64px;height:64px;border:2.5px dashed var(--ink);border-radius:16px;transition:border-color .2s,background-color .2s}
+.s5 .s5-res{display:grid;grid-template-columns:56px minmax(0,1fr);gap:8px 12px;align-items:center}
+.s5 .s5-ri{width:56px;height:56px;display:grid;place-items:center;background:var(--paper);border:var(--bi);border-radius:14px;box-shadow:3px 3px 0 var(--ink)}
+.s5 .s5-ri img{width:44px;height:44px}
+.s5 .s5-rn{display:flex;flex-direction:column;gap:4px;min-width:0}
+.s5 .s5-rn b{font:700 16px/1.25 var(--text)}
+.s5 .s5-rn strong{font:800 18px/1.15 var(--display);white-space:nowrap}
+.s5 .s5-rt{grid-column:1/-1;font:500 17px/1.35 var(--text)}
+
+@media (min-width:820px){
+  .s5 .s5-head{flex-direction:row;align-items:center;justify-content:space-between;gap:28px}
+  .s5 .s5-ht{flex:1 1 auto}
+  .s5 .s5-plate{flex:0 0 470px;margin-top:0;display:grid;grid-template-columns:128px minmax(0,1fr);gap:16px;align-items:end;padding:22px 22px 10px 14px}
+  .s5 .s5-gr{position:static;width:128px}
+  .s5 .s5-say{align-self:center;padding-bottom:12px}
+}
+@media (max-width:380px){.s5 .s5-rn strong{font-size:16px}}
+
+.s5 .s5-list{list-style:none;margin:0;padding:0;display:grid;grid-template-columns:1fr;gap:26px 40px}
+@media (min-width:820px){.s5 .s5-list{grid-template-columns:1fr 1fr}}
+.s5 .s5-row{display:grid;grid-template-columns:64px 1fr;gap:14px;align-items:center}
+/* значок категории это наклейка: тянется к плашке Грошика. touch-action:none только на самом значке 64x64,
+   страница листается пальцем за любое другое место */
+.s5 .s5-ico{width:64px;height:64px;padding:0;display:grid;place-items:center;background:var(--paper);border:var(--bi);border-radius:16px;box-shadow:3px 3px 0 var(--fg);
+  touch-action:none;cursor:grab;user-select:none;-webkit-user-select:none;position:relative;z-index:1;
+  transition:box-shadow .2s,background-color .2s}
+.s5 .s5-ico.drag{cursor:grabbing;z-index:5}
+/* значок, который унесли на плашку Грошика: в списке от него остаётся пустое тёмное гнездо */
+.s5 .s5-row.sel .s5-ico{background:var(--bg);border:2.5px dashed var(--muted);box-shadow:none;pointer-events:none}
+.s5 .s5-row.sel .s5-ico img{opacity:0}
+.s5 .s5-ico img{width:48px;height:48px;pointer-events:none;-webkit-user-drag:none}
+.s5 .s5-body{min-width:0;display:flex;flex-direction:column;gap:8px}
+.s5 .s5-top{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:6px 10px}
+.s5 .s5-top h3{font-size:17px}
+.s5 .s5-bar{height:20px;border:var(--b);border-radius:99px;background:var(--bg);overflow:hidden}
+.s5 .s5-fill{display:block;height:100%;width:0;background:var(--c4);border-radius:0 99px 99px 0;
+  transition:width .9s cubic-bezier(.2,.8,.3,1);transition-delay:calc(var(--i) * 110ms)}
+.s5 .s5-row.t .s5-fill{background:var(--c1)}
+.s5 .s5-row.o .s5-fill{background:var(--c2)}
+.s5 .on .s5-fill{width:var(--w);border-right:var(--b)}
+.s5 .s5-nums{font:700 15px/1.2 var(--text)}
+:root.still .s5 .s5-fill{width:var(--w);border-right:var(--b);transition:none}
+:root.still .s5 .s5-v{transition:none}
+@media (prefers-reduced-motion:reduce){.s5 .s5-fill{width:var(--w);border-right:var(--b);transition:none}.s5 .s5-v{transition:none}}
+
+.s5 .s5-foot{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:6px 10px}
+
+/* упрощение 12.11: три категории, в строке только название, полоса и остаток; на плашке Грошика значок, название и одна фраза */
+.s5 .s5-rn strong{display:none}
+.s5 .s5-nums{font-size:16px}
+@media (min-width:820px){.s5 .s5-list{grid-template-columns:1fr 1fr 1fr}}
+.s5 .s5-badge{display:none}
+
+/* экран 9 */
+.s9 .s9-st{display:flex;flex-direction:column;gap:clamp(24px,3.5vw,36px);--s9-lg:color-mix(in srgb,var(--c4) 45%,#fff)}
+.s9 .s9-txt{display:flex;flex-direction:column;gap:12px;min-width:0}
+.s9 .s9-txt .lead{font-weight:500}
+
+.s9 .s9-body{display:grid;grid-template-columns:minmax(0,1.35fr) minmax(0,1fr);gap:28px 32px;align-items:stretch}
+.s9 .s9-mp,.s9 .s9-day{padding:clamp(24px,3vw,32px) clamp(16px,2.4vw,26px) clamp(18px,2.4vw,24px);min-width:0}
+.s9 h3{font-size:clamp(18px,2vw,21px);line-height:1.2}
+
+/* мозаика: большая плитка, рядом группа из двух рядов. На узком экране большая плитка уходит наверх, группа под неё */
+.s9 .s9-mp{display:flex;flex-direction:column;gap:18px}
+.s9 .s9-mh{display:flex;align-items:baseline;justify-content:space-between;gap:8px 16px;flex-wrap:wrap}
+.s9 .s9-tot{font:800 clamp(18px,2vw,21px)/1.2 var(--display)}
+.s9 .s9-mos,.s9 .s9-r{display:flex;gap:8px}
+.s9 .s9-g{display:flex;flex-direction:column;gap:8px}
+.s9 .s9-mos{height:300px;flex-direction:row}
+.s9 .s9-t,.s9 .s9-g,.s9 .s9-r{flex-basis:0;min-width:0;min-height:0}
+.s9 .s9-t{display:flex;flex-direction:column;justify-content:flex-end;gap:2px;padding:10px;overflow:hidden;
+  background:var(--c);color:var(--ink);border:var(--bi);border-radius:14px}
+/* иконки белые квадратные: рамка, как у значка категории в приложении */
+.s9 .s9-t img{width:32px;height:32px;margin-bottom:auto;flex:none;background:#fff;border:2px solid var(--ink);border-radius:8px}
+.s9 .s9-big img{width:40px;height:40px}
+.s9 .s9-tn{font:700 15px/1.2 var(--text)}
+.s9 .s9-t b{font:800 15px/1.2 var(--display);font-variant-numeric:tabular-nums}
+.s9 .s9-big{padding:14px}
+.s9 .s9-big .s9-tn{font-size:17px}
+.s9 .s9-big b{font-size:clamp(18px,2.2vw,22px)}
+.s9 .s9-rest{background:var(--paper);border-style:dashed}
+.s9 .s9-ics{display:flex;gap:4px;margin-bottom:auto}
+.s9 .s9-ics img{width:30px;height:30px;margin:0}
+
+@media (max-width:860px){.s9 .s9-body{grid-template-columns:minmax(0,1fr)}}
+@media (max-width:560px){
+  .s9 .s9-mos{height:400px;flex-direction:column}
+  .s9 .s9-t{padding:8px 9px}
+  .s9 .s9-r .s9-tn{font-size:14px}
+  .s9 .s9-big{padding:12px}
+  .s9 .s9-bs{gap:8px}
+  .s9 .s9-bs .badge{font-size:14px;padding:7px 10px}
+}
+
+/* один день */
+.s9 .s9-day{position:relative;display:flex;flex-direction:column;justify-content:space-between;gap:18px}
+.s9 .s9-dh{display:flex;align-items:flex-start;gap:12px;padding-right:118px}
+.s9 .s9-dh h3{min-width:0;padding-top:4px}
+/* Грошик на крае плашки: сиденье на 74% высоты картинки, ножки свисают внутрь справа, заголовок их обходит */
+.s9 .s9-sit{width:172px;right:-18px;top:-128px}
+@media (max-width:860px){
+  .s9 .s9-day{margin-top:92px}
+  .s9 .s9-sit{width:150px;right:-8px;top:-111px}
+  .s9 .s9-dh{padding-right:104px}
+}
+.s9 .s9-dv{margin:0;font-size:clamp(56px,8vw,84px)}
+.s9 .s9-bs{display:flex;flex-wrap:wrap;gap:10px}
+.s9 .s9-bs .badge{font-size:15px;padding:8px 12px}
+
+/* что ещё есть в итогах: простой список прямо на сцене, без плашек, рамок и теней, чтобы не казалось кнопками.
+   Каждый пункт отделён сверху тонкой линией, как строка списка */
+.s9 .s9-more{display:flex;flex-direction:column;gap:14px;padding-top:8px}
+.s9 .s9-ml{list-style:none;margin:0;padding:0;display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:4px 32px}
+.s9 .s9-ml li{display:flex;flex-direction:column;gap:3px;padding:12px 0 10px;border-top:2px solid var(--ink);min-width:0}
+.s9 .s9-ml b{font:700 18px/1.25 var(--text)}
+.s9 .s9-ml span{font:500 17px/1.35 var(--text)}
+@media (max-width:860px){.s9 .s9-ml{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media (max-width:560px){.s9 .s9-ml{grid-template-columns:minmax(0,1fr)} .s9 .s9-ml li{padding:10px 0 9px}}
+
+/* появление: плитки выскакивают из середины, бейджи всплывают. Только transform и opacity */
+.s9 .s9-t.rv{transform:scale(.4);transition:opacity .35s ease,transform .5s cubic-bezier(.2,.9,.3,1.35)}
+.s9 .s9-t.rv.in{transform:none}
+.s9 .s9-bs .rv{transform:translateY(10px) scale(.85)}
+.s9 .s9-bs .rv.in{transform:none}
+:root.still .s9 .rv{opacity:1;transform:none;transition:none}
+@media (prefers-reduced-motion:reduce){.s9 .rv{opacity:1!important;transform:none!important;transition:none!important}}
+
+/* экран 6 */
+.s6 .s6-grid{display:grid;grid-template-columns:minmax(0,1fr);gap:40px;align-items:center}
+@media (min-width:860px){.s6 .s6-grid{grid-template-columns:minmax(0,1.1fr) minmax(0,1fr);gap:40px}}
+.s6 .s6-text{display:flex;flex-direction:column;gap:18px;min-width:0}
+.s6 .s6-plate{padding:24px 20px 22px;display:flex;flex-direction:column;gap:16px;margin-top:6px}
+.s6 .s6-sum{display:flex;flex-wrap:wrap;align-items:baseline;gap:4px 10px}
+.s6 .s6-lbl{font:700 16px/1.2 var(--text)}
+.s6 .s6-now{font-size:clamp(36px,7vw,56px)}
+.s6 .s6-of{font:700 18px/1.2 var(--text);white-space:nowrap}
+.s6 .s6-pick{display:flex;flex-wrap:wrap;align-items:center;gap:10px 8px}
+.s6 .s6-pick .s6-lbl{flex-basis:100%}
+.s6 .s6-pick .chip{min-height:44px;padding-inline:10px}
+.s6 .s6-date{font:800 clamp(20px,3.4vw,26px)/1.2 var(--display);padding:14px 16px;background:var(--c1);border:var(--bi);border-radius:var(--r-s);text-wrap:balance}
+
+/* сцена с банкой: банка и Грошик в ряд, под ними месяц и кнопка повтора.
+   --jw ширина банки, высота задана явно (без aspect-ratio), запас сверху ряда под падающую монету */
+.s6 .s6-art{--jw:146px;display:flex;flex-direction:column;align-items:center;gap:16px;min-width:0}
+.s6 .s6-month{font-size:16px;padding:9px 14px}
+.s6 .s6-row{display:flex;align-items:flex-end;justify-content:center;gap:6px;max-width:100%;
+  padding:calc(var(--jw) * .5) 10px 10px;overflow:hidden;overflow:clip}
+/* место под Грошика по ширине самой широкой позы (jump 288/264), чтобы банка не сдвигалась при смене позы */
+.s6 .s6-gr{height:140px;width:153px;flex:0 1 auto;min-width:0;margin-bottom:-4px;background-position:center bottom}
+.s6 .s6-again{font-size:15px;padding:12px 18px;min-height:48px}
+
+/* банка. Геометрия внутренности: верх 9% высоты банки, низ 100% (T и B в s6.js) */
+.s6 .s6-jar{position:relative;width:var(--jw);height:calc(var(--jw) * 1.25);flex:none}
+.s6 .s6-glass,.s6 .s6-pile,.s6 .s6-in,.s6 .s6-rim{position:absolute;left:0;right:0;top:9%;bottom:0;border-radius:26% 26% 20% 20%/18% 18% 14% 14%}
+.s6 .s6-glass{background:var(--paper);box-shadow:var(--shi)}
+.s6 .s6-full{position:absolute;inset:0;clip-path:inset(60% 0 0 0)}
+.s6 .s6-pile,.s6 .s6-in{overflow:hidden}
+.s6 .s6-pile svg{display:block;width:100%;height:100%}
+.s6 .s6-top{position:absolute;left:0;right:0;top:100%;height:100%;will-change:transform}
+.s6 .s6-top svg{position:absolute;left:0;top:0;width:100%;height:auto;transform:translateY(-50%)}
+.s6 .s6-rim{border:var(--bi)}
+/* блик на пустом стекле, монеты его закрывают */
+.s6 .s6-glass::before{content:"";position:absolute;left:9%;top:12%;width:9%;height:62%;border-radius:99px;background:var(--c3);opacity:.25}
+.s6 .s6-lid{position:absolute;left:11%;right:11%;top:0;height:14%;background:var(--c4);border:var(--bi);border-radius:10px;z-index:2}
+.s6 .s6-lid i{position:absolute;left:33%;right:33%;top:50%;height:5px;margin-top:-2.5px;border-radius:99px;background:var(--ink)}
+/* монеты в банке: жёлтые с тёмной обводкой */
+.s6 .s6-jar .k{fill:var(--c1);stroke:var(--ink);stroke-width:2.5}
+.s6 .s6-jar .r{fill:none;stroke:var(--ink);stroke-width:1.6}
+/* падающие монеты (пул из нескольких, переиспользуются) */
+.s6 .s6-drops{position:absolute;inset:0;z-index:3;pointer-events:none}
+.s6 .s6-drop{position:absolute;left:50%;top:0;width:calc(var(--jw) * .17);height:calc(var(--jw) * .17);margin-left:calc(var(--jw) * -.085);border-radius:50%;background:var(--c1);border:var(--bi);opacity:0}
+.s6 .s6-drop::after{content:"";position:absolute;inset:20%;border-radius:50%;border:1.6px solid var(--ink)}
+
+@media (min-width:600px){
+  .s6 .s6-art{--jw:190px}
+  .s6 .s6-gr{height:176px;width:192px}
+  .s6 .s6-row{gap:14px}
+}
+@media (min-width:860px){
+  .s6 .s6-art{--jw:170px}
+  .s6 .s6-gr{height:160px;width:174px}
+}
+@media (min-width:1000px){
+  .s6 .s6-art{--jw:210px}
+  .s6 .s6-gr{height:190px;width:207px}
+}
+:root.still .s6 .s6-again{display:none}
+
+/* Когда будут картинки из ComfyUI (одинаковые по контуру, крышке и положению слои):
+   .s6 .s6-glass,.s6 .s6-full{position:absolute;inset:0;width:100%;height:100%;border-radius:0;box-shadow:none;background:none}
+   .s6 .s6-rim,.s6 .s6-lid{display:none}  (блик тогда тоже уходит, он уже нарисован)
+   .s6 .s6-pile убрать из разметки; .s6-in с .s6-top оставить (шапка монет едет по линии обрезки),
+   его top/bottom и border-radius подогнать под внутренность стекла на картинке, те же числа в T и B в s6.js.
+   .s6 .s6-drop{background:url(img/s6-coin.webp) center/contain no-repeat;border:0}  и убрать ::after.
+   aspect-ratio у .s6-jar поставить по размеру картинки. */
+
+/* экран 8 */
+.s8 .s8-grid{display:grid;grid-template-columns:1fr;gap:20px;justify-items:start;align-items:center}
+@media (min-width:760px){.s8 .s8-grid{grid-template-columns:auto 1fr;gap:48px}}
+.s8 .s8-gr{width:min(48vw,190px);margin-top:8px}
+.s8 .s8-text{display:flex;flex-direction:column;gap:18px;min-width:0}
+.s8 .s8-btns{display:flex;flex-wrap:wrap;gap:16px;padding-top:8px;padding-right:4px}
+.s8 .s8-btns .btn{min-height:52px}
+.s8 .foot{padding-top:20px}
+.s8 .foot a{display:inline-block;padding:10px 0;min-height:44px}
+.s8 .s8-gr[data-pose="jump"]{aspect-ratio:252/264}
+
+</style>
+</head>
+<body>
+<header class="top">
+  <a class="logo" href="#s1"><img src="img/mascot.png" alt="" width="40" height="40">Грошик</a>
+  <div class="r">
+    <div class="lang" role="group" aria-label="Мова" data-ru-aria-label="Язык">
+      <button type="button" data-lang="uk" aria-pressed="true">Укр</button>
+      <button type="button" data-lang="ru" aria-pressed="false">Рус</button>
+    </div>
+    <a class="btn get" href="#s8" data-ru="Скачать">Завантажити</a>
+  </div>
+</header>
+<main class="wrap">
+<!-- экран 1 -->
+<section class="scr s1" id="s1">
+  <div class="stage v">
+    <div class="l">
+      <h1 data-ru="Сколько можно сегодня">Скільки можна сьогодні</h1>
+      <p class="lead" data-ru="Грошик считает до самой зарплаты">Грошик рахує до самої зарплати</p>
+      <div class="cta">
+        <a class="btn" href="#s8"><svg viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M18.71 19.5c-.83 1.24-1.71 2.45-3.05 2.47-1.34.03-1.77-.79-3.29-.79-1.53 0-2 .77-3.27.82-1.31.05-2.3-1.32-3.14-2.53C4.25 17 2.94 12.45 4.7 9.39c.87-1.52 2.43-2.48 4.12-2.51 1.28-.02 2.5.87 3.29.87.78 0 2.26-1.07 3.81-.91.65.03 2.47.26 3.64 1.98-.09.06-2.17 1.28-2.15 3.81.03 3.02 2.65 4.03 2.68 4.04-.03.07-.42 1.44-1.38 2.83M13 3.5c.73-.83 1.94-1.46 2.94-1.5.13 1.17-.34 2.35-1.04 3.19-.69.85-1.83 1.51-2.95 1.42-.15-1.15.41-2.35 1.05-3.11z"/></svg><span data-ru="Скачать в App Store">Завантажити в App Store</span></a>
+        <a class="btn l" href="#s3" data-ru="Посмотреть пример">Подивитися приклад</a>
+      </div>
+    </div>
+    <div class="r">
+      <span class="sit" aria-hidden="true"><b class="ll"></b><b class="lr"></b><i id="s1-g"></i></span>
+      <div class="plate" id="s1-plate">
+        <span class="badge w" id="s1-days">до зарплати 12 днів</span>
+        <div class="big"><span class="num" id="s1-n" data-v="640">640</span>&nbsp;₴</div>
+        <span class="badge g" data-ru="хватает">вистачає</span>
+      </div>
+    </div>
+  </div>
+  <div class="tape">
+    <div>
+      <span data-ru="бесплатно">безкоштовно</span><span data-ru="без регистрации">без реєстрації</span><span data-ru="данные на телефоне">дані на телефоні</span><span data-ru="одно число на сегодня">одне число на сьогодні</span><span data-ru="от зарплаты до зарплаты">від зарплати до зарплати</span>
+      <span aria-hidden="true" data-ru="бесплатно">безкоштовно</span><span aria-hidden="true" data-ru="без регистрации">без реєстрації</span><span aria-hidden="true" data-ru="данные на телефоне">дані на телефоні</span><span aria-hidden="true" data-ru="одно число на сегодня">одне число на сьогодні</span><span aria-hidden="true" data-ru="от зарплаты до зарплаты">від зарплати до зарплати</span>
+    </div>
+  </div>
+</section>
+
+<!-- экран 7 -->
+<section class="scr s7" id="s7">
+  <h2 data-ru="Твои деньги видишь только ты">Твої гроші бачиш лише ти</h2>
+  <div class="s7-tabs">
+    <div class="s7-tab a" id="s7-a" style="--rot:-3deg;--bgc:var(--c3)">
+      <span class="sit s7-sit" id="s7-g" aria-hidden="true"><b class="ll"></b><b class="lr"></b><i></i></span>
+      <h3 data-ru="Без регистрации">Без реєстрації</h3>
+      <p data-ru="Без почты и пароля. Открыл и пользуешься.">Без пошти й пароля. Відкрив і користуєшся.</p>
+    </div>
+    <div class="s7-tab b" id="s7-b" style="--rot:2deg;--bgc:var(--c4)">
+      <h3 data-ru="Данные на телефоне">Дані на телефоні</h3>
+      <p data-ru="Ничего не уходит на сервер.">Нічого не йде на сервер.</p>
+    </div>
+    <div class="s7-tab c" id="s7-c" style="--rot:-2deg;--bgc:var(--c1)">
+      <h3 data-ru="Бесплатно">Безкоштовно</h3>
+      <p data-ru="Без подписки и рекламы.">Без підписки й реклами.</p>
+    </div>
+  </div>
+</section>
+
+<!-- экран 2 -->
+<section class="scr s2" id="s2">
+  <div class="head">
+    <h2 data-ru="Посчитай своё">Порахуй своє</h2>
+    <p class="lead" data-ru="Подставь свои цифры, ответ появится сразу">Підстав свої цифри, відповідь з’явиться одразу</p>
+  </div>
+  <div class="calc">
+    <div class="form">
+      <div class="pane" id="s2-p1">
+        <label for="s2-sal"><span data-ru="Зарплата в месяц">Зарплата на місяць</span>
+          <span class="inp"><input id="s2-sal" type="text" inputmode="numeric" autocomplete="off" maxlength="7" value="40000"><span aria-hidden="true">₴</span></span>
+        </label>
+        <label class="pc" for="s2-pc"><span id="s2-pct">Відкладати 10%</span>
+          <input id="s2-pc" type="range" min="1" max="30" step="1" value="10">
+        </label>
+      </div>
+      <div class="pane" id="s2-p2" hidden>
+        <div class="two">
+          <label for="s2-pr"><span data-ru="Цена за раз">Ціна за раз</span>
+            <span class="inp"><input id="s2-pr" type="text" inputmode="numeric" autocomplete="off" maxlength="6" value="85"><span aria-hidden="true">₴</span></span>
+          </label>
+          <label for="s2-wk"><span data-ru="Раз в неделю">Разів на тиждень</span>
+            <span class="inp"><input id="s2-wk" type="text" inputmode="numeric" autocomplete="off" maxlength="2" value="5"></span>
+          </label>
+        </div>
+      </div>
+    </div>
+    <output class="ans" id="s2-o" for="s2-sal s2-pc s2-pr s2-wk" aria-live="polite">
+      <span class="k" id="s2-k">за рік відкладеш</span>
+      <span class="y"><span class="num" id="s2-y">48 000 ₴</span></span>
+      <span class="m" id="s2-m">4 000 ₴ на місяць</span>
+      <span class="gr" id="s2-g" data-pose="jar" aria-hidden="true"></span>
+    </output>
+    <button class="sw" type="button" id="s2-sw" aria-controls="s2-p1 s2-p2">А у що обходиться звичка</button>
+  </div>
+</section>
+
+<!-- экран 3 -->
+<section class="scr s3" id="s3">
+  <div class="stage v s3-st">
+    <h2 data-ru="От зарплаты до зарплаты">Від зарплати до зарплати</h2>
+    <div class="s3-chat" id="s3-chat">
+      <div class="s3-g"><img src="img/mascot.png" alt="" width="44" height="44"><p data-ru="Сейчас у&nbsp;тебя <b>544&nbsp;₴</b> в&nbsp;день.<br>Что сегодня?">Зараз у&nbsp;тебе <b>544&nbsp;₴</b> на&nbsp;день.<br>Що сьогодні?</p></div>
+      <div class="s3-me"><p class="s3-m s3-slot" id="s3-m"></p></div>
+      <div class="s3-re"><div class="s3-g s3-slot" id="s3-r"><img src="img/mascot.png" alt="" width="44" height="44"><p id="s3-p"></p></div></div>
+      <!-- заготовки сообщений: тот же пузырь, что у отправленного сообщения, но пунктиром -->
+      <div class="s3-opts" id="s3-o">
+        <button type="button" data-k="1" aria-pressed="false" data-ru="Обедала дома">Обідала вдома</button>
+        <button type="button" data-k="2" aria-pressed="false" data-ru="Купила подарок">Купила подарунок</button>
+        <button type="button" data-k="3" aria-pressed="false" data-ru="Пришла премия">Прийшла премія</button>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- экран 10 -->
+<section class="scr s10" id="s10">
+  <div class="stage v s10-st" id="s10-st">
+    <h2 data-ru="Руками остаётся мало">Руками лишається мало</h2>
+    <p class="s10-sub" data-ru="Оплаты телефоном приходят сами, вносить остаётся только наличные.">Оплати телефоном приходять самі, вносити лишається тільки готівку.</p>
+    <!-- шаги дня: подписи, не кнопки -->
+    <ol class="s10-steps" aria-hidden="true">
+      <li data-ru="Утром само">Зранку само</li>
+      <li data-ru="Днём само">Вдень само</li>
+      <li data-ru="Вечером руками">Увечері руками</li>
+    </ol>
+    <div class="s10-k">
+      <!-- число на сегодня: плашка, не нажимается -->
+      <div class="s10-rs">
+        <div class="s10-rt"><span data-ru="Можно тратить в&nbsp;день">Можна витрачати на&nbsp;день</span><b class="num">544&nbsp;₴</b></div>
+        <p class="s10-big"><span class="s10-w" data-ru="ещё">ще</span><span class="num"><span id="s10-lf" data-v="544">544</span>&nbsp;₴</span></p>
+        <div class="s10-bar" aria-hidden="true"><i id="s10-bar"></i></div>
+        <p class="s10-sp"><span data-ru="Сегодня">Сьогодні</span> <b class="num"><span id="s10-sp">0</span>&nbsp;₴</b></p>
+      </div>
+      <!-- траты за день: три места, пустое место пунктиром -->
+      <div class="s10-tl">
+        <h3 data-ru="Траты за&nbsp;день">Витрати за&nbsp;день</h3>
+        <ol>
+          <li><span class="s10-tw">8:40</span><div class="s10-tr"></div></li>
+          <li><span class="s10-tw">13:10</span><div class="s10-tr"></div></li>
+          <li><span class="s10-tw">19:30</span><div class="s10-tr"></div></li>
+        </ol>
+      </div>
+      <!-- форма «Новая трата» картинкой: ничего не нажимается -->
+      <div class="s10-fm" aria-hidden="true">
+        <h3 data-ru="Новая трата">Нова витрата</h3>
+        <div class="s10-amt" id="s10-amt"><span class="s10-av s10-ph" id="s10-av">0</span><i class="s10-caret"></i><span class="s10-cur">₴</span></div>
+        <div class="s10-desc"><span class="s10-ph" id="s10-sd">На що</span></div>
+        <div class="s10-cats">
+          <div class="s10-cat" data-c="food"><span class="s10-sq"><img src="img/s5-cat-food.webp" width="48" height="48" alt=""></span><span class="s10-cn" data-ru="Продукты">Продукти</span></div>
+          <div class="s10-cat" data-c="cafe"><span class="s10-sq"><img src="img/s5-cat-cafe.webp" width="48" height="48" alt=""></span><span class="s10-cn" data-ru="Кафе">Кафе</span></div>
+          <div class="s10-cat" data-c="transport"><span class="s10-sq"><img src="img/s5-cat-transport.webp" width="48" height="48" alt=""></span><span class="s10-cn" data-ru="Транспорт">Транспорт</span></div>
+        </div>
+        <div class="s10-add" id="s10-add" data-ru="Добавить">Додати</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- экран 4 -->
+<section class="scr s4" id="s4">
+  <div class="stage o s4-st" id="s4-st">
+    <div class="s4-l">
+      <h2 data-ru="Платежи впереди уже вычтены">Платежі попереду вже враховані</h2>
+      <p class="s4-lead" data-ru="Подписки, оплата частями и кредитка уже убраны из числа на сегодня.">Підписки, оплата частинами і кредитка вже прибрані з числа на сьогодні.</p>
+      <div class="s4-sum">
+        <span class="badge w" id="s4-lbl">на місяць</span>
+        <div class="big s4-big"><span id="s4-left" data-v="24000">24 000</span>&nbsp;₴</div>
+        <div class="s4-day">
+          <span class="badge k" data-ru="на сегодня">на сьогодні</span>
+          <span class="s4-today num"><span id="s4-today" data-v="800">800</span>&nbsp;₴</span>
+        </div>
+      </div>
+    </div>
+    <!-- Грошик стоит на стопке платежей и съедает их по одному -->
+    <div class="s4-r" id="s4-r">
+      <span class="gr s4-gr" id="s4-gr" data-pose="sit"></span>
+      <ul class="s4-cards" id="s4-cards">
+        <li class="plate s4-c" data-sum="150">
+          <div class="s4-ct"><b data-ru="Подписка на кино">Підписка на кіно</b><span data-ru="5 числа">5 числа</span></div>
+          <span class="s4-s num">−150&nbsp;₴</span>
+        </li>
+        <li class="plate s4-c" data-sum="1250">
+          <div class="s4-ct"><b data-ru="Наушники">Навушники</b><span data-ru="часть 3&nbsp;из&nbsp;6, 12&nbsp;числа">частина 3&nbsp;з&nbsp;6, 12&nbsp;числа</span></div>
+          <span class="s4-s num">−1 250&nbsp;₴</span>
+        </li>
+        <li class="plate s4-c" data-sum="2900">
+          <div class="s4-ct"><b data-ru="Кредитка">Кредитка</b><span data-ru="льготный период до 25&nbsp;числа">пільговий період до 25&nbsp;числа</span></div>
+          <span class="s4-s num">−2 900&nbsp;₴</span>
+        </li>
+        <li class="plate s4-c" data-sum="500">
+          <div class="s4-ct"><b data-ru="Связь и интернет">Зв’язок та інтернет</b><span data-ru="28 числа">28 числа</span></div>
+          <span class="s4-s num">−500&nbsp;₴</span>
+        </li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<!-- экран 5 -->
+<section class="scr s5" id="s5">
+  <div class="card s5-card">
+    <div class="s5-head">
+      <div class="s5-ht">
+        <h2 data-ru="Лимиты без таблиц">Ліміти без таблиць</h2>
+        <p class="lead" data-ru="Дай каждой категории лимит, и Грошик скажет, когда он близко.">Дай кожній категорії ліміт, і Грошик скаже, коли він близько.</p>
+      </div>
+      <!-- место, куда бросают категорию: Грошик смотрит, что в ней, и говорит. Все ответы лежат в одной клетке сетки,
+           поэтому высота плашки не прыгает, пока тянешь значок -->
+      <div class="plate s5-plate" id="s5-zone">
+        <span class="gr s5-gr" id="s5-gr" data-pose="wave"></span>
+        <div class="s5-say" id="s5-say" aria-live="polite">
+          <div class="s5-ask s5-v on">
+            <span class="s5-slot" aria-hidden="true"></span>
+            <b data-ru="Перетащи сюда значок категории">Перетягни сюди значок категорії</b>
+          </div>
+        </div>
+      </div>
+    </div>
+    <ul class="s5-list">
+      <li class="s5-row" data-spent="1850" data-limit="3000" style="--i:0">
+        <button type="button" class="s5-ico" aria-label="Продукти" data-ru-aria-label="Продукты"><img src="img/s5-cat-food.webp" width="48" height="48" alt=""></button>
+        <div class="s5-body">
+          <div class="s5-top"><h3 data-ru="Продукты">Продукти</h3></div>
+          <div class="s5-bar"><i class="s5-fill"></i></div>
+          <div class="s5-foot"><span class="s5-nums num"></span><span class="badge s5-badge" hidden></span></div>
+        </div>
+      </li>
+      <li class="s5-row" data-spent="1900" data-limit="2000" style="--i:1">
+        <button type="button" class="s5-ico" aria-label="Кафе й доставка" data-ru-aria-label="Кафе и доставка"><img src="img/s5-cat-cafe.webp" width="48" height="48" alt=""></button>
+        <div class="s5-body">
+          <div class="s5-top"><h3 data-ru="Кафе и доставка">Кафе й доставка</h3></div>
+          <div class="s5-bar"><i class="s5-fill"></i></div>
+          <div class="s5-foot"><span class="s5-nums num"></span><span class="badge s5-badge" hidden></span></div>
+        </div>
+      </li>
+      <li class="s5-row" data-spent="2300" data-limit="1500" style="--i:2">
+        <button type="button" class="s5-ico" aria-label="Здоров'я" data-ru-aria-label="Здоровье"><img src="img/s5-cat-health.webp" width="48" height="48" alt=""></button>
+        <div class="s5-body">
+          <div class="s5-top"><h3 data-ru="Здоровье">Здоров'я</h3></div>
+          <div class="s5-bar"><i class="s5-fill"></i></div>
+          <div class="s5-foot"><span class="s5-nums num"></span><span class="badge s5-badge" hidden></span></div>
+        </div>
+      </li>
+    </ul>
+  </div>
+</section>
+
+<!-- экран 9 -->
+<section class="scr s9" id="s9">
+  <div class="stage y s9-st">
+    <div class="s9-head">
+      <div class="s9-txt">
+        <h2 data-ru="Месяц как на ладони">Місяць як на долоні</h2>
+        <p class="lead" data-ru="Итоги месяца: куда ушли деньги и во что обходится один день.">Підсумки місяця: куди пішли гроші і скільки коштує один день.</p>
+      </div>
+    </div>
+
+    <div class="s9-body">
+      <!-- куда ушли деньги: площадь плитки = доля категории (flex считает s9.js из data-n) -->
+      <div class="plate s9-mp" id="s9-mp">
+        <div class="s9-mh">
+          <h3 data-ru="Куда ушли деньги">Куди пішли гроші</h3>
+          <span class="s9-tot num" id="s9-tot"></span>
+        </div>
+        <div class="s9-mos">
+          <div class="s9-t s9-big rv" data-n="4250" style="--c:var(--c4)"><img src="img/s5-cat-food.webp" width="40" height="40" alt=""><span class="s9-tn" data-ru="Продукты">Продукти</span><b class="num"></b></div>
+          <div class="s9-g">
+            <div class="s9-r">
+              <div class="s9-t rv" data-n="3100" style="--c:var(--c3)"><img src="img/s5-cat-cafe.webp" width="32" height="32" alt=""><span class="s9-tn" data-ru="Кафе и доставка">Кафе й доставка</span><b class="num"></b></div>
+              <div class="s9-t rv" data-n="2300" style="--c:var(--c5)"><img src="img/s5-cat-health.webp" width="32" height="32" alt=""><span class="s9-tn" data-ru="Здоровье">Здоров'я</span><b class="num"></b></div>
+            </div>
+            <div class="s9-r">
+              <div class="s9-t rv" data-n="1400" style="--c:var(--s9-lg)"><img src="img/s5-cat-transport.webp" width="32" height="32" alt=""><span class="s9-tn">Транспорт</span><b class="num"></b></div>
+              <div class="s9-t s9-rest rv" data-n="1150 650" title="Улюбленці 1 150 ₴, зв'язок і підписки 650 ₴" data-ru-title="Питомцы 1 150 ₴, связь и подписки 650 ₴">
+                <span class="s9-ics"><img src="img/s5-cat-pets.webp" width="28" height="28" alt=""><img src="img/s5-cat-subs.webp" width="28" height="28" alt=""></span><span class="s9-tn" data-ru="ещё 2">ще 2</span><b class="num"></b>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- один день обходится: месяц / 30, час = день / 24, день дохода = зарплата 40 000 (как в калькуляторе) / 30 -->
+      <!-- Грошик сидит на верхнем крае плашки дня, как на первом экране, и дышит: показывает итог -->
+      <div class="plate s9-day" id="s9-day">
+        <span class="sit s9-sit" id="s9-sit" aria-hidden="true"><b class="ll"></b><b class="lr"></b><i></i></span>
+        <div class="s9-dh">
+          <h3 data-ru="День твоей жизни стоит">День твого життя коштує</h3>
+        </div>
+        <p class="big s9-dv"><span id="s9-dn">0</span>&nbsp;₴</p>
+        <div class="s9-bs">
+          <span class="badge o rv" id="s9-hr"></span>
+          <span class="badge w rv" id="s9-mo"></span>
+          <span class="badge w rv" id="s9-inc"></span>
+        </div>
+      </div>
+    </div>
+
+    <!-- что ещё есть во вкладке «Итоги» приложения (spend_stats.js statsMain и блоки extra4/extra5):
+         «Почему так вышло», «Самые дорогие дни», «Сколько можно сэкономить», «Обзор за всё время» с вкладками
+         «Дни недели» и средним в месяц, «События и теги». Простой список на сцене, ничего не нажимается.
+         Числа из того же месяца: кафе 3 100 ₴, минус 20% это 620 ₴ в месяц, 7 440 ₴ за год -->
+    <div class="s9-more" id="s9-more">
+      <h3 data-ru="А ещё в итогах">А ще в підсумках</h3>
+      <ul class="s9-ml">
+        <li class="rv"><b data-ru="Что выросло">Що виросло</b><span data-ru="кафе +640&nbsp;₴ к&nbsp;прошлому месяцу">кафе +640&nbsp;₴ проти минулого місяця</span></li>
+        <li class="rv"><b data-ru="Самые дорогие дни">Найдорожчі дні</b><span data-ru="три за месяц, самый большой 1&nbsp;920&nbsp;₴">три за місяць, найбільший 1&nbsp;920&nbsp;₴</span></li>
+        <li class="rv"><b data-ru="Где можно сэкономить">Де можна заощадити</b><span data-ru="кафе на 20% меньше, и&nbsp;за&nbsp;год&nbsp;+7&nbsp;440&nbsp;₴">кафе на 20% менше, і&nbsp;за&nbsp;рік&nbsp;+7&nbsp;440&nbsp;₴</span></li>
+        <li class="rv"><b data-ru="Дни недели">Дні тижня</b><span data-ru="дороже всего пятница">найдорожча п'ятниця</span></li>
+        <li class="rv"><b data-ru="Все месяцы рядом">Усі місяці поруч</b><span data-ru="в среднем 13&nbsp;200&nbsp;₴ в&nbsp;месяц">у середньому 13&nbsp;200&nbsp;₴ на місяць</span></li>
+        <li class="rv"><b data-ru="События и теги">Події й теги</b><span data-ru="отпуск 8&nbsp;600&nbsp;₴ одной суммой">відпустка 8&nbsp;600&nbsp;₴ однією сумою</span></li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<!-- экран 6 -->
+<section class="scr s6" id="s6">
+  <div class="stage v">
+    <div class="s6-grid">
+      <div class="s6-text">
+        <h2 data-ru="Копи на своё">Збирай на своє</h2>
+        <p class="lead" data-ru="Мечта получает дату, и начать проще.">Мрія отримує дату, і почати простіше.</p>
+        <div class="plate s6-plate">
+          <h3 data-ru="Отпуск">Відпустка</h3>
+          <div class="s6-sum"><span class="s6-lbl" data-ru="собрано">зібрано</span> <span class="big s6-now" id="s6-now">0</span> <span class="s6-of" id="s6-of"></span></div>
+          <div class="s6-pick" role="group" data-ru-aria-label="Откладываю в месяц" aria-label="Відкладаю на місяць">
+            <span class="s6-lbl" data-ru="в месяц">на місяць</span>
+            <button type="button" class="chip" data-m="1200">1&nbsp;200&nbsp;₴</button>
+            <button type="button" class="chip on" data-m="2400">2&nbsp;400&nbsp;₴</button>
+            <button type="button" class="chip" data-m="4800">4&nbsp;800&nbsp;₴</button>
+          </div>
+          <div class="s6-date" id="s6-date" aria-live="polite"></div>
+        </div>
+      </div>
+      <div class="s6-art">
+        <!-- ряд с банкой обрезает всё, что из него выходит: монеты падают только в его верхнем запасе и
+             ни на что вокруг не налезают -->
+        <div class="s6-row">
+          <!-- Банка из слоёв. Сейчас нарисована CSS, позже сюда встанут картинки из ComfyUI:
+               .s6-glass станет <img class="s6-glass" src="img/s6-jar-empty.webp" alt="">,
+               .s6-full станет <img class="s6-full" id="s6-full" src="img/s6-jar-full.webp" alt="">,
+               .s6-rim и .s6-lid убрать (контур и крышка уже на картинках). Как это сделать в CSS, см. s6.css внизу.
+               Пропорции .s6-jar и границы внутренности (T и B в s6.js) подогнать под картинку. -->
+          <div class="s6-jar" id="s6-jar" role="img" data-ru-aria-label="Банка с монетами" aria-label="Банка з монетами">
+            <div class="s6-glass"></div>
+            <div class="s6-full" id="s6-full"><div class="s6-pile" id="s6-pile"></div></div>
+            <div class="s6-in"><div class="s6-top" id="s6-top"></div></div>
+            <div class="s6-rim"></div>
+            <div class="s6-lid"><i></i></div>
+            <div class="s6-drops" id="s6-drops"></div>
+          </div>
+          <span class="gr s6-gr" id="s6-gr" data-pose="jar"></span>
+        </div>
+        <span class="badge w s6-month" id="s6-month"></span>
+        <button type="button" class="btn l s6-again" id="s6-again"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 12a8 8 0 1 0 2.4-5.7M4 4v5h5" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></svg><span data-ru="Собрать ещё раз">Зібрати ще раз</span></button>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- экран 8 -->
+<section class="scr s8" id="s8">
+  <div class="stage p">
+    <div class="s8-grid">
+      <span class="gr s8-gr" data-pose="wave"></span>
+      <div class="s8-text">
+        <h2 data-ru="Грошик ждёт">Грошик чекає</h2>
+        <p class="lead" data-ru="Для iPhone. Бесплатно и без регистрации.">Для iPhone. Безкоштовно й без реєстрації.</p>
+        <div class="s8-btns">
+          <a class="btn" id="s8-get" href="#"><svg viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M12.152 6.896c-.948 0-2.415-1.078-3.96-1.04-2.04.027-3.91 1.183-4.961 3.014-2.117 3.675-.546 9.103 1.519 12.09 1.013 1.454 2.208 3.09 3.792 3.039 1.52-.065 2.09-.987 3.935-.987 1.831 0 2.35.987 3.96.948 1.637-.026 2.676-1.48 3.676-2.948 1.156-1.688 1.636-3.325 1.662-3.415-.039-.013-3.182-1.221-3.22-4.857-.026-3.04 2.48-4.494 2.597-4.559-1.429-2.09-3.623-2.324-4.39-2.376-2-.156-3.675 1.09-4.61 1.09zM15.53 3.83c.843-1.012 1.4-2.427 1.245-3.83-1.207.052-2.662.805-3.532 1.818-.78.896-1.454 2.338-1.273 3.714 1.338.104 2.715-.688 3.559-1.701"/></svg><span data-ru="Скачать в App Store">Завантажити в App Store</span></a>
+          <a class="btn l" id="s8-demo" href="#"><span data-ru="Пример в Telegram">Приклад у Telegram</span></a>
+        </div>
+      </div>
+    </div>
+  </div>
+  <footer class="foot">
+    <span>Грошик, 2026</span>
+    <nav>
+      <a class="s8-link" data-href="https://gluponya.tv/groshyk/privacy/" href="https://gluponya.tv/groshyk/privacy/" data-ru="Конфиденциальность">Конфіденційність</a>
+      <a class="s8-link" data-href="https://gluponya.tv/groshyk/support/" href="https://gluponya.tv/groshyk/support/" data-ru="Поддержка">Підтримка</a>
+      <a class="s8-link" data-href="https://gluponya.tv/groshyk/terms/" href="https://gluponya.tv/groshyk/terms/" data-ru="Условия">Умови</a>
+    </nav>
+  </footer>
+</section>
+</main>
+<script>
+/* Лендинг Грошика. Общие помощники, доступны экранам как window.G.
+   Экраны лежат в sections/sN.js, каждый в своей (function(){...})() */
+window.G = (function(){
+  var q = new URLSearchParams(location.search);
+  var root = document.documentElement;
+
+  /* тема: по системе, ?theme=dark|light только для проверки */
+  if (q.get('theme')) root.setAttribute('data-theme', q.get('theme'));
+
+  /* без анимации: системная настройка или ?still=1 для проверки */
+  var still = (window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches) || q.get('still') === '1';
+  if (still) root.classList.add('still');
+
+  /* язык: украинский основной, русский по #ru, ?lang=ru или переключателю.
+     В разметке украинский текст стоит в элементе, русский в data-ru:
+       <h2 data-ru="Посчитай своё">Порахуй своє</h2>
+     Для атрибутов: data-ru-aria-label, data-ru-placeholder.
+     В JS: G.L('укр','рус') и G.onLang(fn), чтобы перерисовать собранные скриптом строки. */
+  var lang = 'uk', subs = [];
+  try { if (localStorage.getItem('groshyk-lang') === 'ru') lang = 'ru'; } catch (e) {}
+  if (location.hash === '#ru' || q.get('lang') === 'ru') lang = 'ru';
+  if (q.get('lang') === 'uk') lang = 'uk';
+
+  function applyLang(){
+    root.lang = lang;
+    document.querySelectorAll('[data-ru]').forEach(function(el){
+      if (el.dataset.uk === undefined) el.dataset.uk = el.innerHTML;
+      el.innerHTML = lang === 'ru' ? el.dataset.ru : el.dataset.uk;
+    });
+    ['aria-label','placeholder','title'].forEach(function(a){
+      document.querySelectorAll('[data-ru-' + a + ']').forEach(function(el){
+        var k = 'uk' + a.replace(/-/g, '');
+        if (el.dataset[k] === undefined) el.dataset[k] = el.getAttribute(a) || '';
+        el.setAttribute(a, lang === 'ru' ? el.getAttribute('data-ru-' + a) : el.dataset[k]);
+      });
+    });
+    document.querySelectorAll('.lang button').forEach(function(b){
+      b.setAttribute('aria-pressed', String(b.dataset.lang === lang));
+    });
+    subs.forEach(function(f){ f(lang); });
+  }
+  function setLang(l){
+    lang = l === 'ru' ? 'ru' : 'uk';
+    try { localStorage.setItem('groshyk-lang', lang); } catch (e) {}
+    applyLang();
+  }
+  function L(uk, ru){ return lang === 'ru' ? ru : uk; }
+  function onLang(f){ subs.push(f); }
+
+  /* 15600 -> "15 600" (неразрывный пробел) */
+  function fmt(n){ return String(Math.round(n)).replace(/\B(?=(\d{3})+(?!\d))/g, ' '); }
+
+  /* плавно досчитать число в элементе. Текущее значение хранится в data-v */
+  function tween(el, to, ms){
+    var from = +el.dataset.v || 0, t0 = performance.now(); el.dataset.v = to; ms = ms || 450;
+    if (still) { el.textContent = fmt(to); return; }
+    (function f(t){
+      var k = Math.max(0, Math.min(1, (t - t0) / ms));
+      if (+el.dataset.v !== to) return;
+      el.textContent = fmt(from + (to - from) * (1 - Math.pow(1 - k, 3)));
+      if (k < 1) requestAnimationFrame(f);
+    })(t0);
+  }
+
+  /* короткий отскок ответа */
+  function pop(el){
+    if (!still && el.animate) el.animate([{transform:'scale(.96)'},{transform:'scale(1.05)'},{transform:'scale(1)'}], {duration:280});
+  }
+  /* Грошик ест: мягкое сжатие на 4 процента. el это .gr или .sit i. При still CSS его выключает */
+  function chomp(el){ el.classList.remove('chomp'); void el.offsetWidth; el.classList.add('chomp'); }
+  /* Грошик съедает трату (.sit i): то же мягкое сжатие, без смены кадров; mid() примерно через 150 мс */
+  function toss(i, mid){
+    chomp(i);
+    if (mid) setTimeout(mid, 150);
+  }
+  /* сменить позу .gr. Картинка меняется в короткой дымке прозрачности (150 мс), чтобы лицо не подменялось
+     рывком. Частые вызовы подряд склеиваются: показывается последняя поза. При still меняется сразу */
+  function pose(el, name){
+    if (!el._poseT && el.dataset.pose === name) return;
+    el._pose = name;
+    if (el._poseT) return;
+    if (still || !el.animate) { el.dataset.pose = name; return; }
+    el.animate([{opacity:1}, {opacity:.25, offset:.45}, {opacity:.25, offset:.55}, {opacity:1}], {duration:150, easing:'ease-in-out'});
+    el._poseT = setTimeout(function(){ el._poseT = 0; el.dataset.pose = el._pose; }, 75);
+  }
+
+  /* один раз, когда элемент вошёл в экран. Без IntersectionObserver и при still срабатывает сразу */
+  function inView(el, fn, threshold){
+    if (still || !('IntersectionObserver' in window)) { fn(); return; }
+    var io = new IntersectionObserver(function(e){
+      if (e[0].isIntersecting) { io.disconnect(); fn(); }
+    }, {threshold: threshold == null ? .35 : threshold});
+    io.observe(el);
+  }
+  /* поставить .in всем .rv внутри el по очереди */
+  function reveal(el, step){
+    var items = el.querySelectorAll('.rv');
+    inView(el, function(){
+      items.forEach(function(x, k){ setTimeout(function(){ x.classList.add('in'); }, still ? 0 : k * (step || 90)); });
+    }, .2);
+  }
+  /* прогресс скролла 0..1 для высокой обёртки с прилипающим ребёнком:
+     0, когда верх обёртки дошёл до верха окна; 1, когда низ обёртки дошёл до низа окна.
+     fn(p) вызывается на скролле и ресайзе через requestAnimationFrame */
+  function scrollProgress(el, fn){
+    var tick = false;
+    function calc(){
+      tick = false;
+      var r = el.getBoundingClientRect(), span = r.height - innerHeight;
+      fn(span <= 0 ? (r.top <= 0 ? 1 : 0) : Math.max(0, Math.min(1, -r.top / span)));
+    }
+    function req(){ if (!tick) { tick = true; requestAnimationFrame(calc); } }
+    addEventListener('scroll', req, {passive:true}); addEventListener('resize', req);
+    calc();
+  }
+
+  document.addEventListener('DOMContentLoaded', function(){
+    document.querySelectorAll('.lang button').forEach(function(b){
+      b.addEventListener('click', function(){ setLang(b.dataset.lang); });
+    });
+    applyLang();
+    /* ?y=1200 прокрутить для снимка */
+    if (q.get('y')) setTimeout(function(){ root.style.scrollBehavior = 'auto'; scrollTo(0, +q.get('y')); }, 60);
+  });
+
+  return {
+    still: still, L: L, onLang: onLang, setLang: setLang, lang: function(){ return lang; },
+    fmt: fmt, tween: tween, pop: pop, chomp: chomp, toss: toss, pose: pose,
+    inView: inView, reveal: reveal, scrollProgress: scrollProgress
+  };
+})();
+
+/* экран 1 */
+(function(){
+  var sec = document.getElementById('s1');
+  if (!sec) return;
+  var st = sec.querySelector('.stage'), plate = document.getElementById('s1-plate'),
+      n = document.getElementById('s1-n'), g = document.getElementById('s1-g'), days = document.getElementById('s1-days'),
+      big = plate.querySelector('.big'), payday = false;
+
+  /* бейдж сверху плашки: дни до зарплаты или «зарплата прийшла» */
+  function badge(){
+    days.textContent = payday ? G.L('зарплата прийшла', 'зарплата пришла') : G.L('до зарплати 12 днів', 'до зарплаты 12 дней');
+    days.className = payday ? 'badge g' : 'badge w';
+  }
+  G.onLang(badge);
+  badge();
+  if (G.still) return;
+
+  var seq = [['кава', 'кофе', 85], ['таксі', 'такси', 140], ['обід', 'обед', 210]], i = 0, v = 640, vis = true,
+      sit = g.parentNode;
+  /* вне окна стикеры не летят и Грошик не дышит */
+  if ('IntersectionObserver' in window) {
+    new IntersectionObserver(function(e){ vis = e[0].isIntersecting; sit.classList.toggle('paused', !vis); }, {threshold: .25}).observe(plate);
+  }
+
+  /* стикер траты появляется над плашкой и летит Грошику в рот */
+  function fly(text, done){
+    if (!st.animate) { done(); return; }
+    var c = document.createElement('span');
+    c.className = 'chip fly'; c.setAttribute('aria-hidden', 'true'); c.textContent = text;
+    st.appendChild(c);
+    var s = st.getBoundingClientRect(), p = plate.getBoundingClientRect(), t = g.getBoundingClientRect();
+    var x0 = p.left - s.left + p.width * .3, y0 = p.top - s.top - 44,
+        x1 = t.left - s.left + t.width * .5, y1 = t.top - s.top + t.height * .55;
+    function at(x, y, r, k){ return 'translate(' + x + 'px,' + y + 'px) translate(-50%,-50%) rotate(' + r + 'deg) scale(' + k + ')'; }
+    /* место появления: если анимация не пойдёт, стикер просто постоит над плашкой */
+    c.style.transform = at(x0, y0, -8, 1);
+    c.animate([
+      {transform: at(x0, y0 + 14, -14, .5), opacity: 0},
+      {transform: at(x0, y0, -6, 1.06), opacity: 1, offset: .16},
+      {transform: at(x0, y0, -8, 1), opacity: 1, offset: .5},
+      {transform: at((x0 + x1) / 2, Math.min(y0, y1) - 40, 4, .8), opacity: 1, offset: .78},
+      {transform: at(x1, y1, 14, .3), opacity: 0}
+    ], {duration: 1500, easing: 'ease-in-out'});
+    /* таймер, а не onfinish: срабатывает, даже если браузер придержал анимацию */
+    setTimeout(function(){ c.remove(); done(); }, 1500);
+  }
+
+  function step(){
+    if (!vis || document.hidden) { setTimeout(step, 700); return; }
+    if (i < seq.length) {
+      var it = seq[i++];
+      fly(G.L(it[0], it[1]) + ' −' + it[2] + ' ₴', function(){
+        G.toss(g, function(){ v -= it[2]; G.tween(n, v, 600); });
+      });
+      setTimeout(step, 2300);
+    } else {
+      setTimeout(function(){
+        payday = true; badge(); v = 640; i = 0;
+        G.tween(n, v, 900); G.pop(big); G.chomp(g);
+        setTimeout(function(){ payday = false; badge(); step(); }, 2600);
+      }, 1200);
+    }
+  }
+  setTimeout(step, 1100);
+})();
+
+/* экран 7 */
+(function(){
+  var sec = document.getElementById('s7'); if (!sec) return;
+  function watch(el, fn, th){
+    var done = false, iv;
+    function go(){ if (done) return; done = true; clearInterval(iv); fn(); }
+    G.inView(el, go, th);
+    if (!G.still) iv = setInterval(function(){
+      var r = el.getBoundingClientRect();
+      if (r.height && r.top < innerHeight * .8 && r.bottom > innerHeight * .2) go();
+    }, 400);
+  }
+  if (G.still) return;
+  var tabs = sec.querySelectorAll('.s7-tab');
+  sec.classList.add('arm');
+  watch(sec.querySelector('.s7-tabs'), function(){
+    tabs.forEach(function(t, k){ setTimeout(function(){ t.classList.add('in'); }, k * 380); });
+    /* зелёная табличка шлёпнулась, Грошик крепче прижимает банку */
+    var gr = document.getElementById('s7-g');
+    if (gr) setTimeout(function(){ G.chomp(gr); }, 380 + 380);
+  }, .3);
+})();
+
+/* экран 2 */
+(function(){
+  var sec = document.getElementById('s2');
+  if (!sec) return;
+  function $(id){ return document.getElementById(id); }
+  var panes = [$('s2-p1'), $('s2-p2')], sw = $('s2-sw'),
+      ans = $('s2-o'), k = $('s2-k'), y = $('s2-y'), m = $('s2-m'), gr = $('s2-g'),
+      range = $('s2-pc'), pctL = $('s2-pct'),
+      inputs = [$('s2-sal'), $('s2-pr'), $('s2-wk')],
+      mode = 0;
+
+  function val(el){ var d = el.value.replace(/\D/g, ''); return d ? +d : 0; }
+
+  function render(anim){
+    var year, month, pct = +range.value;
+    pctL.textContent = G.L('Відкладати ', 'Откладывать ') + pct + '%';
+    if (mode === 0) {
+      month = Math.round(val(inputs[0]) * pct / 100); year = month * 12;
+      k.textContent = G.L('за рік відкладеш', 'за год отложишь');
+      m.textContent = G.fmt(month) + ' ₴ ' + G.L('на місяць', 'в месяц');
+      G.pose(gr, year >= 60000 ? 'happy' : 'jar');
+      sw.textContent = G.L('А у що обходиться звичка?', 'А во что обходится привычка?');
+    } else {
+      year = val(inputs[1]) * val(inputs[2]) * 52; month = year / 12;
+      k.textContent = G.L('звичка за рік', 'привычка за год');
+      m.textContent = G.L('це ', 'это ') + G.fmt(month) + ' ₴ ' + G.L('на місяць', 'в месяц');
+      G.pose(gr, year >= 30000 ? 'sweat' : 'sit');
+      sw.textContent = G.L('А скільки відкладеться за рік?', 'А сколько отложится за год?');
+    }
+    y.textContent = G.fmt(year) + ' ₴';
+    fitAll();
+    if (anim) G.pop(y.parentNode);
+  }
+
+  /* число не переносится, поэтому шрифт уменьшается, пока самая длинная строка не влезет в плашку.
+     Начинаем с размера из CSS (он зависит от ширины окна), шагаем вниз до 12px */
+  function fit(el){
+    el.style.fontSize = '';
+    var w = el.clientWidth;
+    if (!w) return;
+    var fs = parseFloat(getComputedStyle(el).fontSize);
+    for (var n = 0; n < 40 && el.scrollWidth > w + .5 && fs > 12; n++) {
+      fs = Math.max(12, Math.min(fs - 1, Math.floor(fs * w / el.scrollWidth)));
+      el.style.fontSize = fs + 'px';
+    }
+  }
+  /* то же для полей ввода: длинное число в узком поле («Ціна за раз» на телефоне) уменьшается, а не прячется */
+  var meas = document.createElement('span');
+  meas.setAttribute('aria-hidden', 'true');
+  meas.style.cssText = 'position:absolute;left:0;top:0;visibility:hidden;white-space:pre;pointer-events:none';
+  sec.appendChild(meas);
+  function fitInput(el){
+    el.style.fontSize = '';
+    var cs = getComputedStyle(el), w = el.clientWidth - parseFloat(cs.paddingLeft) - parseFloat(cs.paddingRight) - 2;
+    if (w <= 0) return;
+    var fs = parseFloat(cs.fontSize);
+    meas.style.font = cs.fontWeight + ' ' + fs + 'px ' + cs.fontFamily;
+    meas.textContent = el.value;
+    for (var n = 0; n < 40 && meas.offsetWidth > w && fs > 16; n++) {
+      fs = Math.max(16, Math.min(fs - 1, Math.floor(fs * w / meas.offsetWidth)));
+      meas.style.fontSize = fs + 'px';
+      el.style.fontSize = fs + 'px';
+    }
+  }
+  function fitAll(){ fit(y.parentNode); fit(m); fit(k); inputs.forEach(fitInput); }
+  var lastW = 0;
+  if (window.ResizeObserver) new ResizeObserver(function(){
+    if (ans.clientWidth !== lastW) { lastW = ans.clientWidth; fitAll(); }
+  }).observe(ans);
+  else addEventListener('resize', fitAll);
+  if (document.fonts && document.fonts.ready) document.fonts.ready.then(fitAll);
+
+  /* только цифры, тысячи через пробел; курсор остаётся после той же цифры */
+  function tidy(el){
+    var pos = el.selectionStart == null ? el.value.length : el.selectionStart,
+        before = el.value.slice(0, pos).replace(/\D/g, '').length,
+        d = el.value.replace(/\D/g, '').replace(/^0+(?=\d)/, ''),
+        f = d ? G.fmt(+d) : '';
+    if (f === el.value) return;
+    el.value = f;
+    var p = 0, seen = 0;
+    while (p < f.length && seen < before) { if (/\d/.test(f[p])) seen++; p++; }
+    if (document.activeElement === el) { try { el.setSelectionRange(p, p); } catch (e) {} }
+  }
+  /* только для снимков: ?s2=120000 зарплата, ?s2p=20 процент, ?s2h=999999,99 привычка (цена, разы) */
+  var dq = new URLSearchParams(location.search);
+  if (dq.get('s2')) inputs[0].value = dq.get('s2');
+  if (dq.get('s2p')) range.value = dq.get('s2p');
+  if (dq.get('s2h')) { var hv = dq.get('s2h').split(','); inputs[1].value = hv[0]; inputs[2].value = hv[1] || '1'; }
+  inputs.forEach(function(el){
+    el.maxLength = el.maxLength + Math.floor((el.maxLength - 1) / 3);
+    tidy(el);
+    el.addEventListener('input', function(){ tidy(el); render(true); });
+  });
+  range.addEventListener('input', function(){ render(true); });
+
+  /* тихий переключатель второго режима: одна строка-ссылка под ответом */
+  function select(to){
+    mode = to;
+    panes[0].hidden = mode !== 0; panes[1].hidden = mode !== 1;
+    render(true);
+  }
+  sw.addEventListener('click', function(){ select(1 - mode); });
+
+  G.onLang(function(){ render(false); });
+  if (dq.get('s2h')) select(1);
+  render(false);
+})();
+
+/* экран 3 */
+/* Экран 3: чат. Числа из месяца лендинга (15 600 ₴): к десятому дню осталось 11 424 ₴ на 21 день, 544 ₴ в день.
+   Обед дома 224 ₴: (11 424 − 224) / 20 = 560. Подарок 1 500 ₴: 496. Премия 2 000 ₴ в обычный день: 644.
+   ?s3=1..3 сразу показывает случай (для снимков) */
+(function(){
+  var box = document.getElementById('s3-chat');
+  if (!box) return;
+  var me = document.getElementById('s3-m'), re = document.getElementById('s3-r'), p = document.getElementById('s3-p'),
+      bs = [].slice.call(document.querySelectorAll('#s3-o button'));
+  var ME = [null,
+    ['Обідала вдома, пішло 224&nbsp;₴', 'Обедала дома, ушло 224&nbsp;₴'],
+    ['Купила подарунок за&nbsp;1&nbsp;500&nbsp;₴', 'Купила подарок за&nbsp;1&nbsp;500&nbsp;₴'],
+    ['Прийшла премія 2&nbsp;000&nbsp;₴', 'Пришла премия 2&nbsp;000&nbsp;₴']];
+  var PRE = [null, ['Тоді далі', 'Тогда дальше'], ['Нічого, далі', 'Ничего, дальше'], ['Ура, далі', 'Ура, дальше']];
+  var TO = [544, 560, 496, 644];
+  var cur = 0, shown = 544, timer = 0, touched = false;
+
+  function text(k, n){
+    me.innerHTML = G.L(ME[k][0], ME[k][1]);
+    p.innerHTML = G.L(PRE[k][0], PRE[k][1]) + ' <b><span id="s3-n" data-v="' + n + '">' + G.fmt(n) + '</span>&nbsp;₴</b> ' + G.L('на&nbsp;день', 'в&nbsp;день');
+  }
+  function set(k, anim){
+    clearTimeout(timer);
+    bs.forEach(function(b){ b.setAttribute('aria-pressed', String(+b.dataset.k === k)); });
+    var live = anim && !G.still, from = shown;
+    cur = k; shown = TO[k];
+    text(k, live ? from : TO[k]);
+    if (!live) { me.classList.add('in'); re.classList.add('in'); return; }
+    re.classList.remove('in'); me.classList.remove('in');
+    void me.offsetWidth; me.classList.add('in');
+    /* ответ приходит чуть позже сообщения, число считает от того, что было на экране */
+    timer = setTimeout(function(){ re.classList.add('in'); G.tween(document.getElementById('s3-n'), TO[k], 900); }, 700);
+  }
+  bs.forEach(function(b){ b.addEventListener('click', function(){ touched = true; set(+b.dataset.k, true); }); });
+  G.onLang(function(){ if (cur) text(cur, TO[cur]); });
+
+  var k0 = parseInt(new URLSearchParams(location.search).get('s3'), 10);
+  if (k0 >= 1 && k0 <= 3) { touched = true; set(k0, false); return; }
+  /* первый случай показывается сам, когда чат появился в окне */
+  G.inView(box, function(){ if (!touched) setTimeout(function(){ if (!touched) set(1, true); }, 600); }, .5);
+})();
+
+/* экран 10 */
+/* Экран 10: один день. Утро и день пришли сами (Apple Pay), вечером рынок за наличные набирается в форме-картинке.
+   Числа из месяца лендинга (s3.js): 544 ₴ в день. 85 + 160 + 240 = 485 ₴, на сегодня остаётся 59 ₴, число в день не меняется.
+   День идёт сам по кругу, пока блок в окне. При G.still конечное состояние.
+   ?s10=0..3 сколько трат дня уже есть (для снимков; 3 = вечер, форма заполнена) */
+(function(){
+  var st = document.getElementById('s10-st');
+  if (!st) return;
+  var BASE = 544;
+  var DAY = [
+    {a: 85, d: ['Кав’ярня', 'Кофейня'], c: 'cafe', ap: 1},
+    {a: 160, d: ['Обід', 'Обед'], c: 'cafe', ap: 1},
+    {a: 240, d: ['Ринок', 'Рынок'], c: 'food', ap: 0}];
+  var HAND = DAY[2];
+  var slots = [].slice.call(st.querySelectorAll('.s10-tr')), lis = [].slice.call(st.querySelectorAll('.s10-steps li')),
+      tiles = [].slice.call(st.querySelectorAll('.s10-cat')),
+      lf = document.getElementById('s10-lf'), sp = document.getElementById('s10-sp'), bar = document.getElementById('s10-bar'),
+      amt = document.getElementById('s10-amt'), av = document.getElementById('s10-av'), sd = document.getElementById('s10-sd'),
+      add = document.getElementById('s10-add');
+  var n = 0, amtN = 0, wordN = 0, catOn = false, T = [], running = false;
+
+  function row(r){
+    var nm = G.L(r.d[0], r.d[1]);
+    return '<img src="img/s5-cat-' + r.c + '.webp" width="36" height="36" alt="">' +
+      (r.ap ? '<span class="s10-nm two"><span class="s10-nt">' + nm + '</span><span class="s10-apb">Apple Pay</span></span>'
+            : '<span class="s10-nm">' + nm + '</span>') +
+      '<span class="s10-sm num">−' + G.fmt(r.a) + '&nbsp;₴</span>';
+  }
+  function paint(anim){
+    var spent = 0;
+    for (var i = 0; i < n; i++) spent += DAY[i].a;
+    if (anim && !G.still) G.tween(lf, BASE - spent, 900);
+    else { lf.dataset.v = BASE - spent; lf.textContent = G.fmt(BASE - spent); }
+    sp.textContent = G.fmt(spent);
+    bar.style.width = Math.min(100, spent / BASE * 100) + '%';
+  }
+  function fill(i, anim){
+    n = i + 1;
+    slots[i].className = 's10-tr on' + (anim && !G.still ? ' new' : '');
+    slots[i].innerHTML = row(DAY[i]);
+    paint(anim);
+  }
+  /* форма-картинка: сколько знаков суммы и букв «На що» уже набрано, выбрана ли категория */
+  function form(){
+    var dg = String(HAND.a), w = G.L(HAND.d[0], HAND.d[1]);
+    av.textContent = amtN ? dg.slice(0, amtN) : '0';
+    av.classList.toggle('s10-ph', !amtN);
+    sd.textContent = wordN ? w.slice(0, wordN) : G.L('На що', 'На что');
+    sd.classList.toggle('s10-ph', !wordN);
+    tiles.forEach(function(t){ t.classList.toggle('on', catOn && t.dataset.c === HAND.c); });
+  }
+  function step(k){ lis.forEach(function(li, j){ li.classList.toggle('on', j === k); }); }
+  function tap(el){ if (G.still) return; el.classList.remove('s10-tap'); void el.offsetWidth; el.classList.add('s10-tap'); }
+  function at(ms, fn){ T.push(setTimeout(fn, ms)); }
+  function stop(){ T.forEach(clearTimeout); T = []; amt.classList.remove('typing'); }
+  function clear(){
+    n = 0; amtN = 0; wordN = 0; catOn = false;
+    slots.forEach(function(s){ s.className = 's10-tr'; s.innerHTML = ''; });
+    amt.classList.remove('typing'); form(); step(-1); paint(false);
+  }
+  function still(k){
+    clear();
+    for (var i = 0; i < k; i++) fill(i, false);
+    step(k ? k - 1 : -1);
+    if (k === 3) { amtN = 3; wordN = 99; catOn = true; form(); }
+  }
+  /* вечер руками: касание суммы, цифры, «На що» по буквам, категория, «Додати» */
+  function hand(t){
+    var dg = String(HAND.a), wl = Math.max(HAND.d[0].length, HAND.d[1].length);
+    at(t, function(){ amt.classList.add('typing'); tap(amt); });
+    dg.split('').forEach(function(x, j){ at(t + 400 + j * 320, function(){ amtN = j + 1; form(); }); });
+    var t1 = t + 400 + dg.length * 320 + 400;
+    at(t1, function(){ amt.classList.remove('typing'); });
+    for (var j = 0; j < wl; j++) (function(j){ at(t1 + j * 90, function(){ wordN = j + 1; form(); }); })(j);
+    var t2 = t1 + wl * 90 + 150;
+    at(t2, function(){ catOn = true; form(); });
+    at(t2 + 1000, function(){ tap(add); });
+    at(t2 + 1250, function(){ fill(2, true); });
+    return t2 + 1250;
+  }
+  function cycle(){
+    stop(); clear();
+    at(600, function(){ step(0); });
+    at(1100, function(){ fill(0, true); });
+    at(2900, function(){ step(1); });
+    at(3400, function(){ fill(1, true); });
+    at(5200, function(){ step(2); });
+    var t = hand(5500);
+    at(t + 4500, cycle);
+  }
+
+  G.onLang(function(){
+    for (var i = 0; i < n; i++) slots[i].innerHTML = row(DAY[i]);
+    form();
+  });
+
+  var k0 = parseInt(new URLSearchParams(location.search).get('s10'), 10);
+  if (k0 >= 0 && k0 <= 3) { still(k0); return; }
+  if (G.still || !('IntersectionObserver' in window)) { still(3); return; }
+  still(0);
+  /* идёт, пока блок в окне; ушёл из окна, круг остановлен, вернулся, день сначала */
+  new IntersectionObserver(function(es){
+    es.forEach(function(e){
+      if (e.isIntersecting && e.intersectionRatio >= .3) { if (!running) { running = true; cycle(); } }
+      else if (!e.isIntersecting && running) { running = false; stop(); }
+    });
+  }, {threshold: [0, .3]}).observe(st);
+})();
+
+/* экран 4 */
+(function(){
+  var st = document.getElementById('s4-st');
+  if (!st) return;
+  var list = document.getElementById('s4-cards'), cards = [].slice.call(list.children),
+      left = document.getElementById('s4-left'), today = document.getElementById('s4-today'),
+      lbl = document.getElementById('s4-lbl'), gr = document.getElementById('s4-gr');
+
+  /* 24 000 на месяц минус платежи 150 + 1 250 + 2 900 + 500 = 4 800, свободных 19 200, на 30 дней это 640 в день,
+     то же число, что на первом экране */
+  var MONTH = 24000, DAYS = 30, done = false;
+  function freeAfter(n){
+    var s = MONTH;
+    for (var i = 0; i < n; i++) s -= +cards[i].dataset.sum;
+    return s;
+  }
+  function label(){
+    lbl.textContent = done ? G.L('вільних', 'свободных') : G.L('на місяць', 'на месяц');
+  }
+  G.onLang(label);
+
+  function finish(){
+    done = true; label();
+    G.pose(gr, 'happy');
+  }
+
+  if (G.still) {
+    cards.forEach(function(c){ c.classList.add('in', 'cut'); });
+    left.dataset.v = freeAfter(cards.length); left.textContent = G.fmt(freeAfter(cards.length));
+    today.dataset.v = freeAfter(cards.length) / DAYS; today.textContent = G.fmt(freeAfter(cards.length) / DAYS);
+    finish();
+    return;
+  }
+
+  ['full', 'happy'].forEach(function(p){ new Image().src = 'img/pose-' + p + '.webp'; });
+  /* стопка выезжает, Грошик спрыгивает на верхнюю карточку, когда она легла */
+  var wrap = document.getElementById('s4-r');
+  wrap.classList.add('wait');
+  G.inView(st, function(){
+    cards.forEach(function(c, i){
+      setTimeout(function(){ c.classList.add('in'); }, 300 + i * 260);
+    });
+    setTimeout(function(){ gr.classList.add('in'); }, 300 + 420);
+    var t0 = 300 + cards.length * 260 + 500;
+    cards.forEach(function(c, i){
+      setTimeout(function(){
+        c.classList.add('cut');
+        var f = freeAfter(i + 1);
+        G.tween(left, f, 600);
+        G.tween(today, Math.round(f / DAYS), 600);
+        /* платежи «съедены»: рот полон монет, в конце снова доволен */
+        G.pose(gr, 'full');
+        if (gr.classList.contains('in')) G.chomp(gr);
+      }, t0 + i * 1000);
+    });
+    setTimeout(function(){
+      finish();
+      G.pop(today.parentNode);
+    }, t0 + cards.length * 1000 + 200);
+  }, .4);
+})();
+
+/* экран 5 */
+(function(){
+  /* Экран 5: лимиты категорий. Значок категории тащат на плашку Грошика (или просто нажимают на него),
+     Грошик говорит, сколько осталось, и меняет позу: вистачає доволен, впритул потеет, понад «объелся».
+     Один раз сам показывает, как это делается: значок «Кафе» летит на плашку и возвращается.
+     Проверка: ?s5=0..5 сразу показывает ответ для категории с этим номером (при still показан «Кафе»). */
+  var sec = document.getElementById('s5'); if (!sec) return;
+  var list = sec.querySelector('.s5-list'), rows = [].slice.call(sec.querySelectorAll('.s5-row'));
+  var zone = document.getElementById('s5-zone'), say = document.getElementById('s5-say'), gr = document.getElementById('s5-gr');
+  var ask = say.querySelector('.s5-ask'), dbg = new URLSearchParams(location.search).get('s5');
+  var MOOD = {g:'happy', t:'sweat', o:'full'}, cur = null, touched = false;
+
+  function state(r){ var k = +r.dataset.spent / +r.dataset.limit; return k > 1 ? 'o' : k >= .85 ? 't' : 'g'; }
+
+  /* ответы Грошика: по одному на категорию, все в одной клетке сетки */
+  var views = rows.map(function(r){
+    var v = document.createElement('div'); v.className = 's5-v s5-res';
+    var src = r.querySelector('.s5-ico img').getAttribute('src');
+    v.innerHTML = '<span class="s5-ri"><img src="' + src + '" width="44" height="44" alt=""></span>' +
+      '<div class="s5-rn"><b></b><strong></strong></div><p class="s5-rt"></p>';
+    say.appendChild(v); return v;
+  });
+
+  function paint(){
+    rows.forEach(function(r, i){
+      var sp = +r.dataset.spent, lim = +r.dataset.limit, st = state(r);
+      r.classList.remove('o', 't', 'g'); r.classList.add(st);
+      var b = r.querySelector('.s5-badge');
+      b.className = 'badge s5-badge ' + (st === 'o' ? 'p' : st === 't' ? '' : 'g');
+      b.textContent = st === 'o' ? G.L('понад', 'сверх') : st === 't' ? G.L('впритул', 'впритык') : G.L('вистачає', 'хватает');
+      r.querySelector('.s5-nums').textContent = st === 'o' ? G.L('понад на ', 'сверх на ') + G.fmt(sp - lim) + ' ₴' : G.L('лишилось ', 'осталось ') + G.fmt(lim - sp) + ' ₴ ' + G.L('з', 'из') + ' ' + G.fmt(lim);
+      r.style.setProperty('--w', Math.min(100, Math.round(sp / lim * 100)) + '%');
+      var v = views[i];
+      v.querySelector('b').textContent = r.querySelector('h3').textContent;
+      v.querySelector('strong').textContent = st === 'o'
+        ? G.L('понад на ', 'сверх на ') + G.fmt(sp - lim) + ' ₴'
+        : G.L('лишилось ', 'осталось ') + G.fmt(lim - sp) + ' ₴';
+      v.querySelector('.s5-rt').textContent = st === 'o'
+        ? G.L('Ліміт уже скінчився. Наступного місяця дай їй трохи більше.', 'Лимит уже закончился. В следующем месяце дай ей чуть больше.')
+        : st === 't'
+        ? G.L('Впритул. Ще трохи, і ліміт скінчиться.', 'Впритык. Ещё чуть-чуть, и лимит закончится.')
+        : G.L('Вистачає, можна не рахувати кожну гривню.', 'Хватает, можно не считать каждую гривну.');
+    });
+  }
+  paint(); G.onLang(paint);
+
+  function show(r){
+    var i = rows.indexOf(r); cur = r;
+    rows.forEach(function(x){ x.classList.toggle('sel', x === r); });
+    ask.classList.remove('on');
+    views.forEach(function(v, k){ v.classList.toggle('on', k === i); });
+    G.pose(gr, MOOD[state(r)]);
+    if (!G.still) { G.chomp(gr); G.pop(views[i]); }
+  }
+
+  ['happy', 'sweat', 'full'].forEach(function(p){ new Image().src = 'img/pose-' + p + '.webp'; });
+
+  /* полосы наливаются, когда список вошёл в окно */
+  var filled = false;
+  function fill(){ if (!filled) { filled = true; list.classList.add('on'); } }
+  if (G.still) fill(); else {
+    G.inView(list, fill, .25);
+    var iv = setInterval(function(){
+      var r = list.getBoundingClientRect();
+      if (r.height && r.top < innerHeight * .8 && r.bottom > innerHeight * .2) { fill(); clearInterval(iv); }
+    }, 400);
+  }
+
+  if (G.still || dbg !== null) { show(rows[dbg !== null ? Math.max(0, Math.min(rows.length - 1, +dbg || 0)) : 1]); }
+
+  /* наклейки: тащатся пальцем или мышью, брошенная на плашку показывает ответ, потом возвращается с отскоком */
+  function inside(el, x, y){ var b = el.getBoundingClientRect(); return x >= b.left && x <= b.right && y >= b.top && y <= b.bottom; }
+  rows.forEach(function(row){
+    var el = row.querySelector('.s5-ico'), sx, sy, id = null, ax = 0, ay = 0, moved = false, skip = false;
+    el.addEventListener('pointerdown', function(e){
+      if (id !== null) return;
+      touched = true;
+      id = e.pointerId; sx = e.clientX; sy = e.clientY; ax = 0; ay = 0; moved = false;
+      try { el.setPointerCapture(id); } catch (x) {}
+      el.getAnimations().forEach(function(a){ a.cancel(); });
+    });
+    el.addEventListener('pointermove', function(e){
+      if (e.pointerId !== id) return;
+      ax = e.clientX - sx; ay = e.clientY - sy;
+      if (!moved && Math.abs(ax) + Math.abs(ay) < 7) return;
+      if (!moved) { moved = true; el.classList.add('drag'); zone.classList.add('arm'); }
+      el.style.transform = 'translate(' + ax + 'px,' + ay + 'px) rotate(' + Math.max(-12, Math.min(12, ax / 12)) + 'deg)';
+      zone.classList.toggle('over', inside(zone, e.clientX, e.clientY));
+    });
+    function end(e){
+      if (e.pointerId !== id) return;
+      id = null;
+      if (!moved) return;
+      skip = true; setTimeout(function(){ skip = false; }, 400);
+      var hit = e.type === 'pointerup' && inside(zone, e.clientX, e.clientY);
+      el.classList.remove('drag'); zone.classList.remove('arm', 'over');
+      var from = el.style.transform || 'none'; el.style.transform = '';
+      if (hit) show(row);
+      if (!hit && el.animate && !G.still) el.animate([{transform: from}, {transform: 'none'}], {duration: 520, easing: 'cubic-bezier(.3,1.7,.5,1)'});
+    }
+    el.addEventListener('pointerup', end); el.addEventListener('pointercancel', end);
+    /* нажатие (и Enter с клавиатуры) тоже показывает ответ */
+    el.addEventListener('click', function(){ if (skip) { skip = false; return; } touched = true; show(row); });
+  });
+
+  /* подсказка один раз: когда в окне видны и плашка, и «Кафе», значок сам летит на плашку и возвращается */
+  if (G.still || dbg !== null || !Element.prototype.animate) return;
+  var demo = rows[1], ico = demo.querySelector('.s5-ico');
+  var hv = setInterval(function(){
+    if (touched) { clearInterval(hv); return; }
+    var z = zone.getBoundingClientRect(), c = ico.getBoundingClientRect();
+    if (!filled || z.top < 70 || c.bottom > innerHeight - 10 || c.top < 70) return;
+    clearInterval(hv);
+    setTimeout(function(){
+      if (touched) return;
+      var slot = ask.querySelector('.s5-slot').getBoundingClientRect(), c2 = ico.getBoundingClientRect();
+      var dx = slot.left - c2.left, dy = slot.top - c2.top, to = 'translate(' + dx + 'px,' + dy + 'px) rotate(-6deg)';
+      ico.classList.add('drag'); zone.classList.add('arm');
+      var a = ico.animate([
+        {transform: 'none'}, {transform: to, offset: .85}, {transform: to}
+      ], {duration: 1000, easing: 'cubic-bezier(.4,0,.3,1)'});
+      setTimeout(function(){ zone.classList.add('over'); }, 600);
+      setTimeout(function(){ zone.classList.remove('over', 'arm'); if (!cur) show(demo); }, 900);
+      a.onfinish = a.oncancel = function(){ ico.classList.remove('drag'); };
+    }, 1300);
+  }, 300);
+})();
+
+/* экран 9 */
+(function(){
+  var sec = document.getElementById('s9'); if (!sec) return;
+  var MONTH = 12850, INCOME = 40000, DAY = MONTH / 30;   /* 428 ₴ в день, 18 ₴ в час; доход как в калькуляторе */
+
+  /* мозаика: flex-grow = сумма, у групп сумма детей. Ряды в группе и плитки в ряду делят место по суммам,
+     поэтому площадь плитки пропорциональна сумме (без учёта зазоров 8px) */
+  function sum(el){
+    if (el.dataset.n) return el.dataset.n.split(' ').reduce(function(a, x){ return a + +x; }, 0);
+    var s = 0; [].forEach.call(el.children, function(c){ s += sum(c); }); return s;
+  }
+  var tiles = [].slice.call(sec.querySelectorAll('.s9-t'));
+  [].forEach.call(sec.querySelectorAll('.s9-t, .s9-g, .s9-r'), function(el){ el.style.flexGrow = sum(el); });
+
+  var dn = document.getElementById('s9-dn');
+  function paint(){
+    tiles.forEach(function(t){ t.querySelector('b').textContent = G.fmt(sum(t)) + ' ₴'; });
+    document.getElementById('s9-tot').textContent = G.fmt(MONTH) + ' ₴';
+    document.getElementById('s9-hr').textContent = G.fmt(DAY / 24) + G.L(' ₴ на годину', ' ₴ в час');
+    document.getElementById('s9-mo').textContent = G.L('місяць ', 'месяц ') + G.fmt(MONTH) + ' ₴';
+    document.getElementById('s9-inc').textContent = G.L('день доходу ', 'день дохода ') + G.fmt(INCOME / 30) + ' ₴';
+  }
+  paint(); G.onLang(paint);
+
+  /* плитки выскакивают по очереди, потом досчитывается день, выходят бейджи и Грошик ахает */
+  G.reveal(document.getElementById('s9-mp'), 110);
+  var day = document.getElementById('s9-day'), sit = document.getElementById('s9-sit');
+  /* дыхание стоит, пока плашка вне окна */
+  if ('IntersectionObserver' in window) new IntersectionObserver(function(e){ sit.classList.toggle('paused', !e[0].isIntersecting); }).observe(day);
+  G.inView(day, function(){
+    G.tween(dn, Math.round(DAY), 1300);
+    day.querySelectorAll('.rv').forEach(function(b, k){
+      setTimeout(function(){ b.classList.add('in'); }, G.still ? 0 : 1100 + k * 140);
+    });
+    /* число досчиталось: Грошик кусает монету, как будто проверяет её на зуб */
+    if (!G.still) setTimeout(function(){ G.chomp(sit.querySelector('i')); }, 1300);
+  }, .4);
+  /* список «а ещё в итогах» проявляется по строке, когда дошёл до окна */
+  G.reveal(document.getElementById('s9-more'), 90);
+})();
+
+/* экран 6 */
+(function(){
+  /* Экран 6: банка на цель «Відпустка». Начало: пустая банка, 0 из 60 000, этот месяц. Анимация проигрывает месяцы вперёд:
+     в каждый месяц падает монета, «зібрано» досчитывается, уровень растёт, в конце банка полная (60 000 из 60 000)
+     и Грошик прыгает. Чип суммы в месяц меняет скорость и дату, кнопка «Зібрати ще раз» повторяет.
+     Анимируются только transform, opacity и clip-path; пока экран вне окна, цикл стоит.
+     Проверка: ?s6=0.5 замораживает банку на этой доле пути от пустой до полной (0 пустая, 1 полная).
+     Даты: взнос в конце каждого месяца, начиная с этого. 60 000 / 2 400 = 25 взносов, значит к началу 26-го месяца
+     (из ноября 2026 это грудень 2028). 1 200: 50 взносов, 4 800: 12,5, округляем вверх до 13. Месяц на бейдже идёт так же.
+     Один месяц анимации D мс при любом чипе: чем больше откладываешь, тем быстрее банка полная. */
+  var sec = document.getElementById('s6'); if (!sec) return;
+  var $ = function(id){ return document.getElementById(id); };
+  var GOAL = 60000, START = 0, D = 120, FALL = 480, POOL = 6;
+  var T = 0.09, B = 1;  /* верх и низ внутренности банки в долях её высоты (как .s6-in в s6.css) */
+  var nowEl = $('s6-now'), ofEl = $('s6-of'), dateEl = $('s6-date'), monthEl = $('s6-month');
+  var full = $('s6-full'), top = $('s6-top'), jar = $('s6-jar'), gr = $('s6-gr'), drops = $('s6-drops');
+  var UKG = ['січня','лютого','березня','квітня','травня','червня','липня','серпня','вересня','жовтня','листопада','грудня'];
+  var RUD = ['январю','февралю','марту','апрелю','маю','июню','июлю','августу','сентябрю','октябрю','ноябрю','декабрю'];
+  var UKN = ['січень','лютий','березень','квітень','травень','червень','липень','серпень','вересень','жовтень','листопад','грудень'];
+  var RUN = ['январь','февраль','март','апрель','май','июнь','июль','август','сентябрь','октябрь','ноябрь','декабрь'];
+  var today = new Date(), m0 = today.getFullYear() * 12 + today.getMonth();
+
+  var q = new URLSearchParams(location.search), dbg = q.get('s6');
+  var frozen = G.still || dbg !== null;
+  var monthly = 2400, t = 0, elapsed = 0, playing = false, visible = false, started = false, raf = 0, last = 0, nextCoin = 1, pi = 0;
+
+  /* монеты внутри банки: статичный SVG, рисуется один раз. Верхние ряды раньше, нижние ложатся поверх */
+  function rnd(s){ return function(){ s = (s * 16807) % 2147483647; return s / 2147483647; }; }
+  function coin(x, y){ return '<circle class="k" cx="' + x.toFixed(1) + '" cy="' + y.toFixed(1) + '" r="19"/><circle class="r" cx="' + x.toFixed(1) + '" cy="' + y.toFixed(1) + '" r="11.5"/>'; }
+  (function(){
+    var r = rnd(7), s = '';
+    for (var row = 0, y = 6; y < 250; row++, y += 17)
+      for (var x = (row % 2 ? -10 : 7); x < 220; x += 33) s += coin(x + (r() - .5) * 6, y + (r() - .5) * 5);
+    $('s6-pile').innerHTML = '<svg viewBox="0 0 200 228" preserveAspectRatio="none" aria-hidden="true">' + s + '</svg>';
+    r = rnd(11); s = '';
+    for (var i = 0, xx = -8; xx < 220; i++, xx += 24) s += coin(xx + (r() - .5) * 4, 22 + (i % 2 ? -4 : 3) + (r() - .5) * 4);
+    top.innerHTML = '<svg viewBox="0 0 200 44" aria-hidden="true">' + s + '</svg>';
+  })();
+  var pool = [];
+  for (var k = 0; k < POOL; k++) { var d = document.createElement('span'); d.className = 's6-drop'; drops.appendChild(d); pool.push(d); }
+
+  function months(){ return (GOAL - START) / monthly; }          /* сколько месяцев до полной, дробное */
+  function ym(k){ var a = m0 + k; return [Math.floor(a / 12), a % 12]; }
+
+  function render(){
+    var n = months(), saved = Math.min(GOAL, START + monthly * t), lv = saved / GOAL;
+    full.style.clipPath = 'inset(' + ((T + (1 - lv) * (B - T)) * 100).toFixed(2) + '% 0 0 0)';
+    top.style.transform = 'translateY(' + (-lv * 100).toFixed(2) + '%)';
+    top.style.opacity = lv > 0 ? 1 : 0;   /* пустая банка: без шапки монет на дне */
+    nowEl.textContent = G.fmt(Math.round(saved / 100) * 100);
+    var c = ym(Math.min(Math.ceil(n), Math.ceil(t - 1e-6)));
+    monthEl.textContent = (G.lang() === 'ru' ? RUN : UKN)[c[1]] + ' ' + c[0];
+  }
+  function text(){
+    ofEl.textContent = G.L('з', 'из') + ' ' + G.fmt(GOAL) + ' ₴';
+    var e = ym(Math.ceil(months()));
+    dateEl.textContent = G.lang() === 'ru' ? 'соберётся к ' + RUD[e[1]] + ' ' + e[0] : 'збереться до ' + UKG[e[1]] + ' ' + e[0];
+    render();
+  }
+
+  function drop(){
+    var el = pool[pi++ % POOL], dx = ((pi * 37) % 90) - 45;
+    if (!el.animate) return;
+    el.animate([
+      {transform:'translate(' + dx + '%,-280%) rotate(' + dx * 2 + 'deg)', opacity:0},
+      {opacity:1, offset:.12},
+      {transform:'translate(0,-15%) rotate(0deg) scaleX(1)', opacity:1, offset:.8},
+      {transform:'translate(0,10%) scaleX(.15)', opacity:0}
+    ], {duration: FALL, easing: 'cubic-bezier(.45,0,.8,.6)'});
+  }
+  function finish(){
+    playing = false; t = months(); render();
+    G.pose(gr, 'jump');
+    if (jar.animate) jar.animate([{transform:'none'},{transform:'translateY(-10px) rotate(-3deg)'},{transform:'translateY(0) rotate(2deg)'},{transform:'none'}], {duration:520, easing:'ease-out'});
+    G.pop(nowEl); G.pop(dateEl);
+  }
+  function loop(now){
+    raf = 0;
+    if (!playing || !visible) return;
+    elapsed += Math.min(50, now - last); last = now;
+    var n = months();
+    while (nextCoin <= Math.ceil(n) && elapsed >= (nextCoin - .5) * D - FALL) { drop(); nextCoin++; }
+    t = Math.max(0, elapsed / D);
+    if (t >= n) { finish(); return; }
+    render();
+    raf = requestAnimationFrame(loop);
+  }
+  function kick(){ if (playing && visible && !raf) { last = performance.now(); raf = requestAnimationFrame(loop); } }
+  function play(){
+    started = true; playing = true; t = 0; elapsed = -FALL; nextCoin = 1;
+    G.pose(gr, 'toss'); render(); kick();
+  }
+
+  function setFrozen(){
+    var n = months();
+    if (dbg !== null && !G.still) { var f = Math.max(0, Math.min(1, +dbg || 0)); t = f * n; G.pose(gr, f >= 1 ? 'jump' : f > 0 ? 'toss' : 'jar'); }
+    else { t = n; G.pose(gr, 'happy'); }   /* кадр без движения: цель собрана, дата на бейдже */
+    render();
+  }
+
+  G.onLang(text);
+  if (frozen) setFrozen();
+  text();
+
+  sec.querySelectorAll('.s6-pick .chip').forEach(function(b){
+    b.addEventListener('click', function(){
+      monthly = +b.dataset.m;
+      sec.querySelectorAll('.s6-pick .chip').forEach(function(x){ x.classList.toggle('on', x === b); });
+      if (frozen) setFrozen(); else play();
+      text(); G.pop(dateEl);
+    });
+  });
+  $('s6-again').addEventListener('click', function(){ if (!frozen) play(); });
+
+  if (!frozen) {
+    if ('IntersectionObserver' in window) {
+      /* пока экран вне окна, цикл стоит; первый запуск, когда банка заметно видна */
+      new IntersectionObserver(function(e){ visible = e[0].isIntersecting; kick(); }, {threshold:0}).observe(sec);
+      G.inView(jar, function(){ if (!started) { visible = true; play(); } }, .5);
+    } else { visible = true; play(); }
+  }
+})();
+
+/* экран 8 */
+(function(){
+  var sec = document.getElementById('s8'); if (!sec) return;
+  function links(){
+    var ru = G.lang() === 'ru';
+    sec.querySelectorAll('.s8-link').forEach(function(a){ a.href = a.dataset.href + (ru ? '#ru' : ''); });
+  }
+  links(); G.onLang(links);
+  /* наводишь на «Завантажити», Грошик подпрыгивает от радости; ушёл с кнопки, снова машет */
+  var gr = sec.querySelector('.s8-gr'), get = document.getElementById('s8-get');
+  if (gr && get) {
+    new Image().src = 'img/pose-jump.webp';
+    var on = function(){ G.pose(gr, 'jump'); }, off = function(){ G.pose(gr, 'wave'); };
+    get.addEventListener('pointerenter', on); get.addEventListener('pointerleave', off);
+    get.addEventListener('focus', on); get.addEventListener('blur', off);
+  }
+})();
+
+</script>
+</body>
+</html>

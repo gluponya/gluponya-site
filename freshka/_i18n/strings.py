@@ -45,13 +45,21 @@ T = {
         "Freshka vẽ tủ lạnh của bạn thành một bức tranh: các ngăn, đồ ăn trên đó và món nào sắp hỏng",
         "Freshka buzdolabını bir resim olarak gösterir: raflar, üstündeki yiyecekler ve yakında bozulacak olanlar",
     ),
-    "Холодильник, який видно. Полиці й продукти намальовані, що ось-ось зіпсується, видно одразу": (
-        "A fridge you can see. The shelves and the food are drawn, so what is about to go off shows at a glance",
-        "Ein Kühlschrank, den man sieht. Fächer und Lebensmittel sind gezeichnet, und was bald verdirbt, siehst du sofort",
-        "Tu nevera, a la vista. Los estantes y la comida están dibujados, y lo que está a punto de estropearse se ve al instante",
-        "Uma geladeira que dá pra ver. As prateleiras e a comida são desenhadas, e o que está prestes a estragar aparece na hora",
-        "Tủ lạnh nhìn là thấy. Các ngăn và đồ ăn đều được vẽ ra, món nào sắp hỏng là thấy ngay",
-        "Göz önünde bir buzdolabı. Raflar ve yiyecekler çizilmiş, yakında bozulacak olan hemen görünür",
+    "Фрешка: холодильник у телефоні": (
+        "Freshka: the fridge in your phone",
+        "Freshka: der Kühlschrank im Handy",
+        "Freshka: la nevera en tu móvil",
+        "Freshka: a geladeira no celular",
+        "Freshka: tủ lạnh trong điện thoại",
+        "Freshka: telefonundaki buzdolabı",
+    ),
+    "ШІ читає фото чека і додає у Фрешку всі продукти з нього. Видно, що скоро зіпсується": (
+        "AI reads a photo of your receipt and adds everything on it to Freshka. You see what is about to go off",
+        "Die KI liest ein Foto deines Kassenbons und trägt alles daraus in Freshka ein. Du siehst, was bald verdirbt",
+        "La IA lee la foto de tu ticket y añade a Freshka todo lo que hay en él. Se ve lo que está a punto de estropearse",
+        "A IA lê a foto do seu cupom e adiciona ao Freshka tudo o que está nele. Dá pra ver o que está prestes a estragar",
+        "AI đọc ảnh hóa đơn và thêm mọi món trên đó vào Freshka. Món nào sắp hỏng là thấy ngay",
+        "Yapay zekâ fiş fotoğrafını okur ve üzerindeki her şeyi Freshka’ya ekler. Yakında bozulacak olan hemen görünür",
     ),
     "Фрешка. Холодильник, який видно: екран застосунку з намальованим холодильником і продуктами на полицях": (
         "Freshka. A fridge you can see: the app screen with a drawn fridge and food on its shelves",

@@ -83,7 +83,7 @@ def preview(lang):
     app = "uk" if lang == "uk" else "en"
     canvas = c.cloth((W, H), c.GROUNDS["mint"][0], 2)
     size = text_column(canvas, "mint", "Фрешка" if lang == "uk" else "Freshka", OG_HEADLINE[lang], 84, 570)
-    phone(canvas, SHOTS / "raw-hires" / app / "3.png", 712, 54, 400)
+    phone(canvas, SHOTS / "raw-hires" / app / "1.png", 737, 40, 350)  # the main screen: the kitchen with the cats, the first row of food below
     out = (FRESHKA if lang == "uk" else FRESHKA / lang) / "og.jpg"
     out.parent.mkdir(exist_ok=True)
     canvas.convert("RGB").save(out, quality=88)
@@ -105,5 +105,5 @@ def screens():
 
 if "--screens" in sys.argv or len(sys.argv) == 2:
     screens()
-for lang in LANGS:
+for lang in ("uk",) + LANGS:
     preview(lang)

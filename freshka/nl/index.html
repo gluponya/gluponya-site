@@ -1,0 +1,607 @@
+<!doctype html>
+<html lang="nl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="description" content="Freshka toont je koelkast als plaatje: de planken, de producten erop en wat bijna bederft">
+<meta property="og:title" content="Freshka: de koelkast in je telefoon">
+<meta property="og:description" content="AI leest een foto van je kassabon en zet alles erop in Freshka. Je ziet wat bijna bederft">
+<meta property="og:image" content="https://gluponya.tv/freshka/nl/og.jpg">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="Freshka. Een koelkast die je ziet: het scherm van de app met een getekende koelkast en producten op de planken">
+<meta property="og:site_name" content="Freshka">
+<meta property="og:locale" content="nl_NL">
+<link rel="icon" href="/img/freshka-icon.png">
+<title>Freshka</title>
+<link rel="canonical" href="https://gluponya.tv/freshka/nl/">
+<!--langs:head-->
+<link rel="alternate" hreflang="uk" href="https://gluponya.tv/freshka/">
+<link rel="alternate" hreflang="en" href="https://gluponya.tv/freshka/en/">
+<link rel="alternate" hreflang="de" href="https://gluponya.tv/freshka/de/">
+<link rel="alternate" hreflang="es" href="https://gluponya.tv/freshka/es/">
+<link rel="alternate" hreflang="pt" href="https://gluponya.tv/freshka/pt/">
+<link rel="alternate" hreflang="vi" href="https://gluponya.tv/freshka/vi/">
+<link rel="alternate" hreflang="tr" href="https://gluponya.tv/freshka/tr/">
+<link rel="alternate" hreflang="fr" href="https://gluponya.tv/freshka/fr/">
+<link rel="alternate" hreflang="it" href="https://gluponya.tv/freshka/it/">
+<link rel="alternate" hreflang="pl" href="https://gluponya.tv/freshka/pl/">
+<link rel="alternate" hreflang="nl" href="https://gluponya.tv/freshka/nl/">
+<link rel="alternate" hreflang="x-default" href="https://gluponya.tv/freshka/en/">
+<!--/langs:head-->
+<meta property="og:url" content="https://gluponya.tv/freshka/nl/">
+<meta property="og:type" content="website">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="apple-itunes-app" content="app-id=6831171166">
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "MobileApplication",
+  "name": "Freshka",
+  "alternateName": "Freshka: Fridge, Food Tracker",
+  "description": "Je koelkast als plaatje: maak een foto van de kassabon en je boodschappen verschijnen op de planken. Zie wat je in huis hebt en wat bijna bederft, en deel één koelkast met het hele gezin",
+  "url": "https://gluponya.tv/freshka/nl/",
+  "installUrl": "https://apps.apple.com/app/id6831171166",
+  "sameAs": ["https://apps.apple.com/app/id6831171166", "https://t.me/freshkapp_bot/fridge"],
+  "image": "https://gluponya.tv/img/freshka-icon.png",
+  "operatingSystem": "iOS 16.4",
+  "applicationCategory": "LifestyleApplication",
+  "applicationSubCategory": "Food & Drink",
+  "inLanguage": ["uk", "en"],
+  "offers": {"@type": "Offer", "price": "0", "priceCurrency": "UAH"},
+  "author": {"@type": "Organization", "name": "gluponya", "url": "https://gluponya.tv/"}
+}
+</script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,600;0,700;1,600&family=Nunito:wght@400;600;700;800&display=swap">
+<style>
+/* Layout: kitchen hero (stickers round the headline card, phone), icon ribbon, colour bands: coral list-vs-picture, honey live fridge, mint spoiling, bento, catalogue, coral final, dark footer */
+:root{
+  --paper:#FBF6EE; --wall:#FCF3EA; --ink:#3A2E26; --ink-soft:#6B5D50;
+  --mint:#BFDCD3; --coral:#F0B9A6; --coral-deep:#D9785A; --honey:#F3D9A6;
+  --fresh:#5E9E6E; --soon:#D9A23A; --gone:#8A8440; --black:#1F1A17; --plum:#8C4F78;
+  --serif:"Lora",Georgia,serif; --sans:"Nunito",system-ui,-apple-system,sans-serif;
+  color-scheme:light;
+}
+*{box-sizing:border-box}
+body{margin:0;background:var(--paper);color:var(--ink);font-family:var(--sans);font-size:18px;line-height:1.5}
+img{display:block;max-width:100%}
+h1,h2,h3{font-family:var(--serif);font-weight:700;margin:0;text-wrap:balance;line-height:1.05}
+h1{font-size:clamp(42px,5.2vw,76px);letter-spacing:-.015em}
+h2{font-size:clamp(36px,4.4vw,64px);letter-spacing:-.01em}
+h1 em,h2 em{font-style:italic;font-weight:600}
+p{margin:0}
+button{font:inherit;color:inherit}
+.in{max-width:1240px;margin:0 auto;padding-left:max(24px,env(safe-area-inset-left,0px));padding-right:max(24px,env(safe-area-inset-right,0px))}
+.band{padding-block:120px}
+.head{display:flex;flex-direction:column;gap:20px;margin-bottom:56px}
+.head p{font-size:22px;color:var(--ink-soft);max-width:34ch}
+.btns{display:flex;flex-wrap:wrap;gap:14px;align-items:center}
+.store{display:inline-flex;align-items:center;gap:12px;background:var(--black);color:#fff;text-decoration:none;border-radius:16px;padding:12px 22px 12px 18px;font-weight:700;line-height:1.1}
+.store svg{width:26px;height:26px;fill:#fff}
+.store small{display:block;font-weight:600;font-size:12px;opacity:.75}
+.store span{font-size:20px}
+.ghost{display:inline-flex;align-items:center;border:2px solid var(--ink);color:var(--ink);text-decoration:none;border-radius:16px;padding:14px 22px;font-weight:700}
+a:focus-visible,button:focus-visible{outline:3px solid var(--coral-deep);outline-offset:3px}
+
+/* header */
+.top{position:absolute;inset:0 0 auto;z-index:20;padding-block:20px}
+.top .in{display:flex;align-items:center;justify-content:space-between;gap:24px}
+.logo{display:flex;align-items:center;gap:10px;font-family:var(--serif);font-weight:700;font-size:26px;color:var(--ink);text-decoration:none}
+.logo img{width:40px;height:40px;border-radius:11px}
+.top nav{display:flex;align-items:center;gap:6px;font-weight:700;background:rgba(252,243,234,.92);border-radius:999px;padding:6px}
+.top nav a{color:var(--ink);text-decoration:none;padding:8px 16px;border-radius:999px}
+.top nav a:hover{background:var(--coral)}
+.top nav a.dl{background:var(--black);color:#fff}
+
+/* hero */
+.hero{position:relative;overflow:hidden;background-color:var(--wall);
+  background-image:linear-gradient(90deg,rgba(240,185,166,.32) 50%,transparent 50%),linear-gradient(rgba(240,185,166,.32) 50%,transparent 50%);
+  background-size:56px 56px}
+.hero .in{position:relative;display:grid;grid-template-columns:minmax(0,1.1fr) minmax(0,1fr);gap:40px;align-items:center;min-height:860px;padding-block:150px 110px}
+.card-wrap{position:relative;padding:40px}
+.hero-text{position:relative;display:flex;flex-direction:column;gap:26px;background:rgba(252,243,234,.95);border-radius:32px;padding:52px 48px;box-shadow:0 30px 50px -30px rgba(58,46,38,.35)}
+.hero-text p{font-size:22px;color:var(--ink-soft);max-width:30ch}
+.stage{position:relative;height:660px}
+.window{position:absolute;top:20px;right:-40px;width:250px}
+.phone{position:absolute;left:46%;top:0;transform:translateX(-50%) rotate(3deg);width:310px;height:650px;border-radius:48px;background:var(--black);padding:12px;box-shadow:0 40px 60px -20px rgba(58,46,38,.45);z-index:2}
+.phone img{width:100%;height:100%;object-fit:cover;object-position:top;border-radius:37px}
+.cat{position:absolute;left:calc(46% - 160px);top:-46px;width:116px;z-index:3;transform:rotate(3deg)}
+.magnet{position:absolute;width:var(--s,96px);z-index:4;cursor:grab;touch-action:none;user-select:none;transform:rotate(var(--r,0deg));transition:transform .15s;
+  filter:drop-shadow(3px 0 0 #fff) drop-shadow(-3px 0 0 #fff) drop-shadow(0 3px 0 #fff) drop-shadow(0 -3px 0 #fff) drop-shadow(0 8px 10px rgba(58,46,38,.28))}
+.magnet:hover{transform:rotate(var(--r,0deg)) scale(1.08)}
+.magnet.drag{cursor:grabbing;transform:scale(1.15);z-index:30}
+.magnet img{pointer-events:none;width:100%}
+
+/* ribbon */
+.ribbon{background:var(--paper);padding-block:46px;overflow:hidden;display:flex;flex-direction:column;gap:22px}
+.row{display:flex;align-items:flex-end;gap:34px;width:max-content;animation:run 70s linear infinite}
+.row.rev{animation-direction:reverse}
+.row img{width:84px;height:84px;object-fit:contain;transform-origin:50% 100%;transform:scale(var(--k,1)) translateY(calc(var(--b,0) * 100%))}
+@keyframes run{to{transform:translateX(-50%)}}
+
+/* coral list vs picture */
+.coral{background:var(--coral)}
+.coral .head p{color:var(--ink)}
+.vs{display:grid;grid-template-columns:minmax(0,.75fr) auto minmax(0,1.25fr);gap:32px;align-items:center}
+.card{background:var(--paper);border-radius:28px;padding:30px;position:relative}
+.mark{position:absolute;top:-18px;right:-18px;width:52px;height:52px;border-radius:50%;display:grid;place-items:center;color:#fff;font-weight:800;font-size:26px;z-index:2}
+.mark.no{background:#C4573A}.mark.yes{background:var(--fresh)}
+.card h3{font-family:var(--sans);font-weight:800;font-size:16px;letter-spacing:.06em;text-transform:uppercase;color:var(--ink-soft);margin-bottom:18px}
+.list{display:flex;flex-direction:column;gap:12px}
+.list div{background:#F1E6D8;border-radius:12px;padding:12px 16px;color:var(--ink-soft);text-decoration:line-through;text-decoration-color:rgba(107,93,80,.5)}
+.arrow{font-family:var(--serif);font-size:64px}
+.card.pic{padding:12px}
+.card.pic img{border-radius:20px;width:100%}
+
+/* honey: groceries on the table, dragged into the fridge */
+.honey{background:var(--honey)}
+.live{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,520px);gap:70px;align-items:center}
+.live-text{display:flex;flex-direction:column;gap:34px}
+.live-text .head{margin:0;gap:18px}
+.live-text .head p{font-size:22px;color:var(--ink-soft);max-width:30ch}
+.table{position:relative;aspect-ratio:460/420;border-radius:32px;background-color:#fff;background-image:linear-gradient(90deg,rgba(191,220,211,.55) 50%,transparent 50%),linear-gradient(rgba(191,220,211,.55) 50%,transparent 50%);background-size:40px 40px;box-shadow:0 30px 40px -30px rgba(58,46,38,.4)}
+.table .src{position:absolute;cursor:grab;touch-action:none;user-select:none;filter:drop-shadow(3px 0 0 #fff) drop-shadow(-3px 0 0 #fff) drop-shadow(0 3px 0 #fff) drop-shadow(0 -3px 0 #fff) drop-shadow(0 8px 8px rgba(58,46,38,.25));transition:transform .15s,opacity .2s}
+.table .src:hover{transform:translate(-30%,-30%) rotate(var(--r)) scale(1.07)!important}
+.table .src.used{opacity:.28;pointer-events:none}
+.table .src img{width:100%;pointer-events:none;-webkit-user-drag:none}
+.frcol{display:flex;flex-direction:column;align-items:center;gap:64px}
+.sw{display:flex;flex-wrap:wrap;justify-content:center;gap:12px}
+.sw button{width:46px;height:46px;border-radius:50%;border:3px solid var(--paper);cursor:pointer;box-shadow:0 0 0 2px rgba(58,46,38,.18)}
+.sw button[aria-pressed="true"]{box-shadow:0 0 0 3px var(--ink)}
+.fr{position:relative;width:100%;aspect-ratio:1832/2034;touch-action:none}
+.fr > .back,.fr > .front,.fr .items{position:absolute;inset:0;width:100%;height:100%}
+.fr .front{opacity:.62;pointer-events:none;z-index:3}
+.fr .items{z-index:2}
+.fr .it{position:absolute;cursor:grab;touch-action:none;user-select:none;-webkit-user-drag:none;transition:left .2s,top .2s}
+.fr .it.hide{opacity:0}
+.fr .it.pin{animation:pin .4s cubic-bezier(.3,1.6,.5,1)}
+@keyframes pin{from{transform:translateY(-30%) scale(.7);opacity:0}}
+.fr .hl{position:absolute;z-index:4;border-radius:10px;background:rgba(140,79,120,.16);outline:3px solid var(--plum);pointer-events:none;opacity:0;transition:opacity .12s}
+.fr .hl.on{opacity:1}
+.fr .roofcat{position:absolute;z-index:5;pointer-events:none;left:5%;top:-7.6%;width:21%}
+.held{position:fixed;z-index:100;pointer-events:none;transform:translate(-50%,-100%) rotate(-4deg);filter:drop-shadow(0 14px 14px rgba(58,46,38,.35))}
+.held.no{opacity:.45}
+.shake{animation:shake .35s}
+@keyframes shake{25%{transform:translateX(-6px)}75%{transform:translateX(6px)}}
+
+/* mint spoiling */
+.mint{background:var(--mint)}
+.spoil{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.3fr);gap:70px;align-items:center}
+.spoil .head{margin-bottom:0}
+.spoil .head p{color:var(--ink)}
+.cal{display:flex;flex-direction:column;gap:14px;margin-top:12px}
+.cal-days{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:8px;max-width:480px}
+.cal-days button{border:0;border-radius:16px;background:var(--paper);font-weight:800;font-size:17px;padding:14px 6px 20px;white-space:nowrap;cursor:pointer;position:relative;transition:background .2s,color .2s,transform .15s}
+.cal-days button::after{content:"";position:absolute;left:35%;right:35%;bottom:9px;height:4px;border-radius:2px;background:var(--c)}
+.cal-days button:hover{transform:translateY(-2px)}
+.cal-days button[aria-pressed="true"]{background:var(--ink);color:var(--paper)}
+.play{align-self:start;display:inline-flex;align-items:center;gap:10px;border:2px solid var(--ink);background:transparent;border-radius:999px;padding:8px 18px 8px 14px;font-weight:800;cursor:pointer}
+.play svg{width:16px;height:16px;fill:currentColor}
+.stages{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:20px}
+.st{background:var(--paper);border-radius:26px;padding:22px 18px 18px;display:flex;flex-direction:column;align-items:center;gap:12px;transition:transform .25s,box-shadow .25s,opacity .25s;opacity:.5}
+.st.on{opacity:1;transform:translateY(-14px) rotate(-1.5deg);box-shadow:0 24px 30px -18px rgba(58,46,38,.45)}
+.st img{width:100%;aspect-ratio:1;object-fit:contain}
+.st b{font-size:15px;white-space:nowrap;padding:4px 14px;border-radius:999px;color:#fff}
+.st:nth-child(1) b{background:var(--fresh)}.st:nth-child(2) b{background:var(--soon)}.st:nth-child(3) b{background:var(--gone)}
+.mini{display:grid;grid-template-columns:repeat(7,minmax(0,1fr));gap:10px;margin-top:30px}
+.mini div{background:rgba(251,246,238,.7);border-radius:18px;padding:8px;aspect-ratio:1}
+.mini img{width:100%;height:100%;object-fit:contain;overflow:visible}
+
+/* bento */
+.bento{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));grid-auto-rows:250px;gap:20px}
+.tile{border-radius:28px;padding:28px;position:relative;overflow:hidden;display:flex;flex-direction:column;gap:8px}
+.tile h3{font-size:30px}
+.tile p{font-size:17px;max-width:24ch}
+.t-photo{grid-column:span 2;grid-row:span 2;background:var(--coral)}
+.t-photo .shot{position:absolute;right:30px;bottom:-140px;width:270px;border-radius:32px;border:10px solid var(--black);transform:rotate(4deg)}
+.t-cat{grid-column:span 2;background:var(--mint)}
+.t-cat .shot{position:absolute;right:24px;top:30px;width:200px;border-radius:26px;border:8px solid var(--black);transform:rotate(-3deg)}
+.t-code{background:var(--honey)}
+.t-fam{background:#E3D8EC}
+.tile .ic{position:absolute;right:18px;bottom:14px;width:110px}
+.code{display:flex;gap:3px;height:70px;position:absolute;right:26px;bottom:26px}
+.code i{background:var(--ink);width:var(--w,3px)}
+
+/* catalogue */
+.cat-head{display:grid;grid-template-columns:auto minmax(0,1fr);gap:10px 40px;align-items:end;margin-bottom:40px}
+.big-num{font-family:var(--serif);font-weight:700;font-size:clamp(90px,11vw,170px);line-height:.85;color:var(--coral-deep);grid-row:span 2}
+.cat-head h2{font-size:clamp(32px,3.6vw,52px)}
+.seg{display:flex;flex-wrap:wrap;gap:8px}
+.seg button{font-weight:700;font-size:16px;border:2px solid var(--ink);background:transparent;border-radius:999px;padding:8px 16px;cursor:pointer}
+.seg button[aria-pressed="true"]{background:var(--ink);color:var(--paper)}
+.grid{display:grid;grid-template-columns:repeat(9,minmax(0,1fr));gap:12px}
+.grid div{background:#fff;border-radius:22px;aspect-ratio:1;display:grid;place-items:center;padding:16%}
+.grid img{width:100%;height:100%;object-fit:contain}
+
+/* reviews: live Trustpilot widget once the gluponya.tv profile is claimed, until then a first-review card */
+.reviews{background:var(--honey)}
+.rv{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.2fr);gap:70px;align-items:center}
+.rv .head{margin-bottom:0}
+.rv .head p{color:var(--ink)}
+.rv-card{background:var(--paper);border-radius:32px;padding:44px 40px;display:flex;flex-direction:column;align-items:flex-start;gap:26px;box-shadow:0 30px 40px -30px rgba(58,46,38,.4)}
+.rv-stars{display:flex;gap:8px}
+.rv-stars svg{width:44px;height:44px;fill:#F1E6D8;stroke:var(--ink);stroke-width:1.4}
+.rv-card h3{font-size:clamp(26px,2.6vw,36px)}
+.rv-widget{width:100%;min-height:240px}
+.rv-widget[hidden],.rv-card[hidden]{display:none}
+.rv-btn{background:var(--black);color:#fff;border-color:var(--black)}
+/* final */
+.final{background:var(--coral);overflow:hidden}
+.final .in{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:40px;align-items:center}
+.final h2{font-size:clamp(44px,5.5vw,80px);margin-bottom:30px}
+.final img{width:340px}
+
+/* footer */
+footer{background:var(--ink);color:var(--paper);padding-block:72px 40px;position:relative;overflow:hidden}
+footer .cols{display:grid;grid-template-columns:minmax(0,1.4fr) repeat(3,minmax(0,1fr));gap:40px}
+footer .brand{display:flex;flex-direction:column;gap:18px}
+footer .brand .logo{color:var(--paper)}
+footer .brand p{color:rgba(251,246,238,.7);max-width:26ch}
+footer h4{margin:0 0 14px;font-size:15px;letter-spacing:.06em;text-transform:uppercase;color:var(--honey)}
+footer ul{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:10px;font-weight:700}
+footer a{color:var(--paper);text-decoration:none}
+footer a:hover{color:var(--coral)}
+footer .word{font-family:var(--serif);font-weight:700;font-size:clamp(90px,17vw,260px);line-height:.8;color:rgba(251,246,238,.08);margin-top:60px;white-space:nowrap}
+footer .langs{display:flex;flex-wrap:wrap;gap:10px 22px;font-weight:700;margin-top:56px;padding-right:170px}
+footer .langs a{color:rgba(251,246,238,.7)}
+footer .langs a[aria-current]{color:var(--honey)}
+footer .base{display:flex;justify-content:space-between;gap:20px;flex-wrap:wrap;color:rgba(251,246,238,.6);font-weight:600;margin-top:64px;align-items:center}
+footer .base .fz img{display:block}
+footer .peek{position:absolute;right:6%;bottom:96px;width:150px}
+
+@media (max-width:900px){
+  .band{padding-block:72px}
+  .spoil,.live,.final .in,.rv{grid-template-columns:1fr}
+  .rv{gap:36px}
+  .rv-card{padding:32px 26px}
+  .rv-stars svg{width:36px;height:36px}
+  .hero .in{min-height:0;padding-block:110px 60px}
+  .card-wrap{padding:28px 12px}
+  .hero-text{padding:32px 26px}
+  .stage{height:640px}
+  .window{display:none}
+  .vs{grid-template-columns:1fr}.arrow{transform:rotate(90deg);justify-self:center}
+  .bento{grid-template-columns:1fr 1fr;grid-auto-rows:220px}
+  .t-photo,.t-cat{grid-column:span 2}
+  .tile{padding:20px}.tile h3{font-size:24px}
+  .t-photo .shot{width:200px;right:20px;bottom:-110px}
+  .t-cat .shot{width:110px;right:14px;top:auto;bottom:-110px}
+  .t-cat p,.t-photo p{max-width:15ch}
+  .tile .ic{width:80px}.code{height:50px;right:20px;bottom:20px}
+  .grid{grid-template-columns:repeat(3,minmax(0,1fr))}
+  .cat-head{grid-template-columns:1fr}.big-num{grid-row:auto}
+  .final img{width:220px}
+  .live{grid-template-columns:minmax(0,1fr)}
+  .live .frcol{width:100%;max-width:440px;justify-self:center}
+  .table{height:auto;aspect-ratio:460/420}
+  .cal-days{gap:6px}
+  .cal-days button{font-size:14px;padding:12px 2px 18px}
+  .sw{gap:8px}.sw button{width:38px;height:38px}
+  footer .cols{grid-template-columns:1fr 1fr}
+  footer .brand{grid-column:span 2}
+  footer .peek{display:none}
+  footer .langs{padding-right:0}
+}
+@media (max-width:960px){
+  .top nav a:not(.dl){display:none}
+}
+@media (max-width:760px){
+  .hero .in{grid-template-columns:1fr}
+}
+@media (max-width:640px){
+  .magnet{width:calc(var(--s) * .78)}
+  h1{font-size:36px}
+  .hero-text{padding:28px 22px}
+  .hero-text p{font-size:19px}
+  .head p,.live-text .head p{font-size:19px}
+  .head{margin-bottom:36px}
+  /* try: fridge above the table so both fit one screen and items are dragged up into it */
+  .live{gap:22px}
+  .live-text{display:contents}
+  .live-text .head{order:0}
+  .live .frcol{order:1;gap:44px}
+  .live .fr{width:76%;max-width:300px}
+  .live .table{order:2}
+  .grid div:nth-child(n+16){display:none}
+  .bento{grid-auto-rows:190px}
+  .t-photo,.t-cat{grid-row:span 2}
+  .t-photo p,.t-cat p{max-width:none}
+  .t-photo .shot{width:250px;right:50%;transform:translateX(50%) rotate(4deg);bottom:-300px}
+  .t-cat .shot{width:240px;right:50%;transform:translateX(50%) rotate(-3deg);top:auto;bottom:-250px}
+}
+@media (prefers-reduced-motion:reduce){.row{animation:none}.st,.magnet,.it{transition:none;animation:none}}
+@media (max-width:560px){.hero-text p{padding-right:34px}}
+</style>
+</head>
+<body>
+
+
+<header class="top"><div class="in">
+  <a class="logo" href="#"><img src="/freshka/home/img/icon.png" alt="">Freshka</a>
+  <nav><a href="#how">Zo werkt het</a><a href="#try">Probeer het</a><a href="https://gluponya.tv/freshka/nl/support/">Support</a><a href="https://gluponya.tv">Gluponya</a><a class="dl" href="#get">Download</a></nav>
+</div></header>
+
+<section class="hero"><div class="in">
+  <div class="card-wrap" id="cardwrap">
+    <div class="hero-text">
+      <h1>Een koelkast <em>die je ziet</em></h1>
+      <p>Teken je eigen koelkast op je telefoon. Wat bijna bederft, zie je meteen.</p>
+      <div class="btns">
+        <a class="store" href="https://apps.apple.com/app/id6831171166"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M16.4 12.6c0-2.4 2-3.5 2-3.6-1.1-1.6-2.8-1.8-3.4-1.8-1.4-.1-2.8.9-3.5.9s-1.8-.9-3-.8c-1.5 0-3 .9-3.8 2.3-1.6 2.8-.4 7 1.2 9.3.8 1.1 1.7 2.4 2.9 2.3 1.2 0 1.6-.7 3-.7s1.8.7 3 .7c1.3 0 2.1-1.1 2.8-2.3.9-1.3 1.3-2.6 1.3-2.6s-2.5-1-2.5-3.7zM14.1 5.6c.6-.8 1.1-1.9 1-3-1 0-2.1.7-2.8 1.5-.6.7-1.1 1.8-1 2.9 1.1.1 2.1-.6 2.8-1.4z"/></svg><span><small>Download in de</small>App Store</span></a>
+        <a class="ghost" href="https://t.me/freshkapp_bot/fridge">Probeer in Telegram</a>
+      </div>
+    </div>
+  </div>
+  <div class="stage">
+    <img class="window" src="/freshka/home/img/room-window.webp" alt="">
+    <div class="phone"><img src="/freshka/home/img/en/shot-fridge.webp" alt="Scherm van Freshka met een getekende koelkast"></div>
+    <img class="cat" src="/freshka/home/img/cat-black.webp" alt="">
+  </div>
+</div></section>
+
+<section class="ribbon" aria-hidden="true"><div class="row" id="r1"></div><div class="row rev" id="r2"></div></section>
+
+<section class="coral band" id="how"><div class="in">
+  <div class="head"><h2>Geen lijst, <em>maar een plaatje</em></h2><p>Eten onthouden we met onze ogen. Daarom heeft Freshka planken, geen regels.</p></div>
+  <div class="vs">
+    <div class="card"><span class="mark no">✕</span><h3>Een gewone app</h3>
+      <div class="list"><div>Melk 1 l, tot 12 nov</div><div>Tomaten 500 g</div><div>Cheddar, tot 20 nov</div><div>Eieren, 10 stuks</div><div>Kefir, tot 14 nov</div></div></div>
+    <div class="arrow">→</div>
+    <div class="card pic"><span class="mark yes">✓</span><img src="/freshka/home/img/en/scene.webp" alt="Een getekende koelkast met producten op de planken"></div>
+  </div>
+</div></section>
+
+<section class="band ways"><div class="in">
+  <div class="head"><h2>Toevoegen <em>in een tel</em></h2></div>
+  <div class="bento">
+    <div class="tile t-photo"><h3>Fotografeer je boodschappen</h3><p>AI vindt elk product op de foto en zet het op de planken.</p><img class="shot" src="/freshka/home/img/en/shot-photo.webp" alt="Producten toevoegen met een foto"></div>
+    <div class="tile t-cat"><h3>Kies uit de catalogus</h3><p>Tik op een plaatje en het product staat op de plank.</p><img class="shot" src="/freshka/home/img/en/shot-add.webp" alt="Productcatalogus"></div>
+    <div class="tile t-code"><h3>Barcode</h3><div class="code" id="code"></div></div>
+    <div class="tile t-fam"><h3>Samen met het gezin</h3><img class="ic" src="/freshka/home/img/ui-start-join.webp" alt=""></div>
+  </div>
+</div></section>
+
+<section class="honey band" id="try"><div class="in live">
+  <div class="live-text">
+    <div class="head"><h2>Zet <em>de boodschappen</em> weg</h2><p>Sleep de spullen van de tafel naar de koelkast. Waar je ze neerzet, daar zie je ze terug.</p></div>
+    <div class="table" id="table"></div>
+  </div>
+  <div class="frcol"><div class="sw" id="cols"></div><div class="fr" id="fr"></div></div>
+</div></section>
+
+<section class="mint band"><div class="in spoil">
+  <div class="head">
+    <h2>Bederft <em>waar je bij staat</em></h2>
+    <p>Het plaatje verwelkt en wordt donkerder, net als het echte product. Geen datums lezen.</p>
+    <div class="cal">
+      <div class="cal-days" id="days"></div>
+    </div>
+  </div>
+  <div>
+    <div class="stages">
+      <div class="st on"><img src="/freshka/home/img/c/strawberry.webp" alt="Verse aardbei"><b>Vers</b></div>
+      <div class="st"><img src="/freshka/home/img/c/strawberry-wilting.webp" alt="Verwelkende aardbei"><b>Bijna</b></div>
+      <div class="st"><img src="/freshka/home/img/c/strawberry-spoiled.webp" alt="Bedorven aardbei"><b>Bedorven</b></div>
+    </div>
+    <div class="mini" id="mini"></div>
+  </div>
+</div></section>
+
+<section class="band"><div class="in">
+  <div class="cat-head">
+    <div class="big-num">926</div>
+    <h2>plaatjes van producten, <em>potten en pannen</em></h2>
+    <div class="seg" id="cats"><button aria-pressed="true" data-k="fv">Groente en fruit</button><button aria-pressed="false" data-k="dairy">Zuivel en vlees</button><button aria-pressed="false" data-k="ready">Kant-en-klaar</button><button aria-pressed="false" data-k="tara">Bakjes</button></div>
+  </div>
+  <div class="grid" id="grid"></div>
+</div></section>
+
+<section class="reviews band" id="reviews"><div class="in rv">
+  <div class="head"><h2>Wat mensen zeggen <em>over Freshka</em></h2><p>Reviews staan op Trustpilot. We bewerken of selecteren ze niet.</p></div>
+  <div>
+    <div class="rv-widget" id="rvWidget" hidden></div>
+    <div class="rv-card" id="rvEmpty">
+      <div class="rv-stars" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M12 2.8l2.8 5.8 6.3.9-4.6 4.4 1.1 6.3L12 17.2l-5.6 3 1.1-6.3-4.6-4.4 6.3-.9z"/></svg><svg viewBox="0 0 24 24"><path d="M12 2.8l2.8 5.8 6.3.9-4.6 4.4 1.1 6.3L12 17.2l-5.6 3 1.1-6.3-4.6-4.4 6.3-.9z"/></svg><svg viewBox="0 0 24 24"><path d="M12 2.8l2.8 5.8 6.3.9-4.6 4.4 1.1 6.3L12 17.2l-5.6 3 1.1-6.3-4.6-4.4 6.3-.9z"/></svg><svg viewBox="0 0 24 24"><path d="M12 2.8l2.8 5.8 6.3.9-4.6 4.4 1.1 6.3L12 17.2l-5.6 3 1.1-6.3-4.6-4.4 6.3-.9z"/></svg><svg viewBox="0 0 24 24"><path d="M12 2.8l2.8 5.8 6.3.9-4.6 4.4 1.1 6.3L12 17.2l-5.6 3 1.1-6.3-4.6-4.4 6.3-.9z"/></svg></div>
+      <h3>Nog geen reviews. <em>Schrijf de eerste</em></h3>
+      <a class="ghost rv-btn" href="https://www.trustpilot.com/evaluate/gluponya.tv" target="_blank" rel="noopener">Schrijf een review op Trustpilot</a>
+    </div>
+  </div>
+</div></section>
+
+<section class="final band" id="get"><div class="in">
+  <div><h2>Begin met <em>één product</em></h2>
+    <div class="btns"><a class="store" href="https://apps.apple.com/app/id6831171166"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M16.4 12.6c0-2.4 2-3.5 2-3.6-1.1-1.6-2.8-1.8-3.4-1.8-1.4-.1-2.8.9-3.5.9s-1.8-.9-3-.8c-1.5 0-3 .9-3.8 2.3-1.6 2.8-.4 7 1.2 9.3.8 1.1 1.7 2.4 2.9 2.3 1.2 0 1.6-.7 3-.7s1.8.7 3 .7c1.3 0 2.1-1.1 2.8-2.3.9-1.3 1.3-2.6 1.3-2.6s-2.5-1-2.5-3.7zM14.1 5.6c.6-.8 1.1-1.9 1-3-1 0-2.1.7-2.8 1.5-.6.7-1.1 1.8-1 2.9 1.1.1 2.1-.6 2.8-1.4z"/></svg><span><small>Download in de</small>App Store</span></a><a class="ghost" href="https://t.me/freshkapp_bot/fridge">Probeer in Telegram</a></div></div>
+  <img src="/freshka/home/img/mascot-catches.webp" alt="">
+</div></section>
+
+<footer><div class="in">
+  <div class="cols">
+    <div class="brand"><a class="logo" href="#"><img src="/freshka/home/img/icon.png" alt="">Freshka</a><p>Een koelkast op je telefoon, met de hand getekend.</p></div>
+    <div><h4>App</h4><ul><li><a href="https://apps.apple.com/app/id6831171166">App Store</a></li><li><a href="https://t.me/freshkapp_bot/fridge">Telegram</a></li><li><a href="#try">Probeer het</a></li></ul></div>
+    <div><h4>Hulp</h4><ul><li><a href="https://gluponya.tv/freshka/nl/support/">Support</a></li><li><a href="mailto:hello@gluponya.tv">hello@gluponya.tv</a></li></ul></div>
+    <div><h4>Juridisch</h4><ul><li><a href="https://gluponya.tv/freshka/nl/privacy/">Privacy</a></li><li><a href="https://gluponya.tv/freshka/nl/terms/">Voorwaarden</a></li></ul></div>
+  </div>
+<!--langs:foot-->
+  <nav class="langs" aria-label="Language"><a href="/freshka/" lang="uk" hreflang="uk">Українська</a><a href="/freshka/en/" lang="en" hreflang="en">English</a><a href="/freshka/de/" lang="de" hreflang="de">Deutsch</a><a href="/freshka/es/" lang="es" hreflang="es">Español</a><a href="/freshka/pt/" lang="pt" hreflang="pt">Português</a><a href="/freshka/vi/" lang="vi" hreflang="vi">Tiếng Việt</a><a href="/freshka/tr/" lang="tr" hreflang="tr">Türkçe</a><a href="/freshka/fr/" lang="fr" hreflang="fr">Français</a><a href="/freshka/it/" lang="it" hreflang="it">Italiano</a><a href="/freshka/pl/" lang="pl" hreflang="pl">Polski</a><a href="/freshka/nl/" lang="nl" hreflang="nl" aria-current="page">Nederlands</a></nav>
+<!--/langs:foot-->
+  <div class="base"><span>Gemaakt door Gluponya</span><a class="fz" href="https://fazier.com" target="_blank"><img src="https://fazier.com/api/v1//public/badges/launch_badges.svg?badge_type=launched&theme=dark" width="103" height="44" alt="Fazier badge" loading="lazy"></a><a href="https://gluponya.tv">gluponya.tv</a></div>
+  <img class="peek" src="/freshka/home/img/cat-black.webp" alt="">
+</div></footer>
+
+<script>
+const L='/freshka/home/img/lib/';
+const $=id=>document.getElementById(id);
+const pick=(box,attr,fn)=>box.addEventListener('click',e=>{const b=e.target.closest('button');if(!b)return;box.querySelectorAll('button').forEach(x=>x.setAttribute('aria-pressed',x===b));fn(b.dataset[attr])});
+
+/* hero stickers round the headline card, draggable */
+const magnets=[['strawberry',3,4,100,-10],['avocado',36,-1,92,8],['cheddar',92,3,96,10],['carrot',101,38,100,-24],['milk-bottle',99,76,86,8],['tomato',86,99,92,-8],['croissant',44,101,110,6],['egg',2,93,72,-12],['lemon',-1,50,78,10]];
+const cw=document.querySelector('.hero-text');
+magnets.forEach(([n,x,y,s,r])=>{const d=document.createElement('div');d.className='magnet';d.style.left=`calc(${x}% - ${s/2}px)`;d.style.top=`calc(${y}% - ${s/2}px)`;d.style.setProperty('--s',s+'px');d.style.setProperty('--r',r+'deg');d.innerHTML=`<img src="${L}${n}.webp" alt="">`;cw.appendChild(d)});
+cw.addEventListener('pointerdown',e=>{const m=e.target.closest('.magnet');if(!m)return;e.preventDefault();m.setPointerCapture(e.pointerId);m.classList.add('drag');
+  const ox=e.clientX-m.offsetLeft,oy=e.clientY-m.offsetTop;
+  const mv=ev=>{m.style.left=(ev.clientX-ox)+'px';m.style.top=(ev.clientY-oy)+'px'};
+  const up=()=>{m.classList.remove('drag');m.removeEventListener('pointermove',mv);m.removeEventListener('pointerup',up)};
+  m.addEventListener('pointermove',mv);m.addEventListener('pointerup',up)});
+
+/* ribbon */
+const ribbonA='apple avocado banana beer cake candies carrot cheddar cherries chicken croissant cucumber donut egg garlic grapes kefir lemon mango melon milk-carton mushroom olives orange pizza'.split(' ');
+const ribbonB='pelmeni pear pineapple plum potato pumpkin salami salmon sausage shrimp strawberry sushi syrnyky tomato tuna varenyky watermelon wine yoghurt zefir broccoli butter camembert holubtsi'.split(' ');
+const SC={"apple":1.16,"avocado":1.27,"bacon":1.25,"banana":1.65,"beer":1.35,"beetroot":1.35,"broccoli":1.35,"butter":1.18,"candies":1.35,"carrot":1.35,"cauliflower":1.33,"cheddar":1.08,"cherries":1.35,"croissant":1.35,"cucumber":1.35,"cutlets":1.27,"deruny":1.27,"drink-amber-bottle-half":1.35,"drink-amber-bottle-low":1.35,"drink-amber-bottle":1.33,"eclair":1.33,"frankfurters":1.1,"garlic":1.17,"grapes":1.35,"holubtsi":1.26,"kefir":1.19,"ketchup":1.17,"kholodets":1.1,"kiwi":1.29,"lemon":1.27,"lemonade":1.29,"liver":1.33,"mango":1.24,"meat":1.14,"melon":1.35,"milk-bag":1.13,"milk-bottle":1.17,"mlyntsi":1.27,"mushroom":1.14,"nuggets":1.33,"onion":1.29,"orange":1.24,"peach":1.25,"pear":1.35,"pelmeni":1.27,"pie":1.1,"pineapple":1.35,"pizza":1.27,"plum":1.28,"potato":1.31,"pumpkin":1.21,"ryazhenka":1.18,"salami":1.35,"salmon":1.35,"shrimp":1.2,"strawberry":1.26,"suluguni":1.35,"sushi":1.35,"syrnyky":1.27,"tomato":1.13,"varenyky":1.27,"water":1.35,"watermelon":1.19,"wine":1.35,"zefir":1.1};
+const BOT={"apple-spoiled":0.031,"apple-wilting":0.031,"apple":0.32,"avocado-spoiled":0.039,"avocado-wilting":0.047,"avocado":0.293,"bacon":0.035,"banana-spoiled":0.043,"banana-wilting":0.031,"banana":0.262,"beer":0.035,"beetroot-spoiled":0.031,"beetroot-wilting":0.031,"beetroot":0.312,"broccoli-spoiled":0.035,"broccoli-wilting":0.039,"broccoli":0.281,"butter":0.035,"cabbage-spoiled":0.035,"cabbage-wilting":0.035,"cabbage":0.316,"cake":0.035,"camembert":0.035,"candies":0.035,"carrot-spoiled":0.039,"carrot-wilting":0.039,"carrot":0.293,"cauliflower-spoiled":0.031,"cauliflower-wilting":0.035,"cauliflower":0.277,"cheddar-spoiled":0.039,"cheddar-wilting":0.035,"cheddar":0.312,"cheesecake":0.031,"cherries-spoiled":0.035,"cherries-wilting":0.035,"cherries":0.316,"chicken":0.039,"cream":0.035,"croissant-spoiled":0.039,"croissant-wilting":0.043,"croissant":0.262,"cucumber-spoiled":0.031,"cucumber-wilting":0.031,"cucumber":0.297,"cutlets":0.039,"deruny":0.039,"dessert":0.035,"dish-amber-bowl-half":0.035,"dish-amber-bowl-low":0.035,"dish-amber-bowl":0.035,"dish-amber-box-half":0.035,"dish-amber-box-low":0.039,"dish-amber-box":0.035,"dish-amber-jar-half":0.039,"dish-amber-jar-low":0.039,"dish-amber-jar":0.039,"dish-amber-pot-half":0.039,"dish-amber-pot-low":0.039,"dish-amber-pot":0.039,"donut":0.035,"drink-amber-bottle-half":0.031,"drink-amber-bottle-low":0.035,"drink-amber-bottle":0.031,"drink-amber-jar-half":0.035,"drink-amber-jar-low":0.035,"drink-amber-jar":0.031,"drink-amber-jug-half":0.035,"drink-amber-jug-low":0.035,"drumsticks":0.035,"eclair":0.035,"egg":0.035,"frankfurters":0.035,"garlic-spoiled":0.035,"garlic-wilting":0.031,"garlic":0.324,"grapes-spoiled":0.055,"grapes-wilting":0.035,"grapes":0.25,"ham":0.031,"holubtsi":0.035,"hummus":0.039,"jelly":0.035,"kefir":0.039,"ketchup":0.039,"kholodets":0.031,"kiwi-spoiled":0.035,"kiwi-wilting":0.035,"kiwi":0.258,"lemon-spoiled":0.07,"lemon-wilting":0.035,"lemon":0.324,"lemonade":0.035,"liver":0.039,"mango-spoiled":0.039,"mango-wilting":0.039,"mango":0.297,"meat":0.035,"melon-spoiled":0.035,"melon-wilting":0.035,"melon":0.262,"milk-bag":0.039,"milk-bottle":0.039,"milk-carton":0.031,"mince":0.035,"mlyntsi":0.039,"mozzarella":0.035,"mushroom-spoiled":0.035,"mushroom-wilting":0.035,"mushroom":0.32,"nuggets":0.035,"olives":0.035,"olivier":0.035,"onion-spoiled":0.035,"onion-wilting":0.039,"onion":0.324,"orange-spoiled":0.039,"orange-wilting":0.039,"orange":0.32,"pasta":0.039,"pate":0.039,"peach-spoiled":0.035,"peach-wilting":0.035,"peach":0.316,"pear-spoiled":0.031,"pear-wilting":0.031,"pear":0.32,"pelmeni":0.039,"pie":0.039,"pineapple-spoiled":0.039,"pineapple-wilting":0.043,"pineapple":0.324,"pizza":0.039,"plum-spoiled":0.031,"plum-wilting":0.031,"plum":0.316,"pomegranate":0.035,"pork":0.039,"porridge":0.035,"potato-spoiled":0.035,"potato-wilting":0.035,"potato":0.273,"pumpkin-spoiled":0.039,"pumpkin-wilting":0.039,"pumpkin":0.305,"ryazhenka":0.035,"salami":0.039,"salmon":0.035,"salo":0.039,"sardelky":0.035,"sauerkraut":0.035,"sausage":0.035,"shashlik":0.035,"shrimp":0.035,"strawberry-spoiled":0.043,"strawberry-wilting":0.039,"strawberry":0.301,"suluguni":0.035,"sushi":0.035,"syrnyky":0.039,"tomato-bag-few":0.035,"tomato-bag":0.035,"tomato-box":0.035,"tomato-jar-one":0.031,"tomato-jar":0.035,"tomato-pile-two":0.039,"tomato-pile":0.039,"tomato-spoiled":0.035,"tomato-wilting":0.035,"tomato":0.305,"tuna":0.039,"tushonka":0.039,"varenyky":0.039,"water":0.039,"watermelon-spoiled":0.043,"watermelon-wilting":0.035,"watermelon":0.297,"wine":0.039,"yoghurt":0.039,"zefir":0.035};
+const b=n=>BOT[n]||0;
+const k=n=>SC[n.replace(/-(spoiled|wilting)$/,'')]||1;
+const fill=(id,arr)=>{$(id).innerHTML=[...arr,...arr].map(n=>`<img src="${L}${n}.webp" alt="" loading="lazy" style="--k:${k(n)};--b:${b(n)}">`).join('')};
+fill('r1',ribbonA);fill('r2',ribbonB);
+
+/* try it: groceries on the table go into the fridge by drag, like in the app; the fridge is one painted image per colour with a front overlay */
+const IW=1832,IH=2034;
+const ZONES=[
+ {id:'a',x0:96,x1:826,top:330,floor:772},
+ {id:'b',x0:96,x1:826,top:800,floor:1292},
+ {id:'d',x0:110,x1:812,top:1330,floor:1892},
+ {id:'r1',x0:1010,x1:1740,top:300,floor:786,door:1},
+ {id:'r2',x0:1010,x1:1740,top:820,floor:1306,door:1},
+ {id:'r3',x0:1010,x1:1740,top:1340,floor:1786,door:1},
+];
+/* name: [label, home zone, height in fridge image px, aspect w/h] */
+const P={
+ 'milk-bottle':['Melk','r1',330,.409],'kefir':['Kefir','r2',330,.37],'ketchup':['Ketchup','r1',330,.388],'water':['Water','r3',330,.291],
+ 'cheddar':['Cheddar','a',210,1.131],'egg':['Eieren','a',206,.782],'yoghurt':['Yoghurt','a',262,.864],'sausage':['Worst','b',245,1.256],
+ 'dish-amber-pot':['Borsjtsj','b',250,1.167],'tomato':['Tomaten','d',219,1.109],'cucumber':['Komkommers','d',228,1.281],'carrot':['Wortels','d',245,1.25],
+ 'apple':['Appels','d',245,.879],'strawberry':['Aardbeien','b',184,1.162],'camembert':['Camembert','a',192,1.633],'butter':['Boter','a',158,2.179],
+};
+const src=n=>`/freshka/home/img/p/${n}.webp`;
+const pct=(v,t)=>v/t*100+'%';
+
+function Fridge(el,colour){
+  el.innerHTML=`<img class="back" src="/freshka/home/img/f/fridge-${colour}.webp" alt="Open koelkast"><div class="items"></div><img class="front" src="/freshka/home/img/f/front.webp" alt="">`
+   +ZONES.map(z=>`<div class="hl" data-z="${z.id}" style="left:${pct(z.x0-10,IW)};top:${pct(z.top,IH)};width:${pct(z.x1-z.x0+20,IW)};height:${pct(z.floor-z.top+14,IH)}"></div>`).join('')
+   +`<img class="roofcat" src="/freshka/home/img/cat-black.webp" alt="">`;
+  return {el,items:el.querySelector('.items'),placed:[],setColour(c){el.querySelector('.back').src=`/freshka/home/img/f/fridge-${c}.webp`}};
+}
+const sizeOf=n=>{const [,,h,a]=P[n];return {w:h*a,h}};
+/* lay a zone out: items keep their order, overlap a little, and push neighbours aside to make room */
+function layout(zone,list){
+  const gap=-14,room=zone.x1-zone.x0;
+  const need=list.reduce((t,p)=>t+p.w,0)+gap*(list.length-1);
+  if(need>room)return null;
+  list.sort((p,q)=>p.want-q.want);
+  let x=zone.x0;const xs=list.map(p=>{x=Math.max(x,Math.min(p.want,zone.x1-p.w));const r=x;x+=p.w+gap;return r});
+  let end=zone.x1;for(let i=list.length-1;i>=0;i--){xs[i]=Math.min(xs[i],end-list[i].w);end=xs[i]-gap}
+  return xs;
+}
+function fits(f,zone,cx,w,skip){
+  const list=f.placed.filter(p=>p.zone===zone.id&&p!==skip).map(p=>({p,w:p.w,want:p.x}));
+  list.push({w,want:cx-w/2});return layout(zone,list)!==null;
+}
+function draw(f,p,anim){
+  if(!p.el){p.el=document.createElement('img');p.el.className='it';p.el.src=src(p.n);p.el.alt=P[p.n][0];p.el.draggable=false;f.items.appendChild(p.el)}
+  const z=ZONES.find(z=>z.id===p.zone);
+  Object.assign(p.el.style,{left:pct(p.x,IW),top:pct(z.floor-p.h,IH),width:pct(p.w,IW),zIndex:z.door?1:2});
+  if(anim){p.el.classList.remove('pin');void p.el.offsetWidth;p.el.classList.add('pin')}
+}
+function put(f,n,zone,cx,from){
+  const {w,h}=sizeOf(n);
+  const list=f.placed.filter(p=>p.zone===zone.id&&p!==from).map(p=>({p,w:p.w,want:p.x}));
+  const me={p:from||{n,w,h},w,want:cx-w/2};list.push(me);
+  const xs=layout(zone,list);if(!xs)return false;
+  list.forEach((it,i)=>{it.p.x=xs[i];it.p.zone=zone.id});
+  if(!from)f.placed.push(me.p);
+  list.forEach(it=>draw(f,it.p,it===me&&!from&&window.ready));
+  return true;
+}
+function home(f,n){const z=ZONES.find(z=>z.id===P[n][1]);return put(f,n,z,z.x0+f.placed.filter(p=>p.zone===z.id).length*260+120)||ZONES.some(z2=>!z2.door&&put(f,n,z2,(z2.x0+z2.x1)/2))}
+
+/* drag: what is held stands on the fingertip, the zone under it is washed in plum */
+function wire(f,tray){
+  const sync=()=>tray.querySelectorAll('.src').forEach(s=>s.classList.toggle('used',f.placed.some(p=>p.n===s.dataset.n)));
+  const toImg=(cx,cy)=>{const r=f.el.getBoundingClientRect();return {x:(cx-r.left)/r.width*IW,y:(cy-r.top)/r.height*IH,in:cx>r.left-20&&cx<r.right+20&&cy>r.top-20&&cy<r.bottom+20}};
+  const zoneAt=(x,y)=>ZONES.find(z=>x>z.x0-30&&x<z.x1+30&&y>z.top-20&&y<z.floor+90);
+  function start(e,n,from){
+    e.preventDefault();
+    const sx=e.clientX,sy=e.clientY;let g=null,zone=null;
+    const scale=f.el.getBoundingClientRect().width/IW*1.25;const {w}=sizeOf(n);
+    const move=ev=>{
+      if(!g){if(Math.hypot(ev.clientX-sx,ev.clientY-sy)<6)return;
+        g=document.createElement('img');g.className='held';g.src=src(n);g.style.width=Math.max(56,w*scale)+'px';document.body.appendChild(g);
+        if(from)from.el.classList.add('hide');}
+      g.style.left=ev.clientX+'px';g.style.top=ev.clientY+'px';
+      const q=toImg(ev.clientX,ev.clientY);zone=q.in?zoneAt(q.x,q.y):null;
+      f.el.querySelectorAll('.hl').forEach(h=>h.classList.toggle('on',zone&&h.dataset.z===zone.id));
+      g.classList.toggle('no',!!zone&&!fits(f,zone,q.x,w,from));
+    };
+    const up=ev=>{
+      removeEventListener('pointermove',move);removeEventListener('pointerup',up);
+      f.el.querySelectorAll('.hl').forEach(h=>h.classList.remove('on'));
+      if(!g){ if(!from)home(f,n); sync(); return; }
+      g.remove();
+      const q=toImg(ev.clientX,ev.clientY);
+      if(zone){ if(!put(f,n,zone,q.x,from)){ if(from)from.el.classList.remove('hide'); f.el.classList.remove('shake');void f.el.offsetWidth;f.el.classList.add('shake'); } else if(from)from.el.classList.remove('hide'); }
+      else if(from){ from.el.remove(); f.placed.splice(f.placed.indexOf(from),1); }
+      sync();
+    };
+    addEventListener('pointermove',move);addEventListener('pointerup',up);
+  }
+  tray.addEventListener('pointerdown',e=>{const s=e.target.closest('.src');if(s)start(e,s.dataset.n,null)});
+  f.items.addEventListener('pointerdown',e=>{const p=f.placed.find(p=>p.el===e.target);if(p)start(e,p.n,p)});
+  return sync;
+}
+const COLS=[['mint','#ADC1B9'],['red','#C15649'],['rose','#DBABA7'],['butter','#E3C47A'],['sky','#9EB6CB'],['lavender','#BBADCD'],['white','#E7E4DC']];
+const names={mint:"Mint",red:'Rood',rose:'Roze',butter:'Geel',sky:'Lichtblauw',lavender:'Lavendel',white:'Wit'};
+function colours(box,f){
+  box.innerHTML=COLS.map(([c,h],i)=>`<button style="background:${h}" aria-label="${names[c]}" aria-pressed="${i===0}" data-c="${c}"></button>`).join('');
+  box.addEventListener('click',e=>{const b=e.target.closest('button');if(!b)return;box.querySelectorAll('button').forEach(x=>x.setAttribute('aria-pressed',x===b));f.setColour(b.dataset.c)});
+}
+const LB=[['milk-bottle',8,10,66,-8],['cheddar',30,52,110,10],['tomato',58,14,96,-6],['carrot',78,48,120,-28],['egg',24,14,62,6],['yoghurt',44,30,88,4],['dish-amber-pot',62,58,130,-4],['strawberry',86,16,78,12],['kefir',6,48,54,6],['camembert',40,74,112,-8],['apple',80,78,74,8],['cucumber',16,80,110,18]];
+const fB=Fridge($('fr'),'rose');
+$('table').innerHTML=LB.map(([n,x,y,w,r])=>`<div class="src" data-n="${n}" style="left:${x}%;top:${y}%;width:${(w/4.6).toFixed(1)}%;--r:${r}deg;transform:translate(-30%,-30%) rotate(${r}deg)"><img src="${src(n)}" alt="${P[n][0]}"></div>`).join('');
+['water','butter','sausage'].forEach(n=>home(fB,n));wire(fB,$('table'))();colours($('cols'),fB);
+$('cols').querySelector('[data-c="rose"]').click();
+window.ready=true;
+
+/* spoiling: day chips */
+const mini=$('mini'),stages=[...document.querySelectorAll('.st')];
+const seven='apple avocado banana tomato cucumber lemon peach'.split(' ');
+const suf=['','-wilting','-spoiled'];
+const stageOf=d=>d<=2?0:d<=5?1:2;
+const DAYS=[[0,'Vandaag'],[3,'3 dagen'],[5,'5 dagen'],[7,'Een week']];
+$('days').innerHTML=DAYS.map(([d,t])=>`<button data-d="${d}" aria-pressed="${d===0}" style="--c:${['var(--fresh)','var(--soon)','var(--gone)'][stageOf(d)]}">${t}</button>`).join('');
+function day(d){const st=stageOf(d);stages.forEach((s,i)=>s.classList.toggle('on',i===st));
+  mini.innerHTML=seven.map((n,i)=>{const kk=stageOf(Math.max(0,d-(i%3)));return `<div><img src="/freshka/home/img/c/${n}${suf[kk]}.webp" alt=""></div>`}).join('');
+  $('days').querySelectorAll('button').forEach(b=>b.setAttribute('aria-pressed',+b.dataset.d===d))}
+let timer=null;const stop=()=>{clearInterval(timer);timer=null};
+pick($('days'),'d',v=>{stop();day(+v)});
+day(0);
+
+/* bento barcode */
+$('code').innerHTML=Array.from({length:22},(_,i)=>`<i style="--w:${[2,4,2,6,3][i%5]}px"></i>`).join('');
+
+/* catalogue */
+const CAT={
+ fv:'apple avocado banana beetroot broccoli cabbage carrot cauliflower cherries cucumber garlic grapes kiwi lemon mango melon mushroom onion orange peach pear pineapple plum pomegranate potato pumpkin strawberry',
+ dairy:'milk-bottle milk-carton milk-bag kefir ryazhenka yoghurt butter cream cheddar camembert mozzarella suluguni egg bacon ham salami sausage frankfurters sardelky chicken drumsticks meat mince pork salo pate liver',
+ ready:'varenyky pelmeni holubtsi deruny syrnyky mlyntsi olivier kholodets cutlets shashlik pizza sushi pie cake cheesecake eclair donut zefir porridge pasta hummus sauerkraut tushonka nuggets dessert jelly croissant',
+ tara:'dish-amber-bowl dish-amber-bowl-half dish-amber-bowl-low dish-amber-box dish-amber-box-half dish-amber-box-low dish-amber-jar dish-amber-jar-half dish-amber-jar-low dish-amber-pot dish-amber-pot-half dish-amber-pot-low drink-amber-bottle drink-amber-bottle-half drink-amber-bottle-low drink-amber-jar drink-amber-jar-half drink-amber-jar-low drink-amber-jug-half drink-amber-jug-low tomato-bag tomato-box tomato-jar tomato-pile tomato-bag-few tomato-jar-one tomato-pile-two'};
+const drawGrid=cat=>{$('grid').innerHTML=CAT[cat].split(' ').map(n=>`<div><img src="/freshka/home/img/g/${n}.webp" alt="" loading="lazy"></div>`).join('')};
+pick($('cats'),'k',drawGrid);drawGrid('fv');
+</script>
+
+<script>
+/* Trustpilot: after the gluponya.tv profile is claimed put its Business Unit ID here; the live widget replaces the first-review card.
+   TEMPLATE: Carousel shows review texts (may need a paid plan); Review Collector 56278e9abfbbba0bdcd568bc works on the free one. */
+(function(){
+  var TP_BUSINESS_ID='';
+  var TEMPLATE='53aa8912dec7e10d38f59f36';
+  if(!TP_BUSINESS_ID)return;
+  var w=document.getElementById('rvWidget');
+  w.innerHTML='<div class="trustpilot-widget" data-locale="nl-NL" data-template-id="'+TEMPLATE+'" data-businessunit-id="'+TP_BUSINESS_ID+'" data-style-height="240px" data-style-width="100%" data-theme="light" data-stars="1,2,3,4,5"><a href="https://www.trustpilot.com/review/gluponya.tv" target="_blank" rel="noopener">Trustpilot</a></div>';
+  var sc=document.createElement('script');
+  sc.src='https://widget.trustpilot.com/bootstrap/v5/tp.widget.bootstrap.min.js';sc.async=true;
+  sc.onload=function(){w.hidden=false;document.getElementById('rvEmpty').hidden=true;window.Trustpilot&&Trustpilot.loadFromElement(w.firstChild,true);};
+  document.head.appendChild(sc);
+})();
+</script>
+<script defer src="https://static.cloudflareinsights.com/beacon.min.js" data-cf-beacon='{"token": "e333441f10df4fae820f812d0ebedacf"}'></script>
+</body>
+</html>

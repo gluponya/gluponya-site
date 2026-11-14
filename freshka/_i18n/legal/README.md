@@ -4,7 +4,7 @@
 exactly as they stand on the pages: `{"privacy": [...], "terms": [...]}`.
 Refresh it with `python -I freshka/_i18n/legal.py > freshka/_i18n/legal/source.json`.
 
-Each language has one file, `<lang>.json` (de, es, pt, vi, tr): a single flat JSON
+Each language has one file, `<lang>.json` (de, es, pt, vi, tr, fr, it, pl, nl): a single flat JSON
 object `{"English phrase": "translation"}` with every phrase from both lists of
 `source.json` as a key, character for character. `build.py` stops if one is missing.
 When the English text of a page changes, the changed phrases need new entries here.

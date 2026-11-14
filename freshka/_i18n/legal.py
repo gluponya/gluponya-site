@@ -20,7 +20,7 @@ from pathlib import Path
 HERE = Path(__file__).resolve().parent
 FRESHKA = HERE.parent
 PAGES = ("privacy", "terms")
-LANGS = ("de", "es", "pt", "vi", "tr")  # en is the page's own second language
+LANGS = ("de", "es", "pt", "vi", "tr", "fr", "it", "pl", "nl")  # en is the page's own second language
 
 # what the head and the labels say in Ukrainian only
 HEAD = {

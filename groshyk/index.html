@@ -89,6 +89,13 @@ button.chip.on{background:var(--c4)}
 .top .get{padding:11px 16px;min-height:40px;font-size:14px;box-shadow:none;background:var(--fg);color:var(--bg);border-color:var(--fg)}
 .top .get:hover,.top .get:active{transform:none;box-shadow:none}
 @media (max-width:480px){.top .get{display:none}}
+/* вкладки разделов: вторая строка шапки, листается вбок, текущий раздел залит */
+.top{flex-wrap:wrap;row-gap:10px;padding-bottom:10px}
+.top .tabs{flex:1 0 100%;display:flex;gap:6px;overflow-x:auto;scrollbar-width:none;margin-inline:-4px;padding:2px 4px}
+.top .tabs::-webkit-scrollbar{display:none}
+.top .tabs a{flex:none;font:700 14px/1 var(--text);color:var(--fg);text-decoration:none;padding:9px 13px;border:2px solid var(--fg);border-radius:99px;white-space:nowrap;transition:background-color .2s,color .2s}
+.top .tabs a:hover{background:color-mix(in srgb,var(--fg) 12%,transparent)}
+.top .tabs a.on{background:var(--fg);color:var(--bg)}
 
 body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset-top,0px);z-index:10;background:var(--bg)}
 
@@ -133,6 +140,29 @@ body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset
 .rv{opacity:0;transform:translateY(18px);transition:opacity .5s ease,transform .5s cubic-bezier(.2,.9,.3,1.2)}
 .rv.in{opacity:1;transform:none}
 
+/* MOTION trial 13.11 (switches in base.js, G.M). Each rule is under its piece's class on :root, so ?m= turns it off */
+/* roll: digits stay in fixed columns, the old digit leaves on top of the new one */
+.rl-d{position:relative;display:inline-block}
+.rl-n{display:inline-block}
+.rl-s{white-space:pre}
+.rl-o{position:absolute;left:0;top:0}
+/* digits «Штамп»: the new number and the leaving one sit in the same place */
+.st-h{position:relative}
+/* the stamp grows from the left edge of the number, so at 1.35 it does not run into the word before it or out of the card */
+.st-n{display:inline-block;white-space:pre;transform-origin:0 55%}
+.st-o{position:absolute;left:0;top:0;white-space:pre}
+/* mascot flag off (default): Groshik does not breathe. s7 keeps its own behaviour */
+:root:not(.m-mascot) .sit:not(.s7-sit){animation:none}
+/* press: down in 40 ms, back on the press spring */
+:root.m-press .btn,:root.m-press button.chip{transition:transform var(--pr-d,.12s) var(--pr-e,ease),box-shadow var(--pr-d,.12s) var(--pr-e,ease)}
+:root.m-press .btn:active,:root.m-press button.chip:active,:root.m-press .btn.m-down{transition-duration:40ms}
+:root.m-press .btn.m-down{transform:translate(4px,4px);box-shadow:0 0 0 var(--paper)}
+:root.m-press .btn.l.m-down{box-shadow:0 0 0 var(--ink)}
+/* spring: the existing entrance, now on the snap spring */
+:root.m-spring .rv{transition:opacity .32s ease,transform var(--sn-d,.5s) var(--sn-e,cubic-bezier(.2,.9,.3,1.2))}
+/* joy: confetti squares */
+.m-cf{position:absolute;width:12px;height:12px;border:2px solid var(--ink);z-index:4;pointer-events:none;will-change:transform,opacity}
+
 /* подвал */
 .foot{display:flex;flex-wrap:wrap;gap:12px 28px;align-items:center;justify-content:space-between;border-top:var(--b);padding-top:24px}
 .foot nav{display:flex;flex-wrap:wrap;gap:8px 24px}
@@ -146,6 +176,35 @@ body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset
 }
 :root.still .tape div,:root.still .sit,:root.still .gr.chomp,:root.still .sit i.chomp{animation:none}
 :root.still .rv{opacity:1;transform:none;transition:none}
+
+/* MOCK ONLY: draft poses round 2. Crops are tight to the figure; same body scale as the old poses:
+   old .gr of width W shows a figure 0.928W tall, so a new pose that should match is 0.928W tall */
+.gr[data-pose="cheer"]{background-image:url(img/pose2-cheer.webp);aspect-ratio:600/524}
+.gr[data-pose="point"]{background-image:url(img/pose2-point.webp);aspect-ratio:600/456}
+.gr[data-pose="phone"]{background-image:url(img/pose2-phone.webp);aspect-ratio:600/745}
+.gr.flip{transform:scaleX(-1)}
+/* peek: the straight cut line is at 98.41% of the picture height; it is put on the OUTER top edge of the
+   parent's 2.5px border, so the border stays visible under the body and the fists lie in front of it */
+.mk-peek{position:absolute;z-index:3;pointer-events:none;width:var(--pw,150px);aspect-ratio:600/453;
+  top:calc(-2.5px - var(--pw,150px) * 453 / 600 * .9841);background:url(img/pose2-peek.webp) center/100% 100% no-repeat}
+/* MOCK ONLY round 2 */
+.mk-deep{position:absolute;z-index:3;pointer-events:none;width:var(--pw,150px);aspect-ratio:600/258;
+  top:calc(-2.5px - var(--pw,150px) * 258 / 600 * .969);background:url(img/pose2-peekdeep.webp) center/100% 100% no-repeat}
+.mk-legs{position:absolute;z-index:3;pointer-events:none;width:var(--lw,110px);aspect-ratio:252/110;
+  background:url(img/pose2-legs.webp) center/100% 100% no-repeat}
+
+/* MOCK round 4: sit that holds something, clean poses5 art (tools/r4/art.py). Body with its own legs and the fists
+   are two layers cut by the same box (504x625); the held thing goes between them. Seat (where the legs start) at 70.4%.
+   Swap = rerun art.py with a new source line; if the new body's proportions differ, change aspect-ratio here and the seat (.704) in s4.css / s9.css */
+.sit.hold{aspect-ratio:504/625}
+.sit.hold b{display:none}
+.sit.hold i{background-image:url(img/r4-hold-body.webp)}
+.sit.hold u{position:absolute;inset:0;z-index:2;background:url(img/r4-hold-fists.webp) center/100% 100% no-repeat}
+.sit.hold em{position:absolute;z-index:1;left:44%;top:55%;font-style:normal;transform:translate(-50%,-50%);white-space:nowrap}
+/* G.bite(): element masked by tooth circles, svg draws the ink edge */
+.sit.hold s{display:none;position:absolute;inset:0;z-index:2;background:url(img/r4-hold-teeth.webp) center/100% 100% no-repeat}
+.sit.hold u{z-index:3}
+.bite-ink{position:absolute;pointer-events:none;overflow:visible;z-index:3}
 
 /* экран 1 */
 .s1 .stage{display:grid;grid-template-columns:minmax(0,1.15fr) minmax(0,1fr);gap:28px 40px;align-items:center;overflow:visible}
@@ -168,6 +227,24 @@ body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset
 /* бегущая лента сразу под первым экраном: отступ сверху, чтобы наклонённая лента не задевала тень сцены */
 .s1 .tape{margin-top:clamp(18px,3vw,30px)}
 .s1 .tape div{padding-right:36px}
+
+/* MOCK round 4, idea 7b: the whole card tips up on its bottom left corner, the right part rests on Groshik's head
+   (poses5 prop art: the card edge overlaps his top spikes by a few px, card in front, his fists up beside it).
+   ?prop=strain (pupils looking up) or ?prop=plain. Art: img/r4-prop2.webp / img/r4-prop.webp from tools/r4/art.py.
+   --gx: his centre from the card's left edge, --gh: his height, --t: tilt; tan(--t) is written out as --tan */
+.s1 .sit{display:none}
+.s1 .r{--t:-10deg;--tan:.1763;--gx:.76;--gh:130px;--ov:6px;container-type:inline-size}
+.s1 #s1-plate{transform-origin:0 100%;transform:rotate(var(--t));z-index:1}
+.s1 .s1-propb{position:absolute;z-index:0;height:var(--gh);aspect-ratio:480/523;
+  left:calc(100cqw * var(--gx) - var(--gh) * 480 / 523 / 2);
+  top:calc(100% - 100cqw * var(--gx) * var(--tan) - var(--ov));
+  background:url(img/r4-prop2.webp) center/100% 100% no-repeat}
+.s1.prop-plain .s1-propb{background-image:url(img/r4-prop.webp)}
+/* room for his legs under the card: --gh minus the lift at his x (380 * .76 * tan 10deg = 51px), plus a little */
+.s1 .r{margin-bottom:88px}
+@media (max-width:720px){
+  .s1 .r{margin-top:60px;margin-bottom:68px;--gh:104px;--gx:.74}
+}
 
 /* экран 7 */
 .s7{gap:clamp(32px,5vw,48px)}
@@ -198,6 +275,18 @@ body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset
   100%{opacity:1;transform:rotate(var(--rot));box-shadow:var(--sh)}}
 :root.still .s7 .s7-tab{opacity:1;animation:none}
 @media (prefers-reduced-motion:reduce){.s7 .s7-tab{opacity:1!important;animation:none!important}}
+
+/* MOCK ONLY round 2 */
+.s7 .s7-sit{display:none}
+.s7 .s7-tab.a{padding-top:28px}
+.s7 .s7-deep{--pw:150px;left:50%;margin-left:-75px}
+@media (max-width:999px){.s7 .s7-tabs{padding-top:8px}.s7 .s7-tab.b{margin-top:44px}.s7 .s7-deep{--pw:130px;margin-left:-65px;left:auto;right:36px}}
+/* MOCK round 4, idea 4: he covers his eyes, standing BEHIND the card: the picture (poses5 hide, img/r4-hide.webp 480x595)
+   is cut at --cut of its height (just under the mouth) and that cut sits on the card's outer top edge */
+.s7 .s7-deep{--cut:.6;aspect-ratio:auto;height:calc(var(--pw) * 595 / 480 * var(--cut));top:calc(-2.5px - var(--pw) * 595 / 480 * var(--cut));
+  background:url(img/r4-hide.webp) top center/100% auto no-repeat}
+.s7 .s7-tab.b{margin-top:96px}
+@media (max-width:999px){.s7 .s7-tab.b{margin-top:110px}}
 
 /* экран 2 */
 .s2 .head{display:flex;flex-direction:column;gap:12px}
@@ -281,7 +370,14 @@ body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset
 .s3 .s3-opts button:hover{background:var(--paper)}
 .s3 .s3-opts button:focus-visible{outline:3px solid var(--ink);outline-offset:3px}
 .s3 .s3-opts button[aria-pressed="true"]{background:transparent;opacity:.35}
+/* MOTION trial (spring): message and answer arrive on the snap spring */
+:root.m-spring .s3 .s3-slot{transition:opacity .32s ease,transform var(--sn-d,.4s) var(--sn-e,ease)}
 :root.still .s3 .s3-slot,:root.still .s3 .s3-opts button{transition:none}
+
+/* MOCK ONLY */
+.s3{padding-top:24px}
+.s3 .s3-peek{--pw:150px;right:72px}
+@media (max-width:600px){.s3{padding-top:44px}.s3 .s3-peek{--pw:120px;right:28px}}
 
 /* экран 10 */
 /* Экран 10: один день. Утром и днём оплаты телефоном приходят сами (бейдж «Apple Pay»), вечером рынок вносится руками.
@@ -334,7 +430,7 @@ body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset
 /* пустое место под трату пунктиром, той же высоты, что и строка */
 .s10 .s10-tr{display:flex;align-items:center;gap:12px;height:62px;min-width:0;padding:0 14px 0 10px;border:2.5px dashed rgba(18,18,18,.35);border-radius:14px;font:600 17px/1.2 var(--text)}
 .s10 .s10-tr.on{border:var(--bi);background:#fff}
-.s10 .s10-tr img{flex:none;width:36px;height:36px}
+.s10 .s10-tr img{flex:none;width:36px;height:36px;border:2px solid var(--ink);border-radius:9px}
 .s10 .s10-nm{flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 .s10 .s10-sm{flex:none;font:800 18px/1 var(--display);white-space:nowrap}
 .s10 .s10-tr.new{animation:s10in .5s cubic-bezier(.2,.9,.3,1.2)}
@@ -359,9 +455,9 @@ body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset
 .s10 .s10-cats{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px}
 .s10 .s10-cat{display:flex;flex-direction:column;align-items:center;gap:9px;min-width:0;padding:4px 0;color:var(--ink);font:700 15px/1.2 var(--text)}
 .s10 .s10-cn{max-width:100%;text-align:center;overflow-wrap:anywhere}
-.s10 .s10-sq{position:relative;display:grid;place-items:center;width:66px;height:66px;border:var(--bi);border-radius:16px;background:#fff;transition:background-color .2s}
-.s10 .s10-sq img{width:48px;height:48px}
-.s10 .s10-cat.on .s10-sq{background:var(--c1);outline:3px solid var(--ink);outline-offset:3px}
+.s10 .s10-sq{position:relative;display:grid;place-items:center;width:66px;height:66px;border:var(--bi);border-radius:16px;background:var(--paper);overflow:hidden;transition:background-color .2s}
+.s10 .s10-sq img{width:100%;height:100%;display:block;object-fit:cover}
+.s10 .s10-cat.on .s10-sq{outline:3px solid var(--ink);outline-offset:3px}
 .s10 .s10-cat.on .s10-cn{font-weight:800}
 /* «Добавить»: тёмная плашка без тени, не нажимается */
 .s10 .s10-add{position:relative;display:flex;align-items:center;justify-content:center;width:100%;min-height:58px;padding:16px 22px;
@@ -370,6 +466,13 @@ body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset
 /* касание в показе: кольцо расходится от элемента */
 .s10 .s10-tap::after{content:"";position:absolute;inset:-7px;border:3px solid var(--ink);border-radius:inherit;pointer-events:none;animation:s10tap .6s ease-out forwards}
 @keyframes s10tap{from{opacity:1;transform:scale(.92)}to{opacity:0;transform:scale(1.06)}}
+
+/* MOTION trial (limit): the bar slides by transform instead of growing in width */
+:root.m-limit .s10 .s10-bar i{width:100%;transform:translateX(-100%);transition:transform .9s cubic-bezier(.3,.7,.3,1)}
+/* MOTION trial (row): a new expense arrives like a new row in the app's list (FLIP insert, the new row part):
+   from a little above and smaller, on the snap spring, 80 ms after the number */
+:root.m-row .s10 .s10-tr.new{animation:s10row var(--sn-d,.5s) var(--sn-e,ease) 80ms backwards}
+@keyframes s10row{from{opacity:0;transform:translateY(-14px) scale(.96)}to{opacity:1;transform:none}}
 
 @media (prefers-reduced-motion:reduce){
   .s10 .s10-sq,.s10 .s10-bar i,.s10 .s10-steps li,.s10 .s10-steps li::before{transition:none}
@@ -419,6 +522,48 @@ body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset
   .s4 .s4-s{font-size:14px;padding:7px 9px}
 }
 
+/* MOCK round 4, idea 3 static: Groshik (clean poses5 art) sits on the first card and holds a bigger copy of its
+   −150 pill, bitten at the free right end. The pill passes BEHIND his fists (body, pill, fists).
+   ?hold=sign (default): the pill rests on his knuckles like a sign, over the lower lip, fists in front of its bottom edge.
+   ?hold=end: both fists grip the pill's left end, the text runs free to the right.
+   Fists in the 504x625 box: x 20.6%..67.3%, y 46%..65%; seat at 70.4% */
+.s4 .s4-gr{display:none}
+.s4 .s4-r{padding-top:170px}
+.s4 .s4-c:first-child{position:relative;padding-top:72px}
+.s4 .s4-c.held > .s4-s{visibility:hidden}
+.s4 .s4-sit{--sw:200px;width:var(--sw);right:auto;left:40%;top:calc(var(--sw) * 625 / 504 * -.704 + 2px)}
+.s4 .s4-hp{display:inline-block;position:relative;font:800 20px/1 var(--display);padding:13px 64px 12px 26px;border:var(--bi);border-radius:99px;background:var(--paper);color:var(--ink)}
+.s4.hold-sign .s4-sit em{left:44%;top:51%;transform:translate(-50%,-100%) rotate(-3deg)}
+.s4.hold-end .s4-sit{left:28%}
+.s4.hold-end .s4-sit em{left:16%;top:56%;transform:translate(0,-50%) rotate(-2deg)}
+.s4.hold-end .s4-hp{padding-left:calc(var(--sw) * .54)}
+@media (max-width:760px){
+  .s4 .s4-r{padding-top:150px}
+  .s4 .s4-sit{--sw:180px;left:34%}
+  .s4.hold-end .s4-sit{left:10%}
+  .s4 .s4-hp{font-size:18px;padding:12px 58px 11px 24px}
+  .s4 .s4-c:first-child{padding-top:66px}
+}
+
+/* MOCK round 4b, default ?hold=eat: he EATS the payment. Layers: body (i), pill (em), teeth row (s), fists (u).
+   In the 504x625 art: teeth tips ~42%, pill top 39%, pill height 13%, fists start ~47%; the pill runs under the teeth
+   and ends with a hard, ink-outlined round end at ~58% of the width, behind the right fist (fist spans ~48-64%); the free text part is left of the left fist (~22%).
+   Feet stand on the card's top edge, so the card keeps its normal height */
+.s4.hold-eat .s4-c:first-child{padding-top:16px}
+.s4.hold-eat{--sw:240px}
+.s4.hold-eat .s4-r{padding-top:calc(var(--sw) * 625 / 504 + 24px)}
+.s4.hold-eat .s4-sit{--sw:inherit;left:36%;top:calc(var(--sw) * 625 / 504 * -1 + 6px)}
+.s4.hold-eat .s4-sit s{display:block}
+.s4.hold-eat .s4-sit em{left:calc(var(--sw) * -.3);top:39%;width:calc(var(--sw) * .88);height:13%;transform:none}
+.s4.hold-eat .s4-hp{box-sizing:border-box;width:100%;height:100%;display:flex;align-items:center;padding:0 0 0 16px;font-size:20px;
+}
+@media (max-width:760px){
+  .s4.hold-eat .s4-c:first-child{padding-top:14px}
+  .s4.hold-eat{--sw:210px}
+  .s4.hold-eat .s4-sit{left:30%}
+  .s4.hold-eat .s4-hp{font-size:17px;padding-left:13px}
+}
+
 /* экран 5 */
 .s5 .s5-card{padding:clamp(36px,6vw,64px) clamp(16px,4vw,48px) clamp(24px,4vw,44px);display:flex;flex-direction:column;gap:clamp(28px,4vw,40px)}
 .s5 .s5-head{display:flex;flex-direction:column;gap:24px}
@@ -440,8 +585,8 @@ body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset
 .s5 .s5-ask b{font:700 18px/1.3 var(--text)}
 .s5 .s5-slot{flex:none;width:64px;height:64px;border:2.5px dashed var(--ink);border-radius:16px;transition:border-color .2s,background-color .2s}
 .s5 .s5-res{display:grid;grid-template-columns:56px minmax(0,1fr);gap:8px 12px;align-items:center}
-.s5 .s5-ri{width:56px;height:56px;display:grid;place-items:center;background:var(--paper);border:var(--bi);border-radius:14px;box-shadow:3px 3px 0 var(--ink)}
-.s5 .s5-ri img{width:44px;height:44px}
+.s5 .s5-ri{width:56px;height:56px;display:grid;place-items:center;background:var(--paper);border:var(--bi);border-radius:14px;overflow:hidden;box-shadow:3px 3px 0 var(--ink)}
+.s5 .s5-ri img{width:100%;height:100%;display:block;object-fit:cover}
 .s5 .s5-rn{display:flex;flex-direction:column;gap:4px;min-width:0}
 .s5 .s5-rn b{font:700 16px/1.25 var(--text)}
 .s5 .s5-rn strong{font:800 18px/1.15 var(--display);white-space:nowrap}
@@ -461,14 +606,14 @@ body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset
 .s5 .s5-row{display:grid;grid-template-columns:64px 1fr;gap:14px;align-items:center}
 /* значок категории это наклейка: тянется к плашке Грошика. touch-action:none только на самом значке 64x64,
    страница листается пальцем за любое другое место */
-.s5 .s5-ico{width:64px;height:64px;padding:0;display:grid;place-items:center;background:var(--paper);border:var(--bi);border-radius:16px;box-shadow:3px 3px 0 var(--fg);
+.s5 .s5-ico{width:64px;height:64px;padding:0;display:grid;place-items:center;background:var(--paper);border:var(--bi);border-radius:16px;overflow:hidden;box-shadow:3px 3px 0 var(--fg);
   touch-action:none;cursor:grab;user-select:none;-webkit-user-select:none;position:relative;z-index:1;
   transition:box-shadow .2s,background-color .2s}
 .s5 .s5-ico.drag{cursor:grabbing;z-index:5}
 /* значок, который унесли на плашку Грошика: в списке от него остаётся пустое тёмное гнездо */
 .s5 .s5-row.sel .s5-ico{background:var(--bg);border:2.5px dashed var(--muted);box-shadow:none;pointer-events:none}
 .s5 .s5-row.sel .s5-ico img{opacity:0}
-.s5 .s5-ico img{width:48px;height:48px;pointer-events:none;-webkit-user-drag:none}
+.s5 .s5-ico img{width:100%;height:100%;display:block;object-fit:cover;pointer-events:none;-webkit-user-drag:none}
 .s5 .s5-body{min-width:0;display:flex;flex-direction:column;gap:8px}
 .s5 .s5-top{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:6px 10px}
 .s5 .s5-top h3{font-size:17px}
@@ -490,6 +635,25 @@ body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset
 .s5 .s5-nums{font-size:16px}
 @media (min-width:820px){.s5 .s5-list{grid-template-columns:1fr 1fr 1fr}}
 .s5 .s5-badge{display:none}
+
+/* MOTION trial (limit), app concept v2: bars move by transform only (the fill slides in from the left, its rounded
+   end and edge stay whole). The bar that goes over: yellow fill speeds up to the edge, the track squashes on the hit
+   (from its right end), pink covers it from the left. Final picture is the same as before */
+:root.m-limit .s5 .s5-fill{width:100%;transform:translateX(-100%);
+  transition:transform .9s cubic-bezier(.2,.8,.3,1) calc(var(--i) * 110ms)}
+:root.m-limit .s5 .on .s5-fill{width:100%;transform:translateX(calc(var(--w) - 100%))}
+:root.m-limit .s5 .s5-row.o .s5-fill{background:var(--c1);transition:transform .5s cubic-bezier(.5,0,.75,1) calc(var(--i) * 110ms)}
+:root.m-limit .s5 .s5-row.o .s5-bar{position:relative;transform-origin:100% 50%}
+.s5 .s5-ovf{position:absolute;inset:0;background:var(--c2);transform:scaleX(0);transform-origin:0 50%;
+  transition:transform .42s cubic-bezier(.2,.8,.2,1)}
+.s5 .s5-row.o.hit .s5-ovf{transform:none}
+:root.still .s5 .s5-ovf{transform:none;transition:none}
+/* over = tape (concept v3 «Лента»): pink stripes over the bar, laid by clip-path from the left (JS), then they stand */
+.s5 .s5-tape{position:absolute;inset:0;overflow:hidden;clip-path:inset(0 100% 0 0)}
+.s5 .s5-tape i{position:absolute;top:0;bottom:0;left:-28.28px;right:0;
+  background:repeating-linear-gradient(-45deg,var(--c2) 0 7px,color-mix(in srgb,var(--c2) 45%,var(--paper)) 7px 10px)}
+.s5 .s5-row.o.hit .s5-tape,:root.still .s5 .s5-tape{clip-path:none}
+:root.still.m-limit .s5 .s5-fill{transition:none}
 
 /* экран 9 */
 .s9 .s9-st{display:flex;flex-direction:column;gap:clamp(24px,3.5vw,36px);--s9-lg:color-mix(in srgb,var(--c4) 45%,#fff)}
@@ -534,15 +698,9 @@ body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset
 
 /* один день */
 .s9 .s9-day{position:relative;display:flex;flex-direction:column;justify-content:space-between;gap:18px}
-.s9 .s9-dh{display:flex;align-items:flex-start;gap:12px;padding-right:118px}
+.s9 .s9-dh{display:flex;align-items:flex-start;gap:12px}
 .s9 .s9-dh h3{min-width:0;padding-top:4px}
-/* Грошик на крае плашки: сиденье на 74% высоты картинки, ножки свисают внутрь справа, заголовок их обходит */
-.s9 .s9-sit{width:172px;right:-18px;top:-128px}
-@media (max-width:860px){
-  .s9 .s9-day{margin-top:92px}
-  .s9 .s9-sit{width:150px;right:-8px;top:-111px}
-  .s9 .s9-dh{padding-right:104px}
-}
+/* MOCK round 4: no Groshik on this card any more, so no room is kept for him (title padding, mobile top margin) */
 .s9 .s9-dv{margin:0;font-size:clamp(56px,8vw,84px)}
 .s9 .s9-bs{display:flex;flex-wrap:wrap;gap:10px}
 .s9 .s9-bs .badge{font-size:15px;padding:8px 12px}
@@ -562,8 +720,26 @@ body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset
 .s9 .s9-t.rv.in{transform:none}
 .s9 .s9-bs .rv{transform:translateY(10px) scale(.85)}
 .s9 .s9-bs .rv.in{transform:none}
+/* MOTION trial (spring): the small tiles pop out on the snap spring. The big tile keeps its old curve: Groshik sits
+   on it, and his entrance is left exactly as it was */
+:root.m-spring .s9 .s9-t.rv:not(.s9-big){transition:opacity .32s ease,transform var(--sn-d,.5s) var(--sn-e,ease)}
 :root.still .s9 .rv{opacity:1;transform:none;transition:none}
 @media (prefers-reduced-motion:reduce){.s9 .rv{opacity:1!important;transform:none!important;transition:none!important}}
+
+/* MOCK round 4, idea 8: the biggest tile has a round bite out of its top right corner (4 tooth marks, ink edge),
+   Groshik sits on its top edge holding the green piece. The tile's look moves to .s9-skin so only the skin is masked
+   by G.bite and Groshik, who sits inside the tile, is not */
+.s9 .s9-big{position:relative;overflow:visible;background:none;border:0;padding:16.5px}
+@media (max-width:560px){.s9 .s9-big{padding:14.5px}}
+.s9 .s9-skin{position:absolute;inset:0;background:var(--c);border:var(--bi);border-radius:14px 0 14px 14px}
+.s9 .s9-big > img,.s9 .s9-big > .s9-tn,.s9 .s9-big > b{position:relative}
+.s9 .s9-mos{margin-top:82px}
+/* Groshik: clean poses5 hold art, seat at 70.4% of the 504x625 box; the small green piece sits between body and fists */
+.s9 .s9-bsit{--bs:104px;width:var(--bs);right:30px;left:auto;top:calc(var(--bs) * 625 / 504 * -.704 + 1px)}
+.s9 .s9-bsit em{left:44%;top:47%;transform:translate(-50%,-50%) rotate(165deg)}
+.s9 .s9-chunk{display:block;width:30px;height:auto;overflow:visible}
+@media (max-width:560px){.s9 .s9-bsit{right:44px}}
+.s9 .s9-ml .s9-plus{font:700 13px/1 var(--text);padding:4px 9px;margin-left:6px;vertical-align:middle;margin-block:-6px}
 
 /* экран 6 */
 .s6 .s6-grid{display:grid;grid-template-columns:minmax(0,1fr);gap:40px;align-items:center}
@@ -580,36 +756,32 @@ body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset
 .s6 .s6-date{font:800 clamp(20px,3.4vw,26px)/1.2 var(--display);padding:14px 16px;background:var(--c1);border:var(--bi);border-radius:var(--r-s);text-wrap:balance}
 
 /* сцена с банкой: банка и Грошик в ряд, под ними месяц и кнопка повтора.
-   --jw ширина банки, высота задана явно (без aspect-ratio), запас сверху ряда под падающую монету */
+   --jw ширина банки, высота задана явно по пропорции картинки, запас сверху ряда под падающую монету */
 .s6 .s6-art{--jw:146px;display:flex;flex-direction:column;align-items:center;gap:16px;min-width:0}
 .s6 .s6-month{font-size:16px;padding:9px 14px}
+/* MOTION trial (joy): the confetti squares are placed in .s6-art, outside the clipped jar row */
+.s6 .s6-art{position:relative}
 .s6 .s6-row{display:flex;align-items:flex-end;justify-content:center;gap:6px;max-width:100%;
   padding:calc(var(--jw) * .5) 10px 10px;overflow:hidden;overflow:clip}
 /* место под Грошика по ширине самой широкой позы (jump 288/264), чтобы банка не сдвигалась при смене позы */
 .s6 .s6-gr{height:140px;width:153px;flex:0 1 auto;min-width:0;margin-bottom:-4px;background-position:center bottom}
 .s6 .s6-again{font-size:15px;padding:12px 18px;min-height:48px}
 
-/* банка. Геометрия внутренности: верх 9% высоты банки, низ 100% (T и B в s6.js) */
-.s6 .s6-jar{position:relative;width:var(--jw);height:calc(var(--jw) * 1.25);flex:none}
-.s6 .s6-glass,.s6 .s6-pile,.s6 .s6-in,.s6 .s6-rim{position:absolute;left:0;right:0;top:9%;bottom:0;border-radius:26% 26% 20% 20%/18% 18% 14% 14%}
-.s6 .s6-glass{background:var(--paper);box-shadow:var(--shi)}
-.s6 .s6-full{position:absolute;inset:0;clip-path:inset(60% 0 0 0)}
-.s6 .s6-pile,.s6 .s6-in{overflow:hidden}
-.s6 .s6-pile svg{display:block;width:100%;height:100%}
-.s6 .s6-top{position:absolute;left:0;right:0;top:100%;height:100%;will-change:transform}
-.s6 .s6-top svg{position:absolute;left:0;top:0;width:100%;height:auto;transform:translateY(-50%)}
-.s6 .s6-rim{border:var(--bi)}
-/* блик на пустом стекле, монеты его закрывают */
-.s6 .s6-glass::before{content:"";position:absolute;left:9%;top:12%;width:9%;height:62%;border-radius:99px;background:var(--c3);opacity:.25}
-.s6 .s6-lid{position:absolute;left:11%;right:11%;top:0;height:14%;background:var(--c4);border:var(--bi);border-radius:10px;z-index:2}
-.s6 .s6-lid i{position:absolute;left:33%;right:33%;top:50%;height:5px;margin-top:-2.5px;border-radius:99px;background:var(--ink)}
-/* монеты в банке: жёлтые с тёмной обводкой */
-.s6 .s6-jar .k{fill:var(--c1);stroke:var(--ink);stroke-width:2.5}
-.s6 .s6-jar .r{fill:none;stroke:var(--ink);stroke-width:1.6}
+/* банка: картинки 630x781, внутренность стекла по картинке: верх 12.67%, низ 98.41%, бока 1.98% (T, B в s6.js) */
+.s6 .s6-jar{position:relative;width:var(--jw);height:calc(var(--jw) * 1.2397);flex:none}
+.s6 .s6-glass,.s6 .s6-full,.s6 .s6-shine{position:absolute;inset:0;width:100%;height:100%;display:block;pointer-events:none;user-select:none}
+.s6 .s6-full{clip-path:inset(100% 0 0 0)}
+/* шапка монет обрезана по форме стекла (плечи и горлышко), контур банки остаётся видно */
+.s6 .s6-in{position:absolute;top:12.67%;bottom:1.59%;left:1.98%;right:1.98%;clip-path:polygon(73.0% 0.1%,82.6% 0.2%,83.2% 3.9%,84.1% 4.0%,85.0% 4.1%,86.1% 4.3%,87.0% 4.5%,87.9% 4.6%,88.6% 4.8%,89.4% 5.0%,90.1% 5.3%,90.8% 5.6%,91.5% 5.9%,92.1% 6.1%,92.8% 6.5%,93.4% 6.9%,94.0% 7.2%,94.7% 7.7%,95.3% 8.2%,95.9% 8.7%,96.5% 9.4%,97.1% 10.1%,97.7% 10.9%,98.4% 11.9%,99.0% 13.2%,99.6% 15.1%,100.0% 27.1%,100.0% 39.2%,100.0% 51.3%,99.9% 63.4%,100.0% 75.5%,99.9% 87.5%,99.3% 91.1%,98.7% 92.8%,98.0% 93.9%,97.4% 94.8%,96.8% 95.5%,96.2% 96.2%,95.6% 96.7%,94.9% 97.2%,94.2% 97.7%,93.6% 98.0%,93.0% 98.4%,92.4% 98.7%,91.8% 99.0%,90.9% 99.3%,90.3% 99.4%,89.7% 99.6%,89.0% 99.7%,88.0% 99.8%,85.0% 99.9%,61.2% 100.0%,21.5% 99.9%,15.9% 99.8%,12.9% 99.7%,11.8% 99.6%,10.9% 99.5%,9.8% 99.3%,9.2% 99.2%,8.3% 98.9%,7.6% 98.6%,7.0% 98.3%,6.3% 98.0%,5.7% 97.6%,5.0% 97.1%,4.3% 96.6%,3.7% 96.0%,3.1% 95.4%,2.5% 94.6%,1.9% 93.7%,1.2% 92.6%,0.6% 91.1%,0.1% 79.0%,0.1% 66.9%,0.1% 54.8%,0.0% 42.8%,0.0% 30.7%,0.0% 18.6%,0.6% 14.3%,1.2% 12.6%,1.9% 11.5%,2.5% 10.6%,3.1% 9.8%,3.7% 9.1%,4.3% 8.5%,4.9% 7.9%,5.6% 7.4%,6.2% 7.0%,6.9% 6.5%,7.6% 6.1%,8.3% 5.8%,9.1% 5.5%,9.7% 5.2%,10.3% 5.0%,11.0% 4.7%,11.8% 4.6%,12.7% 4.4%,13.5% 4.2%,14.8% 4.0%,15.7% 3.9%,16.9% 3.8%,17.6% 0.2%,21.3% 0.1%,29.9% 0.0%)}
+.s6 .s6-top{position:absolute;inset:0;transform:translateY(100%);will-change:transform}
+.s6 .s6-c{position:absolute;aspect-ratio:1}
+.s6 .s6-c::before,.s6 .s6-c::after{content:"";position:absolute;inset:0;background:url(img/s6-coin.webp) center/100% 100% no-repeat}
+/* ребро монеты: та же монета чуть ниже и темнее, под лицевой */
+.s6 .s6-c::before{transform:translateY(13%);filter:brightness(.72)}
+.s6 .s6-c.b{filter:brightness(.8)}
 /* падающие монеты (пул из нескольких, переиспользуются) */
 .s6 .s6-drops{position:absolute;inset:0;z-index:3;pointer-events:none}
-.s6 .s6-drop{position:absolute;left:50%;top:0;width:calc(var(--jw) * .17);height:calc(var(--jw) * .17);margin-left:calc(var(--jw) * -.085);border-radius:50%;background:var(--c1);border:var(--bi);opacity:0}
-.s6 .s6-drop::after{content:"";position:absolute;inset:20%;border-radius:50%;border:1.6px solid var(--ink)}
+.s6 .s6-drop{position:absolute;left:50%;top:0;width:calc(var(--jw) * .16);height:calc(var(--jw) * .16);margin-left:calc(var(--jw) * -.08);background:url(img/s6-coin.webp) center/contain no-repeat;opacity:0}
 
 @media (min-width:600px){
   .s6 .s6-art{--jw:190px}
@@ -626,13 +798,27 @@ body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset
 }
 :root.still .s6 .s6-again{display:none}
 
-/* Когда будут картинки из ComfyUI (одинаковые по контуру, крышке и положению слои):
-   .s6 .s6-glass,.s6 .s6-full{position:absolute;inset:0;width:100%;height:100%;border-radius:0;box-shadow:none;background:none}
-   .s6 .s6-rim,.s6 .s6-lid{display:none}  (блик тогда тоже уходит, он уже нарисован)
-   .s6 .s6-pile убрать из разметки; .s6-in с .s6-top оставить (шапка монет едет по линии обрезки),
-   его top/bottom и border-radius подогнать под внутренность стекла на картинке, те же числа в T и B в s6.js.
-   .s6 .s6-drop{background:url(img/s6-coin.webp) center/contain no-repeat;border:0}  и убрать ::after.
-   aspect-ratio у .s6-jar поставить по размеру картинки. */
+/* экран 11 */
+/* экран 11: Грошик плюс. Без цветной сцены: слева тёмная карточка «безкоштовно», справа фиолетовая «плюс» */
+.s11{gap:clamp(28px,4.5vw,44px)}
+.s11 .s11-head{display:flex;flex-direction:column;gap:12px;padding-top:clamp(8px,3vw,24px)}
+.s11 .s11-grid{display:grid;grid-template-columns:minmax(0,1fr);gap:28px;align-items:stretch}
+@media (min-width:820px){.s11 .s11-grid{grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:32px}}
+.s11 .s11-col{display:flex;flex-direction:column;gap:22px;min-width:0;padding:clamp(30px,4vw,40px) clamp(20px,3vw,32px) clamp(24px,3vw,32px)}
+.s11 .s11-plus{background:var(--c3);color:var(--ink);border:var(--b);border-radius:var(--r);box-shadow:var(--sh);transform:rotate(1deg)}
+.s11 .s11-top{display:flex;flex-wrap:wrap;align-items:baseline;justify-content:space-between;gap:8px 16px}
+.s11 .s11-top h3{font-size:clamp(24px,3vw,30px);line-height:1.1;font-weight:800}
+.s11 .s11-price{margin:0;font:800 clamp(30px,4vw,40px)/1 var(--display);white-space:nowrap}
+.s11 .s11-per{font:700 17px/1 var(--text)}
+.s11 .s11-list{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:14px}
+.s11 .s11-list li{position:relative;padding-left:30px;font:500 18px/1.35 var(--text)}
+/* маркер: та же звёздочка, что в бегущей ленте */
+.s11 .s11-list li::before{content:"";position:absolute;left:0;top:.28em;width:16px;height:16px;background:currentColor;
+  clip-path:polygon(50% 0,62% 38%,100% 50%,62% 62%,50% 100%,38% 62%,0 50%,38% 38%)}
+.s11 .s11-free .s11-list li::before{background:var(--c1)}
+.s11 .s11-plus .s11-list li:first-child{font-weight:700}
+.s11 .s11-ai{margin-top:auto;padding-top:12px;border-top:1.5px solid var(--ink);font:500 13px/1.4 var(--text);opacity:.75}
+@media (max-width:480px){.s11 .s11-list li{font-size:17px}}
 
 /* экран 8 */
 .s8 .s8-grid{display:grid;grid-template-columns:1fr;gap:20px;justify-items:start;align-items:center}
@@ -657,6 +843,17 @@ body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset
     </div>
     <a class="btn get" href="#s8" data-ru="Скачать">Завантажити</a>
   </div>
+  <nav class="tabs" aria-label="Розділи" data-ru-aria-label="Разделы">
+    <a href="#s7" data-ru="Приватность">Приватність</a>
+    <a href="#s2" data-ru="Калькулятор">Калькулятор</a>
+    <a href="#s3" data-ru="До зарплаты">До зарплати</a>
+    <a href="#s10" data-ru="Траты">Витрати</a>
+    <a href="#s4" data-ru="Платежи">Платежі</a>
+    <a href="#s5" data-ru="Лимиты">Ліміти</a>
+    <a href="#s9" data-ru="Итоги">Підсумки</a>
+    <a href="#s6" data-ru="Цели">Цілі</a>
+    <a href="#s11" data-ru="Плюс">Плюс</a>
+  </nav>
 </header>
 <main class="wrap">
 <!-- экран 1 -->
@@ -667,7 +864,7 @@ body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset
       <p class="lead" data-ru="Грошик считает до самой зарплаты">Грошик рахує до самої зарплати</p>
       <div class="cta">
         <a class="btn" href="#s8"><svg viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M18.71 19.5c-.83 1.24-1.71 2.45-3.05 2.47-1.34.03-1.77-.79-3.29-.79-1.53 0-2 .77-3.27.82-1.31.05-2.3-1.32-3.14-2.53C4.25 17 2.94 12.45 4.7 9.39c.87-1.52 2.43-2.48 4.12-2.51 1.28-.02 2.5.87 3.29.87.78 0 2.26-1.07 3.81-.91.65.03 2.47.26 3.64 1.98-.09.06-2.17 1.28-2.15 3.81.03 3.02 2.65 4.03 2.68 4.04-.03.07-.42 1.44-1.38 2.83M13 3.5c.73-.83 1.94-1.46 2.94-1.5.13 1.17-.34 2.35-1.04 3.19-.69.85-1.83 1.51-2.95 1.42-.15-1.15.41-2.35 1.05-3.11z"/></svg><span data-ru="Скачать в App Store">Завантажити в App Store</span></a>
-        <a class="btn l" href="#s3" data-ru="Посмотреть пример">Подивитися приклад</a>
+        <a class="btn l" href="https://groshyk-app.nb-77d18a.workers.dev/app.html?peek=1&amp;nobank=1" target="_blank" rel="noopener" data-ru="Посмотреть пример">Подивитися приклад</a>
       </div>
     </div>
     <div class="r">
@@ -677,6 +874,7 @@ body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset
         <div class="big"><span class="num" id="s1-n" data-v="640">640</span>&nbsp;₴</div>
         <span class="badge g" data-ru="хватает">вистачає</span>
       </div>
+      <span class="s1-propb" aria-hidden="true"></span>
     </div>
   </div>
   <div class="tape">
@@ -697,12 +895,13 @@ body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset
       <p data-ru="Без почты и пароля. Открыл и пользуешься.">Без пошти й пароля. Відкрив і користуєшся.</p>
     </div>
     <div class="s7-tab b" id="s7-b" style="--rot:2deg;--bgc:var(--c4)">
+      <span class="mk mk-deep s7-deep" aria-hidden="true"></span>
       <h3 data-ru="Данные на телефоне">Дані на телефоні</h3>
-      <p data-ru="Ничего не уходит на сервер.">Нічого не йде на сервер.</p>
+      <p data-ru="Траты хранятся только в&nbsp;телефоне.">Витрати зберігаються тільки в&nbsp;телефоні.</p>
     </div>
     <div class="s7-tab c" id="s7-c" style="--rot:-2deg;--bgc:var(--c1)">
       <h3 data-ru="Бесплатно">Безкоштовно</h3>
-      <p data-ru="Без подписки и рекламы.">Без підписки й реклами.</p>
+      <p data-ru="Без рекламы. Главное бесплатно.">Без реклами. Головне безкоштовно.</p>
     </div>
   </div>
 </section>
@@ -747,6 +946,7 @@ body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset
 <!-- экран 3 -->
 <section class="scr s3" id="s3">
   <div class="stage v s3-st">
+    <span class="mk mk-peek s3-peek" aria-hidden="true"></span>
     <h2 data-ru="От зарплаты до зарплаты">Від зарплати до зарплати</h2>
     <div class="s3-chat" id="s3-chat">
       <div class="s3-g"><img src="img/mascot.png" alt="" width="44" height="44"><p data-ru="Сейчас у&nbsp;тебя <b>544&nbsp;₴</b> в&nbsp;день.<br>Что сегодня?">Зараз у&nbsp;тебе <b>544&nbsp;₴</b> на&nbsp;день.<br>Що сьогодні?</p></div>
@@ -825,7 +1025,8 @@ body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset
     <div class="s4-r" id="s4-r">
       <span class="gr s4-gr" id="s4-gr" data-pose="sit"></span>
       <ul class="s4-cards" id="s4-cards">
-        <li class="plate s4-c" data-sum="150">
+        <li class="plate s4-c held" data-sum="150">
+          <span class="sit hold mk s4-sit" id="s4-sit" aria-hidden="true"><i></i><em><span class="s4-hp num" id="s4-hp">−150&nbsp;₴</span></em><s></s><u></u></span>
           <div class="s4-ct"><b data-ru="Подписка на кино">Підписка на кіно</b><span data-ru="5 числа">5 числа</span></div>
           <span class="s4-s num">−150&nbsp;₴</span>
         </li>
@@ -913,7 +1114,7 @@ body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset
           <span class="s9-tot num" id="s9-tot"></span>
         </div>
         <div class="s9-mos">
-          <div class="s9-t s9-big rv" data-n="4250" style="--c:var(--c4)"><img src="img/s5-cat-food.webp" width="40" height="40" alt=""><span class="s9-tn" data-ru="Продукты">Продукти</span><b class="num"></b></div>
+          <div class="s9-t s9-big rv" data-n="4250" style="--c:var(--c4)"><span class="s9-skin" id="s9-skin"></span><img src="img/s5-cat-food.webp" width="40" height="40" alt=""><span class="s9-tn" data-ru="Продукты">Продукти</span><b class="num"></b><span class="sit hold mk s9-bsit" aria-hidden="true"><i></i><em><svg class="s9-chunk" viewBox="0 0 46 36" aria-hidden="true"><path d="M4 3H29Q41 3 41 15V31 L33.7 31.1 L31.8 24.0 L24.4 24.1 L22.5 17.0 L15.2 17.1 L13.2 10.0 L5.9 10.1 L4 3Z" style="fill:var(--c4);stroke:var(--ink);stroke-width:2.5px;stroke-linejoin:round"/></svg></em><u></u></span></div>
           <div class="s9-g">
             <div class="s9-r">
               <div class="s9-t rv" data-n="3100" style="--c:var(--c3)"><img src="img/s5-cat-cafe.webp" width="32" height="32" alt=""><span class="s9-tn" data-ru="Кафе и доставка">Кафе й доставка</span><b class="num"></b></div>
@@ -930,9 +1131,8 @@ body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset
       </div>
 
       <!-- один день обходится: месяц / 30, час = день / 24, день дохода = зарплата 40 000 (как в калькуляторе) / 30 -->
-      <!-- Грошик сидит на верхнем крае плашки дня, как на первом экране, и дышит: показывает итог -->
+      <!-- MOCK round 4: the second Groshik on this card is removed (owner: too many in one block) -->
       <div class="plate s9-day" id="s9-day">
-        <span class="sit s9-sit" id="s9-sit" aria-hidden="true"><b class="ll"></b><b class="lr"></b><i></i></span>
         <div class="s9-dh">
           <h3 data-ru="День твоей жизни стоит">День твого життя коштує</h3>
         </div>
@@ -953,11 +1153,11 @@ body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset
       <h3 data-ru="А ещё в итогах">А ще в підсумках</h3>
       <ul class="s9-ml">
         <li class="rv"><b data-ru="Что выросло">Що виросло</b><span data-ru="кафе +640&nbsp;₴ к&nbsp;прошлому месяцу">кафе +640&nbsp;₴ проти минулого місяця</span></li>
-        <li class="rv"><b data-ru="Самые дорогие дни">Найдорожчі дні</b><span data-ru="три за месяц, самый большой 1&nbsp;920&nbsp;₴">три за місяць, найбільший 1&nbsp;920&nbsp;₴</span></li>
-        <li class="rv"><b data-ru="Где можно сэкономить">Де можна заощадити</b><span data-ru="кафе на 20% меньше, и&nbsp;за&nbsp;год&nbsp;+7&nbsp;440&nbsp;₴">кафе на 20% менше, і&nbsp;за&nbsp;рік&nbsp;+7&nbsp;440&nbsp;₴</span></li>
+        <li class="rv"><b data-ru="Самые дорогие дни <span class='badge v s9-plus'>плюс</span>">Найдорожчі дні <span class="badge v s9-plus">плюс</span></b><span data-ru="три за месяц, самый большой 1&nbsp;920&nbsp;₴">три за місяць, найбільший 1&nbsp;920&nbsp;₴</span></li>
+        <li class="rv"><b data-ru="Где можно сэкономить <span class='badge v s9-plus'>плюс</span>">Де можна заощадити <span class="badge v s9-plus">плюс</span></b><span data-ru="кафе на 20% меньше, и&nbsp;за&nbsp;год&nbsp;+7&nbsp;440&nbsp;₴">кафе на 20% менше, і&nbsp;за&nbsp;рік&nbsp;+7&nbsp;440&nbsp;₴</span></li>
         <li class="rv"><b data-ru="Дни недели">Дні тижня</b><span data-ru="дороже всего пятница">найдорожча п'ятниця</span></li>
-        <li class="rv"><b data-ru="Все месяцы рядом">Усі місяці поруч</b><span data-ru="в среднем 13&nbsp;200&nbsp;₴ в&nbsp;месяц">у середньому 13&nbsp;200&nbsp;₴ на місяць</span></li>
-        <li class="rv"><b data-ru="События и теги">Події й теги</b><span data-ru="отпуск 8&nbsp;600&nbsp;₴ одной суммой">відпустка 8&nbsp;600&nbsp;₴ однією сумою</span></li>
+        <li class="rv"><b data-ru="Все месяцы рядом <span class='badge v s9-plus'>плюс</span>">Усі місяці поруч <span class="badge v s9-plus">плюс</span></b><span data-ru="в среднем 13&nbsp;200&nbsp;₴ в&nbsp;месяц">у середньому 13&nbsp;200&nbsp;₴ на місяць</span></li>
+        <li class="rv"><b data-ru="События и теги <span class='badge v s9-plus'>плюс</span>">Події й теги <span class="badge v s9-plus">плюс</span></b><span data-ru="отпуск 8&nbsp;600&nbsp;₴ одной суммой">відпустка 8&nbsp;600&nbsp;₴ однією сумою</span></li>
       </ul>
     </div>
   </div>
@@ -986,17 +1186,13 @@ body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset
         <!-- ряд с банкой обрезает всё, что из него выходит: монеты падают только в его верхнем запасе и
              ни на что вокруг не налезают -->
         <div class="s6-row">
-          <!-- Банка из слоёв. Сейчас нарисована CSS, позже сюда встанут картинки из ComfyUI:
-               .s6-glass станет <img class="s6-glass" src="img/s6-jar-empty.webp" alt="">,
-               .s6-full станет <img class="s6-full" id="s6-full" src="img/s6-jar-full.webp" alt="">,
-               .s6-rim и .s6-lid убрать (контур и крышка уже на картинках). Как это сделать в CSS, см. s6.css внизу.
-               Пропорции .s6-jar и границы внутренности (T и B в s6.js) подогнать под картинку. -->
+          <!-- Банка из слоёв, все картинки одного размера и совпадают по контуру: пустая банка, полная поверх неё
+               открывается снизу по линии-горке, шапка из монет едет по этой линии (обрезана по стеклу), блики стекла сверху -->
           <div class="s6-jar" id="s6-jar" role="img" data-ru-aria-label="Банка с монетами" aria-label="Банка з монетами">
-            <div class="s6-glass"></div>
-            <div class="s6-full" id="s6-full"><div class="s6-pile" id="s6-pile"></div></div>
+            <img class="s6-glass" src="img/s6-jar-empty.webp" alt="" width="630" height="781">
+            <img class="s6-full" id="s6-full" src="img/s6-jar-full.webp" alt="" width="630" height="781">
             <div class="s6-in"><div class="s6-top" id="s6-top"></div></div>
-            <div class="s6-rim"></div>
-            <div class="s6-lid"><i></i></div>
+            <img class="s6-shine" src="img/s6-jar-shine.webp" alt="" width="630" height="781">
             <div class="s6-drops" id="s6-drops"></div>
           </div>
           <span class="gr s6-gr" id="s6-gr" data-pose="jar"></span>
@@ -1004,6 +1200,45 @@ body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset
         <span class="badge w s6-month" id="s6-month"></span>
         <button type="button" class="btn l s6-again" id="s6-again"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 12a8 8 0 1 0 2.4-5.7M4 4v5h5" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></svg><span data-ru="Собрать ещё раз">Зібрати ще раз</span></button>
       </div>
+    </div>
+  </div>
+</section>
+
+<!-- экран 11 -->
+<section class="scr s11" id="s11">
+  <div class="s11-head">
+    <h2 data-ru="Грошик плюс">Грошик плюс</h2>
+    <p class="lead" data-ru="Главное бесплатно. Плюс для тех, кому лень вносить траты руками.">Головне безкоштовно. Плюс для тих, кому ліньки вносити витрати руками.</p>
+  </div>
+  <div class="s11-grid">
+    <div class="card s11-col s11-free rv">
+      <div class="s11-top">
+        <h3 data-ru="Бесплатно">Безкоштовно</h3>
+        <p class="s11-price num">0&nbsp;₴</p>
+      </div>
+      <ul class="s11-list">
+        <li data-ru="Число на сегодня и прогноз до зарплаты">Число на сьогодні й прогноз до зарплати</li>
+        <li data-ru="Лимиты по категориям">Ліміти за категоріями</li>
+        <li data-ru="Оплаты Apple Pay записываются сами">Оплати Apple Pay записуються самі</li>
+        <li data-ru="Траты фразой: «кофе 80, такси 150»">Витрати фразою: «кава 80, таксі 150»</li>
+        <li data-ru="Скрин операций популярных банков">Скрин операцій популярних банків</li>
+        <li data-ru="Этот и прошлый месяц">Цей і минулий місяць</li>
+      </ul>
+    </div>
+    <div class="s11-col s11-plus rv">
+      <div class="s11-top">
+        <h3 data-ru="Плюс">Плюс</h3>
+        <p class="s11-price"><span class="num">125&nbsp;₴</span> <span class="s11-per" data-ru="в месяц">на місяць</span></p>
+      </div>
+      <ul class="s11-list">
+        <li data-ru="Всё, что бесплатно">Усе, що безкоштовно</li>
+        <li data-ru="Скрин любого банка и фото чека">Скрин будь-якого банку й фото чека</li>
+        <li data-ru="Траты любой фразой, как скажешь">Витрати будь-якою фразою, як скажеш</li>
+        <li data-ru="Почему так вышло и где сэкономить">Чому так вийшло і де заощадити</li>
+        <li data-ru="Самые дорогие дни, события и теги">Найдорожчі дні, події й теги</li>
+        <li data-ru="Все месяцы и план на полгода">Усі місяці й план на пів року</li>
+      </ul>
+      <p class="s11-ai" data-ru="Скрин и чек разбирает ИИ. Первый раз Грошик спросит согласие.">Скрин і чек розбирає ШІ. Першого разу Грошик спитає згоди.</p>
     </div>
   </div>
 </section>
@@ -1018,7 +1253,7 @@ body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset
         <p class="lead" data-ru="Для iPhone. Бесплатно и без регистрации.">Для iPhone. Безкоштовно й без реєстрації.</p>
         <div class="s8-btns">
           <a class="btn" id="s8-get" href="#"><svg viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M12.152 6.896c-.948 0-2.415-1.078-3.96-1.04-2.04.027-3.91 1.183-4.961 3.014-2.117 3.675-.546 9.103 1.519 12.09 1.013 1.454 2.208 3.09 3.792 3.039 1.52-.065 2.09-.987 3.935-.987 1.831 0 2.35.987 3.96.948 1.637-.026 2.676-1.48 3.676-2.948 1.156-1.688 1.636-3.325 1.662-3.415-.039-.013-3.182-1.221-3.22-4.857-.026-3.04 2.48-4.494 2.597-4.559-1.429-2.09-3.623-2.324-4.39-2.376-2-.156-3.675 1.09-4.61 1.09zM15.53 3.83c.843-1.012 1.4-2.427 1.245-3.83-1.207.052-2.662.805-3.532 1.818-.78.896-1.454 2.338-1.273 3.714 1.338.104 2.715-.688 3.559-1.701"/></svg><span data-ru="Скачать в App Store">Завантажити в App Store</span></a>
-          <a class="btn l" id="s8-demo" href="#"><span data-ru="Пример в Telegram">Приклад у Telegram</span></a>
+          <a class="btn l" id="s8-demo" href="https://groshyk-app.nb-77d18a.workers.dev/app.html?peek=1&amp;nobank=1" target="_blank" rel="noopener"><span data-ru="Посмотреть пример">Подивитися приклад</span></a>
         </div>
       </div>
     </div>
@@ -1045,6 +1280,9 @@ window.G = (function(){
 
   /* без анимации: системная настройка или ?still=1 для проверки */
   var still = (window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches) || q.get('still') === '1';
+  /* MOTION trial: ?mt=400 is a frame of the motion (see G.M below), so the page plays instead of standing still */
+  var mtMode = q.get('mt') !== null;
+  if (mtMode) still = false;
   if (still) root.classList.add('still');
 
   /* язык: украинский основной, русский по #ru, ?lang=ru или переключателю.
@@ -1103,7 +1341,9 @@ window.G = (function(){
     if (!still && el.animate) el.animate([{transform:'scale(.96)'},{transform:'scale(1.05)'},{transform:'scale(1)'}], {duration:280});
   }
   /* Грошик ест: мягкое сжатие на 4 процента. el это .gr или .sit i. При still CSS его выключает */
-  function chomp(el){ el.classList.remove('chomp'); void el.offsetWidth; el.classList.add('chomp'); }
+  /* MOTION trial: Groshik stands still unless the mascot flag is on (G.M.style.mascot, ?mascot=1). s7 is left as it was */
+  function still_mascot(el){ return G.M && !G.M.style.mascot && !(el.closest && el.closest('#s7')); }
+  function chomp(el){ if (still_mascot(el)) return; el.classList.remove('chomp'); void el.offsetWidth; el.classList.add('chomp'); }
   /* Грошик съедает трату (.sit i): то же мягкое сжатие, без смены кадров; mid() примерно через 150 мс */
   function toss(i, mid){
     chomp(i);
@@ -1112,6 +1352,7 @@ window.G = (function(){
   /* сменить позу .gr. Картинка меняется в короткой дымке прозрачности (150 мс), чтобы лицо не подменялось
      рывком. Частые вызовы подряд склеиваются: показывается последняя поза. При still меняется сразу */
   function pose(el, name){
+    if (still_mascot(el)) return;   /* the pose from the markup (or the one a screen fixes at start) stays */
     if (!el._poseT && el.dataset.pose === name) return;
     el._pose = name;
     if (el._poseT) return;
@@ -1122,6 +1363,8 @@ window.G = (function(){
 
   /* один раз, когда элемент вошёл в экран. Без IntersectionObserver и при still срабатывает сразу */
   function inView(el, fn, threshold){
+    /* frames mode: start after the first paint, so CSS transitions really run */
+    if (mtMode) { setTimeout(fn, 150); return; }
     if (still || !('IntersectionObserver' in window)) { fn(); return; }
     var io = new IntersectionObserver(function(e){
       if (e[0].isIntersecting) { io.disconnect(); fn(); }
@@ -1150,11 +1393,56 @@ window.G = (function(){
     calc();
   }
 
+  /* MOCK round 4: a bite out of an element. cs = [[x, y, r], ...] in px of its border box, x < 0 counts from the right.
+     The element is masked by the circles (so its own border goes too), an svg inside draws each circle with an ink
+     stroke twice the border width: the inner half falls in the hole, the outer half is the new edge */
+  function bite(el, cs){
+    var s = getComputedStyle(el), bw = parseFloat(s.borderTopWidth) || 2.5, w = el.offsetWidth, h = el.offsetHeight;
+    var ps = cs.map(function(c){ return [c[0] < 0 ? w + c[0] : c[0], c[1], c[2]]; });
+    var m = ps.map(function(p){
+      return 'radial-gradient(circle ' + p[2] + 'px at ' + p[0] + 'px ' + p[1] + 'px, transparent ' + (p[2] - .4) + 'px, #000 ' + (p[2] + .4) + 'px)';
+    }).join(',');
+    el.style.webkitMaskImage = el.style.maskImage = m;
+    el.style.webkitMaskComposite = 'source-in'; el.style.maskComposite = 'intersect';
+    el.style.maskRepeat = el.style.webkitMaskRepeat = 'no-repeat';
+    var g = el.querySelector(':scope > .bite-ink');
+    if (!g) { g = document.createElementNS('http://www.w3.org/2000/svg', 'svg'); g.setAttribute('class', 'bite-ink'); g.setAttribute('aria-hidden', 'true'); el.appendChild(g); }
+    g.style.left = -parseFloat(s.borderLeftWidth) + 'px'; g.style.top = -bw + 'px';
+    g.style.clipPath = 'inset(0 round ' + s.borderRadius + ')';
+    g.setAttribute('width', w); g.setAttribute('height', h); g.setAttribute('viewBox', '0 0 ' + w + ' ' + h);
+    g.innerHTML = ps.map(function(p){
+      return '<circle cx="' + p[0] + '" cy="' + p[1] + '" r="' + p[2] + '" fill="none" style="stroke:var(--ink);stroke-width:' + bw * 2 + 'px"/>';
+    }).join('');
+  }
+
   document.addEventListener('DOMContentLoaded', function(){
     document.querySelectorAll('.lang button').forEach(function(b){
       b.addEventListener('click', function(){ setLang(b.dataset.lang); });
     });
     applyLang();
+    /* переходы по #sN внутри страницы: сами, с поправкой на липкую шапку (в рамке артефакта якоря не срабатывают) */
+    var top = document.querySelector('.top'), tabs = document.querySelectorAll('.top .tabs a');
+    document.addEventListener('click', function(e){
+      var a = e.target.closest && e.target.closest('a[href^="#s"]'); if (!a) return;
+      var t = document.getElementById(a.getAttribute('href').slice(1)); if (!t) return;
+      e.preventDefault();
+      scrollTo({ top: t.getBoundingClientRect().top + scrollY - (top ? top.offsetHeight : 0) - 8, behavior: still ? 'auto' : 'smooth' });
+    });
+    /* какая вкладка горит: раздел, который пересекает линию сразу под шапкой */
+    if (tabs.length) {
+      var secs = [].map.call(tabs, function(a){ return document.getElementById(a.getAttribute('href').slice(1)); });
+      var mark = function(){
+        var y = (top ? top.offsetHeight : 0) + 40, cur = -1;
+        secs.forEach(function(s, i){ if (s && s.getBoundingClientRect().top <= y) cur = i; });
+        if (cur >= 0 && secs[cur].getBoundingClientRect().bottom < y) cur = -1;
+        tabs.forEach(function(a, i){
+          var on = i === cur;
+          if (on && !a.classList.contains('on')) a.parentNode.scrollTo({ left: a.offsetLeft - 20, behavior: 'smooth' });
+          a.classList.toggle('on', on);
+        });
+      };
+      addEventListener('scroll', mark, { passive: true }); addEventListener('resize', mark); mark();
+    }
     /* ?y=1200 прокрутить для снимка */
     if (q.get('y')) setTimeout(function(){ root.style.scrollBehavior = 'auto'; scrollTo(0, +q.get('y')); }, 60);
   });
@@ -1162,8 +1450,208 @@ window.G = (function(){
   return {
     still: still, L: L, onLang: onLang, setLang: setLang, lang: function(){ return lang; },
     fmt: fmt, tween: tween, pop: pop, chomp: chomp, toss: toss, pose: pose,
-    inView: inView, reveal: reveal, scrollProgress: scrollProgress
+    inView: inView, reveal: reveal, scrollProgress: scrollProgress, bite: bite
   };
+})();
+
+/* MOTION trial 13.11: pieces of the app's motion concept (D:\Грошик\public\docs\motion_concept.html, ДВИЖЕНИЕ.md),
+   character "игриво" (CHAR.play). Every piece has one switch here; ?m=roll,limit keeps only the named pieces, ?m=none
+   switches all off. Pieces: roll (digits change with a light blur instead of counting), limit (bars by transform, the
+   bar that goes over hits the edge), row (new expense row arrives like the app's FLIP insert), joy (confetti of squares
+   when the jar is full), press (buttons go down in 40 ms, come back on the press spring), spring (existing entrances on
+   the snap spring). Still mode and reduced motion: nothing plays, the final state is shown.
+   Frames for checking without a browser: ?mb=s5&mt=400 freezes everything 400 ms after block s5 started its motion
+   (blocks: s1 s2 s3 s5 s6 s9 s10 press) */
+G.M = (function(){
+  var MOTION = {roll:1, limit:1, row:1, joy:1, press:1, spring:1};
+  /* variants (owner's choice 13.11 in ДВИЖЕНИЕ.md): digits 'stamp' | 'roll', over 'tape' | 'cover'; mascot 0 = Groshik
+     stands still (no breathing, chomp, pose swaps, jump), 1 = the old behaviour. Query: ?digits=roll&over=cover&mascot=1.
+     The digits variant works under the roll switch, the over variant under the limit switch */
+  var STYLE = {digits:'stamp', over:'tape', mascot:0};
+  var q = new URLSearchParams(location.search), root = document.documentElement;
+  if (q.get('m') !== null) {
+    var keep = q.get('m').split(',');
+    Object.keys(MOTION).forEach(function(k){ MOTION[k] = keep.indexOf(k) >= 0 ? 1 : 0; });
+  }
+  if (q.get('digits') === 'roll' || q.get('digits') === 'stamp') STYLE.digits = q.get('digits');
+  if (q.get('over') === 'cover' || q.get('over') === 'tape') STYLE.over = q.get('over');
+  if (q.get('mascot') !== null) STYLE.mascot = q.get('mascot') === '1' ? 1 : 0;
+  Object.keys(MOTION).forEach(function(k){ if (MOTION[k]) root.classList.add('m-' + k); });
+  root.classList.add('m-over-' + STYLE.over);
+  if (STYLE.mascot) root.classList.add('m-mascot');
+  var canAnim = !!(window.Element && Element.prototype.animate);
+  function has(k){ return !!MOTION[k]; }
+  function on(k){ return !!MOTION[k] && !G.still && canAnim; }
+
+  /* springs as in the concept: duration and bounce like Apple, turned into a CSS linear() curve */
+  function kc(d, b){ return {k: Math.pow(2 * Math.PI / d, 2), c: (1 - b) * 4 * Math.PI / d}; }
+  function curve(d, b){
+    var s = kc(d, b), w0 = Math.sqrt(s.k), z = s.c / (2 * w0);
+    function x(t){
+      if (z < 1) { var wd = w0 * Math.sqrt(1 - z * z); return 1 - Math.exp(-z * w0 * t) * (Math.cos(wd * t) + z / Math.sqrt(1 - z * z) * Math.sin(wd * t)); }
+      return 1 - Math.exp(-w0 * t) * (1 + w0 * t);
+    }
+    var T = 0, t, i, pts = [];
+    for (t = 0; t < 3; t += 1 / 240) if (Math.abs(1 - x(t)) > 0.002) T = t;
+    T = Math.max(T, d * 0.6);
+    for (i = 0; i <= 48; i++) pts.push(+(i === 48 ? 1 : x(i / 48 * T)).toFixed(4));
+    return {ms: Math.round(T * 1000), css: 'linear(' + pts.join(', ') + ')'};
+  }
+  var CHAR = {snap: [.4, .28], press: [.34, .45], joy: [.5, .45], roll: [.55, .25]};
+  var LIN = !!(window.CSS && CSS.supports && CSS.supports('transition-timing-function', 'linear(0, 1)'));
+  var P = {};
+  Object.keys(CHAR).forEach(function(k){
+    var c = curve(CHAR[k][0], CHAR[k][1]);
+    P[k] = {ms: c.ms, css: LIN ? c.css : 'cubic-bezier(.34,1.4,.64,1)'};
+  });
+  root.style.setProperty('--pr-d', P.press.ms + 'ms'); root.style.setProperty('--pr-e', P.press.css);
+  root.style.setProperty('--sn-d', P.snap.ms + 'ms'); root.style.setProperty('--sn-e', P.snap.css);
+
+  /* frames: ?mb=<block>&mt=<ms> */
+  var mt = q.get('mt'), mb = q.get('mb'), marked = false, halted = false;
+  /* Frames mode. Headless Chrome moves timers on "virtual time" but does not tick the animation clock with it, so the
+     frame is not taken by pausing at the right moment: every animation and CSS transition gets a birth time (style is
+     flushed after each timer), and at the freeze each one is paused and set to (now - birth). Timers still waiting are
+     dropped after the freeze, so nothing changes the frame later. The measuring pass (?measure=1) is left alone */
+  var FR = mt !== null && q.get('measure') !== '1', born = window.WeakMap ? new WeakMap() : null;
+  function stamp(){
+    if (!FR || !document.getAnimations || !document.documentElement) return;
+    void document.documentElement.offsetWidth;
+    var now = performance.now();
+    document.getAnimations().forEach(function(a){ if (!born.has(a)) born.set(a, now); });
+  }
+  if (FR) {
+    ['setTimeout', 'setInterval', 'requestAnimationFrame'].forEach(function(name){
+      var orig = window[name].bind(window);
+      window[name] = function(fn){
+        var rest = [].slice.call(arguments, 1);
+        return orig.apply(null, [function(){ if (!halted) { fn.apply(this, arguments); stamp(); } }].concat(rest));
+      };
+    });
+    var A0 = Element.prototype.animate;
+    Element.prototype.animate = function(){ var a = A0.apply(this, arguments); born.set(a, performance.now()); if (halted) a.pause(); return a; };
+    document.addEventListener('DOMContentLoaded', stamp);
+  }
+  function mark(name){
+    if (mt === null || marked || (mb && mb !== name)) return;
+    marked = true;
+    setTimeout(function(){
+      stamp(); halted = true;
+      var now = performance.now();
+      if (document.getAnimations) document.getAnimations().forEach(function(a){
+        try { a.pause(); if (born && born.has(a)) a.currentTime = Math.max(0, now - born.get(a)); } catch (e) {}
+      });
+    }, +mt || 0);
+  }
+  function after(ms, fn){ return setTimeout(function(){ if (!halted) fn(); }, ms); }
+
+  /* digits as numericText in the app: only the changed place moves, the old digit leaves with a light blur,
+     the new one comes in from the side the number went. how: 'update' (default), 'enter' (all digits in turn), 'none' */
+  function roll(el, text, how){
+    if (STYLE.digits === 'stamp') return stampDigits(el, text, how);
+    how = how || 'update';
+    var prev = el._t !== undefined ? el._t : el.textContent;
+    el._t = text; el.setAttribute('aria-label', text);
+    function num(s){ return +String(s).replace(/\D/g, '') || 0; }
+    var dir = num(text) >= num(prev) ? 1 : -1;
+    var pd = String(prev).split('').filter(function(c){ return /\d/.test(c); }).reverse();
+    var chars = String(text).split(''), total = chars.filter(function(c){ return /\d/.test(c); }).length;
+    var anim = how !== 'none' && on('roll') && (how === 'enter' || prev !== text);
+    var IN = 'cubic-bezier(.16,1,.3,1)', OUT = 'cubic-bezier(.4,0,1,1)';
+    el.textContent = ''; var seen = 0, k = 0;
+    chars.forEach(function(c){
+      var isD = /\d/.test(c), r = isD ? total - 1 - seen++ : -1;
+      var col = document.createElement('span'); col.className = isD ? 'rl-d' : 'rl-s'; el.appendChild(col);
+      /* the column holds the place; the new digit and the leaving one are two layers in it */
+      var nw = col; if (isD) { nw = document.createElement('span'); nw.className = 'rl-n'; col.appendChild(nw); }
+      nw.textContent = c;
+      if (!anim || !isD) return;
+      var old = how === 'enter' ? null : pd[r];
+      if (old === c) return;
+      var delay = how === 'enter' ? 40 * k++ : 28 * r;
+      nw.animate([{opacity: 0, transform: 'translateY(' + dir * 42 + '%) scale(.92)', filter: 'blur(5px)'}, {opacity: 1, transform: 'none', filter: 'blur(0)'}],
+        {duration: how === 'enter' ? 620 : 560, easing: IN, delay: delay, fill: 'backwards'});
+      if (old === undefined || old === null) return;
+      var o = document.createElement('span'); o.className = 'rl-o'; o.setAttribute('aria-hidden', 'true'); o.textContent = old; col.appendChild(o);
+      o.animate([{opacity: 1, transform: 'none', filter: 'blur(0)'}, {opacity: 0, transform: 'translateY(' + -dir * 42 + '%) scale(.92)', filter: 'blur(5px)'}],
+        {duration: 260, easing: OUT, delay: delay, fill: 'both'}).onfinish = function(){ o.remove(); };
+    });
+  }
+
+  /* digits «Штамп» (DV.stamp in the concept): the number is stamped in whole. The old one shrinks and fades in 150 ms,
+     the new one lands from scale 1.35 rotate(-3deg) on the press spring, the card under it sinks 3px into its shadow
+     (shadow 1px) and comes back. how: 'update', 'enter' (no old number), 'none' */
+  var ADD = (function(){ try { return 'composite' in KeyframeEffect.prototype; } catch (e) { return false; } })();
+  function stampDigits(el, text, how){
+    how = how || 'update';
+    var prev = el._t !== undefined ? el._t : el.textContent;
+    el._t = text; el.setAttribute('aria-label', text);
+    var anim = how !== 'none' && on('roll') && (how === 'enter' || prev !== text);
+    el.classList.add('st-h');
+    var nw = document.createElement('span'); nw.className = 'st-n'; nw.textContent = text;
+    el.textContent = ''; el.appendChild(nw);
+    if (!anim) return;
+    if (how !== 'enter' && prev) {
+      var o = document.createElement('span'); o.className = 'st-o'; o.setAttribute('aria-hidden', 'true'); o.textContent = prev; el.appendChild(o);
+      o.animate([{opacity: 1, transform: 'none'}, {opacity: 0, transform: 'scale(.8)'}],
+        {duration: 150, easing: 'cubic-bezier(.4,0,1,1)', fill: 'forwards'}).onfinish = function(){ o.remove(); };
+    }
+    nw.animate([{opacity: 0, transform: 'scale(1.35) rotate(-3deg)'}, {opacity: 1, transform: 'scale(1.35) rotate(-3deg)', offset: .01},
+      {opacity: 1, transform: 'none'}], {duration: P.press.ms + 120, easing: P.press.css, delay: 90, fill: 'backwards'});
+    var card = el.closest('.plate, .ans, .s10-rs, #s3-r');
+    if (!card) return;
+    /* the sink is added on top of the card's own transform (tilt, entrance), so nothing else jumps */
+    if (ADD) card.animate([{transform: 'translate(0,0)'}, {transform: 'translate(3px,3px)', offset: .35}, {transform: 'translate(0,0)'}],
+      {duration: 420, easing: 'ease-out', delay: 90, composite: 'add'});
+    var sh = getComputedStyle(card).boxShadow;
+    if (sh && sh !== 'none') card.animate([{boxShadow: sh}, {boxShadow: sh.replace(/(-?[\d.]+)px (-?[\d.]+)px/, '1px 1px'), offset: .35}, {boxShadow: sh}],
+      {duration: 420, easing: 'ease-out', delay: 90});
+  }
+
+  /* joy: small squares fly up from (x, y) of box and fall away. Fixed seed, so frames are the same every time */
+  function confetti(box, x, y, k){
+    k = k || 1;
+    var cols = ['--c1', '--c2', '--c3', '--c4', '--c5'], s = 7;
+    function r(){ s = (s * 16807) % 2147483647; return s / 2147483647; }
+    for (var i = 0; i < 16; i++) (function(i){
+      var c = document.createElement('i'); c.className = 'm-cf'; c.setAttribute('aria-hidden', 'true');
+      c.style.left = x + 'px'; c.style.top = y + 'px'; c.style.background = 'var(' + cols[i % 5] + ')';
+      box.appendChild(c);
+      var ang = -Math.PI / 2 + (r() - .5) * 2.2, sp = (150 + r() * 120) * k;
+      var dx = Math.cos(ang) * sp, dy = Math.sin(ang) * sp, rot = (r() - .5) * 720;
+      var a = c.animate([
+        {transform: 'translate(-50%,-50%) scale(.4)', opacity: 1},
+        {transform: 'translate(calc(-50% + ' + (dx * .7).toFixed(1) + 'px), calc(-50% + ' + (dy * .8).toFixed(1) + 'px)) rotate(' + (rot * .5).toFixed(0) + 'deg)', opacity: 1, offset: .45},
+        {transform: 'translate(calc(-50% + ' + dx.toFixed(1) + 'px), calc(-50% + ' + (dy * .2 + 200 * k).toFixed(1) + 'px)) rotate(' + rot.toFixed(0) + 'deg)', opacity: 0}
+      ], {duration: 1100 + r() * 300, easing: 'cubic-bezier(.2,.7,.3,1)', delay: 120, fill: 'both'});
+      a.onfinish = function(){ c.remove(); };
+    })(i);
+  }
+
+  /* press frames: the first button of the first screen goes down and comes back */
+  if (mb === 'press' && mt !== null) document.addEventListener('DOMContentLoaded', function(){
+    var b = document.querySelector('#s1 .btn'); if (!b) return;
+    setTimeout(function(){ mark('press'); b.classList.add('m-down'); after(70, function(){ b.classList.remove('m-down'); }); }, 300);
+  });
+
+  return {has: has, on: on, P: P, style: STYLE, roll: roll, confetti: confetti, mark: mark, after: after,
+    halted: function(){ return halted; }, mt: mt !== null, mb: mb};
+})();
+
+/* MOCK ONLY: ?measure=1 sends section and mascot rects to the parent frame (for cropping shots) */
+(function(){
+  if (new URLSearchParams(location.search).get('measure') !== '1') return;
+  addEventListener('load', function(){ setTimeout(function(){
+    var out = {};
+    document.querySelectorAll('section.scr').forEach(function(s){
+      var u = s.getBoundingClientRect(), t = u.top, b = u.bottom, l = u.left, r = u.right;
+      s.querySelectorAll('.gr,.sit,.mk').forEach(function(e){ var v = e.getBoundingClientRect(); if (!v.width) return;
+        t = Math.min(t, v.top); b = Math.max(b, v.bottom); l = Math.min(l, v.left); r = Math.max(r, v.right); });
+      out[s.id] = [l + scrollX, t + scrollY, r + scrollX, b + scrollY];
+    });
+    out.doc = [document.documentElement.scrollWidth, document.documentElement.scrollHeight];
+    parent.postMessage(JSON.stringify(out), '*');
+  }, 400); });
 })();
 
 /* экран 1 */
@@ -1181,6 +1669,11 @@ window.G = (function(){
   }
   G.onLang(badge);
   badge();
+  /* MOCK round 4, idea 7b: static, the card leans on Groshik, no flying stickers */
+  sec.classList.add('prop-' + (new URLSearchParams(location.search).get('prop') || 'strain'));
+  /* MOTION trial (roll): the number on the card comes in digit by digit once; the card and Groshik stay put */
+  if (G.M.on('roll')) G.inView(plate, function(){ G.M.mark('s1'); G.M.roll(n, n.textContent, 'enter'); }, .3);
+  return;
   if (G.still) return;
 
   var seq = [['кава', 'кофе', 85], ['таксі', 'такси', 140], ['обід', 'обед', 210]], i = 0, v = 640, vis = true,
@@ -1284,6 +1777,8 @@ window.G = (function(){
       G.pose(gr, year >= 30000 ? 'sweat' : 'sit');
       sw.textContent = G.L('А скільки відкладеться за рік?', 'А сколько отложится за год?');
     }
+    /* MOTION trial (roll): only the changed digits move, instead of the bounce of the whole answer */
+    if (G.M.has('roll')) { G.M.roll(y, G.fmt(year) + ' ₴', anim ? 'update' : 'none'); fitAll(); return; }
     y.textContent = G.fmt(year) + ' ₴';
     fitAll();
     if (anim) G.pop(y.parentNode);
@@ -1362,6 +1857,8 @@ window.G = (function(){
   G.onLang(function(){ render(false); });
   if (dq.get('s2h')) select(1);
   render(false);
+  /* frames only (?mb=s2&mt=..): the slider moves one step up, as if touched */
+  if (G.M.mb === 's2') setTimeout(function(){ range.value = +range.value + 5; G.M.mark('s2'); render(true); }, 400);
 })();
 
 /* экран 3 */
@@ -1392,10 +1889,16 @@ window.G = (function(){
     cur = k; shown = TO[k];
     text(k, live ? from : TO[k]);
     if (!live) { me.classList.add('in'); re.classList.add('in'); return; }
+    G.M.mark('s3');
     re.classList.remove('in'); me.classList.remove('in');
     void me.offsetWidth; me.classList.add('in');
-    /* ответ приходит чуть позже сообщения, число считает от того, что было на экране */
-    timer = setTimeout(function(){ re.classList.add('in'); G.tween(document.getElementById('s3-n'), TO[k], 900); }, 700);
+    /* ответ приходит чуть позже сообщения, число считает от того, что было на экране.
+       MOTION trial (roll): the changed digits of the answer roll instead of counting */
+    timer = G.M.after(700, function(){
+      re.classList.add('in');
+      var n = document.getElementById('s3-n');
+      if (G.M.has('roll')) G.M.roll(n, G.fmt(TO[k]), 'update'); else G.tween(n, TO[k], 900);
+    });
   }
   bs.forEach(function(b){ b.addEventListener('click', function(){ touched = true; set(+b.dataset.k, true); }); });
   G.onLang(function(){ if (cur) text(cur, TO[cur]); });
@@ -1437,12 +1940,17 @@ window.G = (function(){
   function paint(anim){
     var spent = 0;
     for (var i = 0; i < n; i++) spent += DAY[i].a;
-    if (anim && !G.still) G.tween(lf, BASE - spent, 900);
+    /* MOTION trial (roll): what is left changes digit by digit instead of counting */
+    if (G.M.has('roll')) { lf.dataset.v = BASE - spent; G.M.roll(lf, G.fmt(BASE - spent), anim ? 'update' : 'none'); }
+    else if (anim && !G.still) G.tween(lf, BASE - spent, 900);
     else { lf.dataset.v = BASE - spent; lf.textContent = G.fmt(BASE - spent); }
     sp.textContent = G.fmt(spent);
-    bar.style.width = Math.min(100, spent / BASE * 100) + '%';
+    /* MOTION trial (limit): the bar moves by transform, not by width */
+    if (G.M.has('limit')) bar.style.transform = 'translateX(' + (Math.min(100, spent / BASE * 100) - 100) + '%)';
+    else bar.style.width = Math.min(100, spent / BASE * 100) + '%';
   }
   function fill(i, anim){
+    if (i === 0 && anim) G.M.mark('s10');
     n = i + 1;
     slots[i].className = 's10-tr on' + (anim && !G.still ? ' new' : '');
     slots[i].innerHTML = row(DAY[i]);
@@ -1521,60 +2029,36 @@ window.G = (function(){
   if (!st) return;
   var list = document.getElementById('s4-cards'), cards = [].slice.call(list.children),
       left = document.getElementById('s4-left'), today = document.getElementById('s4-today'),
-      lbl = document.getElementById('s4-lbl'), gr = document.getElementById('s4-gr');
+      lbl = document.getElementById('s4-lbl');
 
   /* 24 000 на месяц минус платежи 150 + 1 250 + 2 900 + 500 = 4 800, свободных 19 200, на 30 дней это 640 в день,
      то же число, что на первом экране */
-  var MONTH = 24000, DAYS = 30, done = false;
-  function freeAfter(n){
-    var s = MONTH;
-    for (var i = 0; i < n; i++) s -= +cards[i].dataset.sum;
-    return s;
-  }
-  function label(){
-    lbl.textContent = done ? G.L('вільних', 'свободных') : G.L('на місяць', 'на месяц');
-  }
-  G.onLang(label);
+  var MONTH = 24000, DAYS = 30;
+  var f = MONTH;
+  cards.forEach(function(c){ f -= +c.dataset.sum; });
+  function label(){ lbl.textContent = G.L('вільних', 'свободных'); }
+  G.onLang(label); label();
 
-  function finish(){
-    done = true; label();
-    G.pose(gr, 'happy');
+  /* MOCK round 4, idea 3 static: Groshik sits on the first card and holds its −150 pill, bitten at its free right end.
+     No animation: the cards are simply there, the numbers are final */
+  cards.forEach(function(c){ c.classList.add('in'); });
+  left.dataset.v = f; left.textContent = G.fmt(f);
+  today.dataset.v = f / DAYS; today.textContent = G.fmt(f / DAYS);
+  var hv = new URLSearchParams(location.search).get('hold') || 'eat';
+  document.getElementById('s4').classList.add('hold-' + hv);
+  var pill = document.getElementById('s4-hp');
+  /* the right end, beyond the right fist, is bitten off: a round bite (core circle) edged by 4 tooth marks.
+     [x, y, r] in px of the pill's border box,  */
+  function bite(){
+    var h = pill.offsetHeight, R = h * .42, cx = pill.offsetWidth + R * .12, cy = h / 2, cs = [[cx, cy, R]];
+    for (var k = 0; k < 4; k++) {
+      var a = (138 + k * 28) * Math.PI / 180;
+      cs.push([cx + R * Math.cos(a), cy + R * Math.sin(a), R * .36]);
+    }
+    G.bite(pill, cs);
   }
-
-  if (G.still) {
-    cards.forEach(function(c){ c.classList.add('in', 'cut'); });
-    left.dataset.v = freeAfter(cards.length); left.textContent = G.fmt(freeAfter(cards.length));
-    today.dataset.v = freeAfter(cards.length) / DAYS; today.textContent = G.fmt(freeAfter(cards.length) / DAYS);
-    finish();
-    return;
-  }
-
-  ['full', 'happy'].forEach(function(p){ new Image().src = 'img/pose-' + p + '.webp'; });
-  /* стопка выезжает, Грошик спрыгивает на верхнюю карточку, когда она легла */
-  var wrap = document.getElementById('s4-r');
-  wrap.classList.add('wait');
-  G.inView(st, function(){
-    cards.forEach(function(c, i){
-      setTimeout(function(){ c.classList.add('in'); }, 300 + i * 260);
-    });
-    setTimeout(function(){ gr.classList.add('in'); }, 300 + 420);
-    var t0 = 300 + cards.length * 260 + 500;
-    cards.forEach(function(c, i){
-      setTimeout(function(){
-        c.classList.add('cut');
-        var f = freeAfter(i + 1);
-        G.tween(left, f, 600);
-        G.tween(today, Math.round(f / DAYS), 600);
-        /* платежи «съедены»: рот полон монет, в конце снова доволен */
-        G.pose(gr, 'full');
-        if (gr.classList.contains('in')) G.chomp(gr);
-      }, t0 + i * 1000);
-    });
-    setTimeout(function(){
-      finish();
-      G.pop(today.parentNode);
-    }, t0 + cards.length * 1000 + 200);
-  }, .4);
+  /* eat (default): the pill is in his mouth under the teeth row, its inner end lost in the dark mouth, no extra bite */
+  if (hv !== 'eat') { bite(); addEventListener('resize', bite); G.onLang(bite); }
 })();
 
 /* экран 5 */
@@ -1636,7 +2120,40 @@ window.G = (function(){
 
   /* полосы наливаются, когда список вошёл в окно */
   var filled = false;
-  function fill(){ if (!filled) { filled = true; list.classList.add('on'); } }
+  /* MOTION trial (limit): a pink layer in the bar that goes over, it covers the bar after the hit */
+  /* over = 'tape' (owner's choice, concept v3 «Лента»): a striped tape lays over the bar instead */
+  var TAPE = G.M.style.over === 'tape';
+  if (G.M.has('limit')) rows.forEach(function(r){
+    if (state(r) !== 'o') return;
+    var o = document.createElement('i'); o.setAttribute('aria-hidden', 'true');
+    if (TAPE) { o.className = 's5-tape'; o.appendChild(document.createElement('i')); }
+    else o.className = 's5-ovf';
+    r.querySelector('.s5-bar').appendChild(o);
+  });
+  function fill(){
+    if (filled) return;
+    filled = true; list.classList.add('on');
+    if (!G.M.on('limit')) return;
+    G.M.mark('s5');
+    rows.forEach(function(r, i){
+      if (state(r) !== 'o') return;
+      /* the fill reaches the edge about 470 ms after it starts (concept v2) */
+      G.M.after(i * 110 + 470, function(){
+        r.classList.add('hit');
+        if (TAPE) {
+          /* the tape lays over from left to right in 380 ms, its stripes travel three times and stop */
+          var t = r.querySelector('.s5-tape');
+          t.animate([{clipPath: 'inset(0 100% 0 0)'}, {clipPath: 'inset(0 0 0 0)'}], {duration: 380, easing: 'cubic-bezier(.2,.8,.2,1)'});
+          t.firstChild.animate([{transform: 'none'}, {transform: 'translateX(28.28px)'}], {duration: 420, iterations: 3, easing: 'linear'});
+          return;
+        }
+        r.querySelector('.s5-bar').animate([
+          {transform: 'none'}, {transform: 'scale(1.035,1.55)', offset: .22}, {transform: 'scale(.995,.86)', offset: .5},
+          {transform: 'scale(1.004,1.06)', offset: .75}, {transform: 'none'}], {duration: 560, easing: 'ease-out'});
+        r.classList.add('hit');
+      });
+    });
+  }
   if (G.still) fill(); else {
     G.inView(list, fill, .25);
     var iv = setInterval(function(){
@@ -1645,7 +2162,7 @@ window.G = (function(){
     }, 400);
   }
 
-  if (G.still || dbg !== null) { show(rows[dbg !== null ? Math.max(0, Math.min(rows.length - 1, +dbg || 0)) : 1]); }
+  if ((G.still || dbg !== null) && dbg !== 'idle') { show(rows[dbg !== null ? Math.max(0, Math.min(rows.length - 1, +dbg || 0)) : 1]); }
 
   /* наклейки: тащатся пальцем или мышью, брошенная на плашку показывает ответ, потом возвращается с отскоком */
   function inside(el, x, y){ var b = el.getBoundingClientRect(); return x >= b.left && x <= b.right && y >= b.top && y <= b.bottom; }
@@ -1733,17 +2250,31 @@ window.G = (function(){
   G.reveal(document.getElementById('s9-mp'), 110);
   var day = document.getElementById('s9-day'), sit = document.getElementById('s9-sit');
   /* дыхание стоит, пока плашка вне окна */
-  if ('IntersectionObserver' in window) new IntersectionObserver(function(e){ sit.classList.toggle('paused', !e[0].isIntersecting); }).observe(day);
+  if (sit && 'IntersectionObserver' in window) new IntersectionObserver(function(e){ sit.classList.toggle('paused', !e[0].isIntersecting); }).observe(day);
   G.inView(day, function(){
-    G.tween(dn, Math.round(DAY), 1300);
+    /* MOTION trial (roll): the day number comes in digit by digit instead of counting up from 0 */
+    if (G.M.has('roll')) { G.M.mark('s9'); G.M.roll(dn, G.fmt(Math.round(DAY)), 'enter'); }
+    else G.tween(dn, Math.round(DAY), 1300);
     day.querySelectorAll('.rv').forEach(function(b, k){
       setTimeout(function(){ b.classList.add('in'); }, G.still ? 0 : 1100 + k * 140);
     });
     /* число досчиталось: Грошик кусает монету, как будто проверяет её на зуб */
-    if (!G.still) setTimeout(function(){ G.chomp(sit.querySelector('i')); }, 1300);
+    if (sit && !G.still) setTimeout(function(){ G.chomp(sit.querySelector('i')); }, 1300);
   }, .4);
   /* список «а ещё в итогах» проявляется по строке, когда дошёл до окна */
   G.reveal(document.getElementById('s9-more'), 90);
+
+  /* MOCK round 4, idea 8: round bite out of the big tile's top right corner, edged by 4 tooth marks */
+  var skin = document.getElementById('s9-skin');
+  function bite(){
+    var w = skin.offsetWidth, R = 31, cx = w + 6, cy = -6, cs = [[cx, cy, R]];
+    for (var k = 0; k < 4; k++) {
+      var a = (98 + k * 25) * Math.PI / 180;
+      cs.push([cx + R * Math.cos(a), cy + R * Math.sin(a), 10]);
+    }
+    G.bite(skin, cs);
+  }
+  bite(); addEventListener('resize', bite);
 })();
 
 /* экран 6 */
@@ -1752,17 +2283,25 @@ window.G = (function(){
      в каждый месяц падает монета, «зібрано» досчитывается, уровень растёт, в конце банка полная (60 000 из 60 000)
      и Грошик прыгает. Чип суммы в месяц меняет скорость и дату, кнопка «Зібрати ще раз» повторяет.
      Анимируются только transform, opacity и clip-path; пока экран вне окна, цикл стоит.
-     Проверка: ?s6=0.5 замораживает банку на этой доле пути от пустой до полной (0 пустая, 1 полная).
+     Банка: пустая картинка, поверх полная, открытая снизу по линии-горке (clip-path), по линии едет шапка из
+     отдельных монет, чтобы верх кучи не выглядел ровным срезом. Шапка обрезана по форме стекла (.s6-in в s6.css).
+     Проверка: ?s6=0.5 замораживает банку на этой доле пути от пустой до полной (0 пустая, 1 полная), и со still тоже.
      Даты: взнос в конце каждого месяца, начиная с этого. 60 000 / 2 400 = 25 взносов, значит к началу 26-го месяца
      (из ноября 2026 это грудень 2028). 1 200: 50 взносов, 4 800: 12,5, округляем вверх до 13. Месяц на бейдже идёт так же.
      Один месяц анимации D мс при любом чипе: чем больше откладываешь, тем быстрее банка полная. */
   var sec = document.getElementById('s6'); if (!sec) return;
   var $ = function(id){ return document.getElementById(id); };
   var GOAL = 60000, START = 0, D = 120, FALL = 480, POOL = 6;
-  var T = 0.09, B = 1;  /* верх и низ внутренности банки в долях её высоты (как .s6-in в s6.css) */
+  var T = 0.1267, B = 0.9841, XL = 0.0198, XR = 0.9802;  /* внутренность стекла в долях картинки (как .s6-in в s6.css) */
+  /* линия кучи в долях высоты внутренности (0 верх, 1 низ): по краям ниже, в середине выше на HM.
+     edge(lv): высота линии у стенок; при lv=0 горка целиком под дном, при lv=1 целиком над горлышком
+     вместе с шапкой (TOPX запас на монеты над линией). OFF: срез картинки чуть ниже центров монет шапки. */
+  var HM = 0.13, TOPX = 0.03, OFF = 0.02;
   var nowEl = $('s6-now'), ofEl = $('s6-of'), dateEl = $('s6-date'), monthEl = $('s6-month');
   var full = $('s6-full'), top = $('s6-top'), jar = $('s6-jar'), gr = $('s6-gr'), drops = $('s6-drops');
-  var UKG = ['січня','лютого','березня','квітня','травня','червня','липня','серпня','вересня','жовтня','листопада','грудня'];
+  /* MOTION trial: with the mascot flag off Groshik stands in one pose next to the jar (G.pose then does nothing) */
+  if (!G.M.style.mascot) gr.dataset.pose = 'happy';
+  var UKG =['січня','лютого','березня','квітня','травня','червня','липня','серпня','вересня','жовтня','листопада','грудня'];
   var RUD = ['январю','февралю','марту','апрелю','маю','июню','июлю','августу','сентябрю','октябрю','ноябрю','декабрю'];
   var UKN = ['січень','лютий','березень','квітень','травень','червень','липень','серпень','вересень','жовтень','листопад','грудень'];
   var RUN = ['январь','февраль','март','апрель','май','июнь','июль','август','сентябрь','октябрь','ноябрь','декабрь'];
@@ -1772,17 +2311,20 @@ window.G = (function(){
   var frozen = G.still || dbg !== null;
   var monthly = 2400, t = 0, elapsed = 0, playing = false, visible = false, started = false, raf = 0, last = 0, nextCoin = 1, pi = 0;
 
-  /* монеты внутри банки: статичный SVG, рисуется один раз. Верхние ряды раньше, нижние ложатся поверх */
   function rnd(s){ return function(){ s = (s * 16807) % 2147483647; return s / 2147483647; }; }
-  function coin(x, y){ return '<circle class="k" cx="' + x.toFixed(1) + '" cy="' + y.toFixed(1) + '" r="19"/><circle class="r" cx="' + x.toFixed(1) + '" cy="' + y.toFixed(1) + '" r="11.5"/>'; }
+  function bump(u){ var d = Math.min(1, Math.abs(2 * u - 1)); return HM * (1 - Math.pow(d, 1.7)) + 0.012 * Math.sin(u * 17 + 1); }
+  function edge(lv){ return (1 + HM) - lv * (1 + HM + TOPX); }
+  /* шапка: задний ряд темнее и выше, передний по самой линии, пара монет ребром. Позиции в долях внутренности */
   (function(){
-    var r = rnd(7), s = '';
-    for (var row = 0, y = 6; y < 250; row++, y += 17)
-      for (var x = (row % 2 ? -10 : 7); x < 220; x += 33) s += coin(x + (r() - .5) * 6, y + (r() - .5) * 5);
-    $('s6-pile').innerHTML = '<svg viewBox="0 0 200 228" preserveAspectRatio="none" aria-hidden="true">' + s + '</svg>';
-    r = rnd(11); s = '';
-    for (var i = 0, xx = -8; xx < 220; i++, xx += 24) s += coin(xx + (r() - .5) * 4, 22 + (i % 2 ? -4 : 3) + (r() - .5) * 4);
-    top.innerHTML = '<svg viewBox="0 0 200 44" aria-hidden="true">' + s + '</svg>';
+    var r = rnd(5), s = '', i, u;
+    function c(u, dy, w, sy, rot, cls){
+      s += '<i class="s6-c' + (cls || '') + '" style="left:' + (u * 100).toFixed(1) + '%;top:' + ((dy - bump(u)) * 100).toFixed(1) +
+        '%;width:' + (w * 100).toFixed(1) + '%;transform:translate(-50%,-50%) rotate(' + rot.toFixed(0) + 'deg) scaleY(' + sy.toFixed(2) + ')"></i>';
+    }
+    for (i = 0; i < 10; i++) { u = -0.02 + i * 0.116 + (r() - .5) * .05; c(u, -0.055 + (r() - .5) * .03, .15 + r() * .03, .55 + r() * .3, (r() - .5) * 50, ' b'); }
+    c(0.3, -0.07, .15, .3, 62, ' b'); c(0.71, -0.075, .15, .3, -58, ' b');
+    for (i = 0; i < 12; i++) { u = -0.04 + i * 0.098 + (r() - .5) * .04; c(u, (r() - .5) * .04, .14 + r() * .05, .6 + r() * .3, (r() - .5) * 60); }
+    top.innerHTML = s;
   })();
   var pool = [];
   for (var k = 0; k < POOL; k++) { var d = document.createElement('span'); d.className = 's6-drop'; drops.appendChild(d); pool.push(d); }
@@ -1792,8 +2334,11 @@ window.G = (function(){
 
   function render(){
     var n = months(), saved = Math.min(GOAL, START + monthly * t), lv = saved / GOAL;
-    full.style.clipPath = 'inset(' + ((T + (1 - lv) * (B - T)) * 100).toFixed(2) + '% 0 0 0)';
-    top.style.transform = 'translateY(' + (-lv * 100).toFixed(2) + '%)';
+    var e = edge(lv), pts = ['0% ' + ((T + (e + OFF - bump(0)) * (B - T)) * 100).toFixed(2) + '%'];
+    for (var j = 0; j <= 24; j++) { var u = j / 24; pts.push(((XL + u * (XR - XL)) * 100).toFixed(2) + '% ' + ((T + (e + OFF - bump(u)) * (B - T)) * 100).toFixed(2) + '%'); }
+    pts.push('100% ' + ((T + (e + OFF - bump(1)) * (B - T)) * 100).toFixed(2) + '%', '100% 100%', '0% 100%');
+    full.style.clipPath = 'polygon(' + pts.join(',') + ')';
+    top.style.transform = 'translateY(' + (e * 100).toFixed(2) + '%)';
     top.style.opacity = lv > 0 ? 1 : 0;   /* пустая банка: без шапки монет на дне */
     nowEl.textContent = G.fmt(Math.round(saved / 100) * 100);
     var c = ym(Math.min(Math.ceil(n), Math.ceil(t - 1e-6)));
@@ -1821,6 +2366,12 @@ window.G = (function(){
     G.pose(gr, 'jump');
     if (jar.animate) jar.animate([{transform:'none'},{transform:'translateY(-10px) rotate(-3deg)'},{transform:'translateY(0) rotate(2deg)'},{transform:'none'}], {duration:520, easing:'ease-out'});
     G.pop(nowEl); G.pop(dateEl);
+    /* MOTION trial (joy): squares fly up out of the jar's mouth and fall away. Groshik himself does not move */
+    if (G.M.on('joy')) {
+      G.M.mark('s6');
+      var art = jar.closest('.s6-art'), a = art.getBoundingClientRect(), j = jar.getBoundingClientRect();
+      G.M.confetti(art, j.left - a.left + j.width / 2, j.top - a.top + j.height * .14, .8);
+    }
   }
   function loop(now){
     raf = 0;
@@ -1841,7 +2392,7 @@ window.G = (function(){
 
   function setFrozen(){
     var n = months();
-    if (dbg !== null && !G.still) { var f = Math.max(0, Math.min(1, +dbg || 0)); t = f * n; G.pose(gr, f >= 1 ? 'jump' : f > 0 ? 'toss' : 'jar'); }
+    if (dbg !== null) { var f = Math.max(0, Math.min(1, +dbg || 0)); t = f * n; G.pose(gr, f >= 1 ? 'jump' : f > 0 ? 'toss' : 'jar'); }
     else { t = n; G.pose(gr, 'happy'); }   /* кадр без движения: цель собрана, дата на бейдже */
     render();
   }
@@ -1860,13 +2411,21 @@ window.G = (function(){
   });
   $('s6-again').addEventListener('click', function(){ if (!frozen) play(); });
 
-  if (!frozen) {
+  /* frames only (?mb=s6&mt=..): headless Chrome does not run the jar's frame loop, so the jar is filled at once */
+  if (G.M.mb === 's6' && !frozen) { started = true; setTimeout(finish, 400); }
+  else if (!frozen) {
     if ('IntersectionObserver' in window) {
       /* пока экран вне окна, цикл стоит; первый запуск, когда банка заметно видна */
       new IntersectionObserver(function(e){ visible = e[0].isIntersecting; kick(); }, {threshold:0}).observe(sec);
       G.inView(jar, function(){ if (!started) { visible = true; play(); } }, .5);
     } else { visible = true; play(); }
   }
+})();
+
+/* экран 11 */
+(function(){
+  var sec = document.getElementById('s11');
+  if (sec) G.reveal(sec, 140);
 })();
 
 /* экран 8 */

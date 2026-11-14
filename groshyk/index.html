@@ -86,16 +86,22 @@ button.chip.on{background:var(--c4)}
 .lang{display:flex;border:var(--b);border-radius:99px;overflow:hidden}
 .lang button{border:0;background:transparent;color:var(--fg);font:700 14px/1 var(--text);padding:0 13px;min-height:40px;cursor:pointer}
 .lang button[aria-pressed="true"]{background:var(--fg);color:var(--bg)}
-.top .get{padding:11px 16px;min-height:40px;font-size:14px;box-shadow:none;background:var(--fg);color:var(--bg);border-color:var(--fg)}
+.top .get{padding:0 18px;min-height:45px;font-size:14px;box-shadow:none;background:var(--fg);color:var(--bg);border-color:var(--fg)}
 .top .get:hover,.top .get:active{transform:none;box-shadow:none}
-@media (max-width:480px){.top .get{display:none}}
-/* вкладки разделов: вторая строка шапки, листается вбок, текущий раздел залит */
-.top{flex-wrap:wrap;row-gap:10px;padding-bottom:10px}
-.top .tabs{flex:1 0 100%;display:flex;gap:6px;overflow-x:auto;scrollbar-width:none;margin-inline:-4px;padding:2px 4px}
-.top .tabs::-webkit-scrollbar{display:none}
-.top .tabs a{flex:none;font:700 14px/1 var(--text);color:var(--fg);text-decoration:none;padding:9px 13px;border:2px solid var(--fg);border-radius:99px;white-space:nowrap;transition:background-color .2s,color .2s}
+.top .get svg{display:none;width:22px;height:22px;margin-top:-2px}
+@media (max-width:480px){.top .get{width:45px;padding:0;justify-content:center}.top .get svg{display:block}.top .get span{display:none}}
+/* вкладки разделов: четыре слова одним переключателем. На телефоне вторая строка шапки во всю ширину,
+   на широком экране стоят в одной строке с логотипом. Текущий раздел залит */
+.top{flex-wrap:wrap;row-gap:10px}
+.top .tabs{order:3;flex:1 0 100%;display:flex;gap:2px;padding:3px;border:var(--b);border-radius:99px}
+.top .tabs a{flex:1 1 auto;text-align:center;font:700 13.5px/1 var(--text);color:var(--fg);text-decoration:none;padding:11px 6px;border-radius:99px;white-space:nowrap;transition:background-color .2s,color .2s}
 .top .tabs a:hover{background:color-mix(in srgb,var(--fg) 12%,transparent)}
 .top .tabs a.on{background:var(--fg);color:var(--bg)}
+@media (min-width:960px){
+  .top{flex-wrap:nowrap}
+  .top .tabs{order:0;flex:none;margin:0 auto 0 16px}
+  .top .tabs a{font-size:15px;padding:11px 18px}
+}
 
 body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset-top,0px);z-index:10;background:var(--bg)}
 
@@ -816,8 +822,8 @@ body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset
 .s11 .s11-list li::before{content:"";position:absolute;left:0;top:.28em;width:16px;height:16px;background:currentColor;
   clip-path:polygon(50% 0,62% 38%,100% 50%,62% 62%,50% 100%,38% 62%,0 50%,38% 38%)}
 .s11 .s11-free .s11-list li::before{background:var(--c1)}
-.s11 .s11-plus .s11-list li:first-child{font-weight:700}
-.s11 .s11-ai{margin-top:auto;padding-top:12px;border-top:1.5px solid var(--ink);font:500 13px/1.4 var(--text);opacity:.75}
+.s11 .s11-trial{margin:-8px 0 0;font:700 18px/1.3 var(--text)}
+.s11 .s11-ai{margin-top:auto;padding-top:12px;border-top:1.5px solid var(--ink);font:500 16px/1.4 var(--text)}
 @media (max-width:480px){.s11 .s11-list li{font-size:17px}}
 
 /* экран 8 */
@@ -836,24 +842,19 @@ body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset
 <body>
 <header class="top">
   <a class="logo" href="#s1"><img src="img/mascot.png" alt="" width="40" height="40">Грошик</a>
+  <nav class="tabs" aria-label="Розділи" data-ru-aria-label="Разделы">
+    <a href="#s7" data-ru="Приватность">Приватність</a>
+    <a href="#s2" data-ru="Как считает">Як рахує</a>
+    <a href="#s4" data-ru="Возможности">Можливості</a>
+    <a href="#s11" data-ru="Плюс">Плюс</a>
+  </nav>
   <div class="r">
     <div class="lang" role="group" aria-label="Мова" data-ru-aria-label="Язык">
       <button type="button" data-lang="uk" aria-pressed="true">Укр</button>
       <button type="button" data-lang="ru" aria-pressed="false">Рус</button>
     </div>
-    <a class="btn get" href="#s8" data-ru="Скачать">Завантажити</a>
+    <a class="btn get" href="#s8" aria-label="Завантажити" data-ru-aria-label="Скачать"><svg viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M18.71 19.5c-.83 1.24-1.71 2.45-3.05 2.47-1.34.03-1.77-.79-3.29-.79-1.53 0-2 .77-3.27.82-1.31.05-2.3-1.32-3.14-2.53C4.25 17 2.94 12.45 4.7 9.39c.87-1.52 2.43-2.48 4.12-2.51 1.28-.02 2.5.87 3.29.87.78 0 2.26-1.07 3.81-.91.65.03 2.47.26 3.64 1.98-.09.06-2.17 1.28-2.15 3.81.03 3.02 2.65 4.03 2.68 4.04-.03.07-.42 1.44-1.38 2.83M13 3.5c.73-.83 1.94-1.46 2.94-1.5.13 1.17-.34 2.35-1.04 3.19-.69.85-1.83 1.51-2.95 1.42-.15-1.15.41-2.35 1.05-3.11z"/></svg><span data-ru="Скачать">Завантажити</span></a>
   </div>
-  <nav class="tabs" aria-label="Розділи" data-ru-aria-label="Разделы">
-    <a href="#s7" data-ru="Приватность">Приватність</a>
-    <a href="#s2" data-ru="Калькулятор">Калькулятор</a>
-    <a href="#s3" data-ru="До зарплаты">До зарплати</a>
-    <a href="#s10" data-ru="Траты">Витрати</a>
-    <a href="#s4" data-ru="Платежи">Платежі</a>
-    <a href="#s5" data-ru="Лимиты">Ліміти</a>
-    <a href="#s9" data-ru="Итоги">Підсумки</a>
-    <a href="#s6" data-ru="Цели">Цілі</a>
-    <a href="#s11" data-ru="Плюс">Плюс</a>
-  </nav>
 </header>
 <main class="wrap">
 <!-- экран 1 -->
@@ -861,7 +862,7 @@ body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset
   <div class="stage v">
     <div class="l">
       <h1 data-ru="Сколько можно сегодня">Скільки можна сьогодні</h1>
-      <p class="lead" data-ru="Грошик считает до самой зарплаты">Грошик рахує до самої зарплати</p>
+      <p class="lead" data-ru="Платежи уже учтены, остальное поделено на дни до зарплаты">Платежі вже враховані, решта поділена на дні до зарплати</p>
       <div class="cta">
         <a class="btn" href="#s8"><svg viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M18.71 19.5c-.83 1.24-1.71 2.45-3.05 2.47-1.34.03-1.77-.79-3.29-.79-1.53 0-2 .77-3.27.82-1.31.05-2.3-1.32-3.14-2.53C4.25 17 2.94 12.45 4.7 9.39c.87-1.52 2.43-2.48 4.12-2.51 1.28-.02 2.5.87 3.29.87.78 0 2.26-1.07 3.81-.91.65.03 2.47.26 3.64 1.98-.09.06-2.17 1.28-2.15 3.81.03 3.02 2.65 4.03 2.68 4.04-.03.07-.42 1.44-1.38 2.83M13 3.5c.73-.83 1.94-1.46 2.94-1.5.13 1.17-.34 2.35-1.04 3.19-.69.85-1.83 1.51-2.95 1.42-.15-1.15.41-2.35 1.05-3.11z"/></svg><span data-ru="Скачать в App Store">Завантажити в App Store</span></a>
         <a class="btn l" href="https://groshyk-app.nb-77d18a.workers.dev/app.html?peek=1&amp;nobank=1" target="_blank" rel="noopener" data-ru="Посмотреть пример">Подивитися приклад</a>
@@ -879,8 +880,8 @@ body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset
   </div>
   <div class="tape">
     <div>
-      <span data-ru="бесплатно">безкоштовно</span><span data-ru="без регистрации">без реєстрації</span><span data-ru="данные на телефоне">дані на телефоні</span><span data-ru="одно число на сегодня">одне число на сьогодні</span><span data-ru="от зарплаты до зарплаты">від зарплати до зарплати</span>
-      <span aria-hidden="true" data-ru="бесплатно">безкоштовно</span><span aria-hidden="true" data-ru="без регистрации">без реєстрації</span><span aria-hidden="true" data-ru="данные на телефоне">дані на телефоні</span><span aria-hidden="true" data-ru="одно число на сегодня">одне число на сьогодні</span><span aria-hidden="true" data-ru="от зарплаты до зарплаты">від зарплати до зарплати</span>
+      <span data-ru="учёт бесплатный">облік безкоштовний</span><span data-ru="без регистрации">без реєстрації</span><span data-ru="данные на телефоне">дані на телефоні</span><span data-ru="без рекламы">без реклами</span><span data-ru="лимиты по категориям">ліміти за категоріями</span>
+      <span aria-hidden="true" data-ru="учёт бесплатный">облік безкоштовний</span><span aria-hidden="true" data-ru="без регистрации">без реєстрації</span><span aria-hidden="true" data-ru="данные на телефоне">дані на телефоні</span><span aria-hidden="true" data-ru="без рекламы">без реклами</span><span aria-hidden="true" data-ru="лимиты по категориям">ліміти за категоріями</span>
     </div>
   </div>
 </section>
@@ -892,16 +893,16 @@ body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset
     <div class="s7-tab a" id="s7-a" style="--rot:-3deg;--bgc:var(--c3)">
       <span class="sit s7-sit" id="s7-g" aria-hidden="true"><b class="ll"></b><b class="lr"></b><i></i></span>
       <h3 data-ru="Без регистрации">Без реєстрації</h3>
-      <p data-ru="Без почты и пароля. Открыл и пользуешься.">Без пошти й пароля. Відкрив і користуєшся.</p>
+      <p data-ru="Без почты и пароля. Открыл и пользуешься">Без пошти й пароля. Відкрив і користуєшся</p>
     </div>
     <div class="s7-tab b" id="s7-b" style="--rot:2deg;--bgc:var(--c4)">
       <span class="mk mk-deep s7-deep" aria-hidden="true"></span>
       <h3 data-ru="Данные на телефоне">Дані на телефоні</h3>
-      <p data-ru="Траты хранятся только в&nbsp;телефоне.">Витрати зберігаються тільки в&nbsp;телефоні.</p>
+      <p data-ru="Траты хранятся только в&nbsp;телефоне">Витрати зберігаються тільки в&nbsp;телефоні</p>
     </div>
     <div class="s7-tab c" id="s7-c" style="--rot:-2deg;--bgc:var(--c1)">
-      <h3 data-ru="Бесплатно">Безкоштовно</h3>
-      <p data-ru="Без рекламы. Главное бесплатно.">Без реклами. Головне безкоштовно.</p>
+      <h3 data-ru="Без рекламы">Без реклами</h3>
+      <p data-ru="Учёт бесплатный. Платный только разбор через ИИ">Облік безкоштовний. Платний лише розбір через ШІ</p>
     </div>
   </div>
 </section>
@@ -910,7 +911,7 @@ body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset
 <section class="scr s2" id="s2">
   <div class="head">
     <h2 data-ru="Посчитай своё">Порахуй своє</h2>
-    <p class="lead" data-ru="Подставь свои цифры, ответ появится сразу">Підстав свої цифри, відповідь з’явиться одразу</p>
+    <p class="lead" data-ru="Введи свои цифры, и ответ появится сразу">Введи свої цифри, і відповідь з’явиться одразу</p>
   </div>
   <div class="calc">
     <div class="form">
@@ -927,7 +928,7 @@ body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset
           <label for="s2-pr"><span data-ru="Цена за раз">Ціна за раз</span>
             <span class="inp"><input id="s2-pr" type="text" inputmode="numeric" autocomplete="off" maxlength="6" value="85"><span aria-hidden="true">₴</span></span>
           </label>
-          <label for="s2-wk"><span data-ru="Раз в неделю">Разів на тиждень</span>
+          <label for="s2-wk"><span data-ru="Сколько раз в неделю">Скільки разів на тиждень</span>
             <span class="inp"><input id="s2-wk" type="text" inputmode="numeric" autocomplete="off" maxlength="2" value="5"></span>
           </label>
         </div>
@@ -954,8 +955,8 @@ body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset
       <div class="s3-re"><div class="s3-g s3-slot" id="s3-r"><img src="img/mascot.png" alt="" width="44" height="44"><p id="s3-p"></p></div></div>
       <!-- заготовки сообщений: тот же пузырь, что у отправленного сообщения, но пунктиром -->
       <div class="s3-opts" id="s3-o">
-        <button type="button" data-k="1" aria-pressed="false" data-ru="Обедала дома">Обідала вдома</button>
-        <button type="button" data-k="2" aria-pressed="false" data-ru="Купила подарок">Купила подарунок</button>
+        <button type="button" data-k="1" aria-pressed="false" data-ru="Обед дома">Обід удома</button>
+        <button type="button" data-k="2" aria-pressed="false" data-ru="Подарок">Подарунок</button>
         <button type="button" data-k="3" aria-pressed="false" data-ru="Пришла премия">Прийшла премія</button>
       </div>
     </div>
@@ -965,13 +966,13 @@ body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset
 <!-- экран 10 -->
 <section class="scr s10" id="s10">
   <div class="stage g s10-st" id="s10-st">
-    <h2 data-ru="Руками остаётся мало">Руками лишається мало</h2>
-    <p class="s10-sub" data-ru="Оплаты телефоном приходят сами, вносить остаётся только наличные.">Оплати телефоном приходять самі, вносити лишається тільки готівку.</p>
+    <h2 data-ru="Почти всё записывается само">Майже все записується саме</h2>
+    <p class="s10-sub" data-ru="Оплаты Apple Pay записываются сами, вручную только наличные">Оплати Apple Pay записуються самі, вручну тільки готівка</p>
     <!-- шаги дня: подписи, не кнопки -->
     <ol class="s10-steps" aria-hidden="true">
-      <li data-ru="Утром само">Зранку само</li>
-      <li data-ru="Днём само">Вдень само</li>
-      <li data-ru="Вечером руками">Увечері руками</li>
+      <li data-ru="Утром Apple&nbsp;Pay">Зранку Apple&nbsp;Pay</li>
+      <li data-ru="Днём Apple&nbsp;Pay">Вдень Apple&nbsp;Pay</li>
+      <li data-ru="Вечером наличные вручную">Увечері готівка вручну</li>
     </ol>
     <div class="s10-k">
       <!-- число на сегодня: плашка, не нажимается -->
@@ -1010,8 +1011,8 @@ body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset
 <section class="scr s4" id="s4">
   <div class="stage o s4-st" id="s4-st">
     <div class="s4-l">
-      <h2 data-ru="Платежи впереди уже вычтены">Платежі попереду вже враховані</h2>
-      <p class="s4-lead" data-ru="Подписки, оплата частями и кредитка уже убраны из числа на сегодня.">Підписки, оплата частинами і кредитка вже прибрані з числа на сьогодні.</p>
+      <h2 data-ru="Будущие платежи уже учтены">Майбутні платежі вже враховані</h2>
+      <p class="s4-lead" data-ru="Подписки, оплату частями и кредитку Грошик вычитает заранее, поэтому число на сегодня честное">Підписки, оплату частинами і кредитку Грошик віднімає наперед, тому число на сьогодні чесне</p>
       <div class="s4-sum">
         <span class="badge w" id="s4-lbl">на місяць</span>
         <div class="big s4-big"><span id="s4-left" data-v="24000">24 000</span>&nbsp;₴</div>
@@ -1053,7 +1054,7 @@ body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset
     <div class="s5-head">
       <div class="s5-ht">
         <h2 data-ru="Лимиты без таблиц">Ліміти без таблиць</h2>
-        <p class="lead" data-ru="Дай каждой категории лимит, и Грошик скажет, когда он близко.">Дай кожній категорії ліміт, і Грошик скаже, коли він близько.</p>
+        <p class="lead" data-ru="Поставь лимит на категорию, и Грошик предупредит, когда он заканчивается">Постав ліміт на категорію, і Грошик попередить, коли він закінчується</p>
       </div>
       <!-- место, куда бросают категорию: Грошик смотрит, что в ней, и говорит. Все ответы лежат в одной клетке сетки,
            поэтому высота плашки не прыгает, пока тянешь значок -->
@@ -1102,7 +1103,7 @@ body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset
     <div class="s9-head">
       <div class="s9-txt">
         <h2 data-ru="Месяц как на ладони">Місяць як на долоні</h2>
-        <p class="lead" data-ru="Итоги месяца: куда ушли деньги и во что обходится один день.">Підсумки місяця: куди пішли гроші і скільки коштує один день.</p>
+        <p class="lead" data-ru="Итоги месяца: куда ушли деньги и во что обходится один день">Підсумки місяця: куди пішли гроші і скільки коштує один день</p>
       </div>
     </div>
 
@@ -1169,7 +1170,7 @@ body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset
     <div class="s6-grid">
       <div class="s6-text">
         <h2 data-ru="Копи на своё">Збирай на своє</h2>
-        <p class="lead" data-ru="Мечта получает дату, и начать проще.">Мрія отримує дату, і почати простіше.</p>
+        <p class="lead" data-ru="Укажи сумму и сколько откладываешь, Грошик скажет, когда соберёшь">Вкажи суму й скільки відкладаєш, Грошик скаже, коли збереш</p>
         <div class="plate s6-plate">
           <h3 data-ru="Отпуск">Відпустка</h3>
           <div class="s6-sum"><span class="s6-lbl" data-ru="собрано">зібрано</span> <span class="big s6-now" id="s6-now">0</span> <span class="s6-of" id="s6-of"></span></div>
@@ -1208,7 +1209,7 @@ body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset
 <section class="scr s11" id="s11">
   <div class="s11-head">
     <h2 data-ru="Грошик плюс">Грошик плюс</h2>
-    <p class="lead" data-ru="Главное бесплатно. Плюс для тех, кому лень вносить траты руками.">Головне безкоштовно. Плюс для тих, кому ліньки вносити витрати руками.</p>
+    <p class="lead" data-ru="Учёт бесплатный и без рекламы. Плюс добавляет разбор через ИИ и более глубокую аналитику">Облік безкоштовний і без реклами. Плюс додає розбір через ШІ і глибшу аналітику</p>
   </div>
   <div class="s11-grid">
     <div class="card s11-col s11-free rv">
@@ -1221,7 +1222,7 @@ body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset
         <li data-ru="Лимиты по категориям">Ліміти за категоріями</li>
         <li data-ru="Оплаты Apple Pay записываются сами">Оплати Apple Pay записуються самі</li>
         <li data-ru="Траты фразой: «кофе 80, такси 150»">Витрати фразою: «кава 80, таксі 150»</li>
-        <li data-ru="Скрин операций популярных банков">Скрин операцій популярних банків</li>
+        <li data-ru="Траты со скрина популярных банков">Витрати зі скрину популярних банків</li>
         <li data-ru="Этот и прошлый месяц">Цей і минулий місяць</li>
       </ul>
     </div>
@@ -1230,15 +1231,16 @@ body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset
         <h3 data-ru="Плюс">Плюс</h3>
         <p class="s11-price"><span class="num">125&nbsp;₴</span> <span class="s11-per" data-ru="в месяц">на місяць</span></p>
       </div>
+      <p class="s11-trial" data-ru="Первые 3 дня бесплатно">Перші 3 дні безкоштовно</p>
       <ul class="s11-list">
-        <li data-ru="Всё, что бесплатно">Усе, що безкоштовно</li>
-        <li data-ru="Скрин любого банка и фото чека">Скрин будь-якого банку й фото чека</li>
-        <li data-ru="Траты любой фразой, как скажешь">Витрати будь-якою фразою, як скажеш</li>
-        <li data-ru="Почему так вышло и где сэкономить">Чому так вийшло і де заощадити</li>
-        <li data-ru="Самые дорогие дни, события и теги">Найдорожчі дні, події й теги</li>
-        <li data-ru="Все месяцы и план на полгода">Усі місяці й план на пів року</li>
+        <li data-ru="Траты со скрина любого банка">Витрати зі скрину будь-якого банку</li>
+        <li data-ru="Траты с фото бумажного чека">Витрати з фото паперового чека</li>
+        <li data-ru="Траты как угодно: «вчера в АТБ где-то на 300»">Витрати як завгодно: «вчора в АТБ десь на 300»</li>
+        <li data-ru="Почему в этом месяце ушло больше и где сэкономить">Чому цього місяця пішло більше і де заощадити</li>
+        <li data-ru="Все месяцы рядом и план на полгода">Усі місяці поруч і план на пів року</li>
+        <li data-ru="Поездка или ремонт отдельным списком, самые дорогие дни">Поїздка чи ремонт окремим списком, найдорожчі дні</li>
       </ul>
-      <p class="s11-ai" data-ru="Скрин и чек разбирает ИИ. Первый раз Грошик спросит согласие.">Скрин і чек розбирає ШІ. Першого разу Грошик спитає згоди.</p>
+      <p class="s11-ai" data-ru="Скрин и чек разбирает ИИ. Первый раз Грошик спросит согласие">Скрин і чек розбирає ШІ. Першого разу Грошик спитає згоди</p>
     </div>
   </div>
 </section>
@@ -1250,7 +1252,7 @@ body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset
       <span class="gr s8-gr" data-pose="wave"></span>
       <div class="s8-text">
         <h2 data-ru="Грошик ждёт">Грошик чекає</h2>
-        <p class="lead" data-ru="Для iPhone. Бесплатно и без регистрации.">Для iPhone. Безкоштовно й без реєстрації.</p>
+        <p class="lead" data-ru="Для iPhone. Учёт бесплатный, регистрация не нужна">Для iPhone. Облік безкоштовний, реєстрація не потрібна</p>
         <div class="s8-btns">
           <a class="btn" id="s8-get" href="#"><svg viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M12.152 6.896c-.948 0-2.415-1.078-3.96-1.04-2.04.027-3.91 1.183-4.961 3.014-2.117 3.675-.546 9.103 1.519 12.09 1.013 1.454 2.208 3.09 3.792 3.039 1.52-.065 2.09-.987 3.935-.987 1.831 0 2.35.987 3.96.948 1.637-.026 2.676-1.48 3.676-2.948 1.156-1.688 1.636-3.325 1.662-3.415-.039-.013-3.182-1.221-3.22-4.857-.026-3.04 2.48-4.494 2.597-4.559-1.429-2.09-3.623-2.324-4.39-2.376-2-.156-3.675 1.09-4.61 1.09zM15.53 3.83c.843-1.012 1.4-2.427 1.245-3.83-1.207.052-2.662.805-3.532 1.818-.78.896-1.454 2.338-1.273 3.714 1.338.104 2.715-.688 3.559-1.701"/></svg><span data-ru="Скачать в App Store">Завантажити в App Store</span></a>
           <a class="btn l" id="s8-demo" href="https://groshyk-app.nb-77d18a.workers.dev/app.html?peek=1&amp;nobank=1" target="_blank" rel="noopener"><span data-ru="Посмотреть пример">Подивитися приклад</span></a>
@@ -1428,18 +1430,15 @@ window.G = (function(){
       e.preventDefault();
       scrollTo({ top: t.getBoundingClientRect().top + scrollY - (top ? top.offsetHeight : 0) - 8, behavior: still ? 'auto' : 'smooth' });
     });
-    /* какая вкладка горит: раздел, который пересекает линию сразу под шапкой */
+    /* какая вкладка горит: последняя, чей раздел уже дошёл до линии сразу под шапкой */
     if (tabs.length) {
       var secs = [].map.call(tabs, function(a){ return document.getElementById(a.getAttribute('href').slice(1)); });
       var mark = function(){
         var y = (top ? top.offsetHeight : 0) + 40, cur = -1;
         secs.forEach(function(s, i){ if (s && s.getBoundingClientRect().top <= y) cur = i; });
-        if (cur >= 0 && secs[cur].getBoundingClientRect().bottom < y) cur = -1;
-        tabs.forEach(function(a, i){
-          var on = i === cur;
-          if (on && !a.classList.contains('on')) a.parentNode.scrollTo({ left: a.offsetLeft - 20, behavior: 'smooth' });
-          a.classList.toggle('on', on);
-        });
+        /* вкладка держит и разделы после своего, до следующей вкладки; последняя гаснет, когда её раздел ушёл вверх */
+        if (cur === secs.length - 1 && secs[cur].getBoundingClientRect().bottom < y) cur = -1;
+        tabs.forEach(function(a, i){ a.classList.toggle('on', i === cur); });
       };
       addEventListener('scroll', mark, { passive: true }); addEventListener('resize', mark); mark();
     }
@@ -1769,7 +1768,7 @@ G.M = (function(){
       k.textContent = G.L('за рік відкладеш', 'за год отложишь');
       m.textContent = G.fmt(month) + ' ₴ ' + G.L('на місяць', 'в месяц');
       G.pose(gr, year >= 60000 ? 'happy' : 'jar');
-      sw.textContent = G.L('А у що обходиться звичка?', 'А во что обходится привычка?');
+      sw.textContent = G.L('А скільки коштує звичка?', 'А сколько стоит привычка?');
     } else {
       year = val(inputs[1]) * val(inputs[2]) * 52; month = year / 12;
       k.textContent = G.L('звичка за рік', 'привычка за год');
@@ -1871,8 +1870,8 @@ G.M = (function(){
   var me = document.getElementById('s3-m'), re = document.getElementById('s3-r'), p = document.getElementById('s3-p'),
       bs = [].slice.call(document.querySelectorAll('#s3-o button'));
   var ME = [null,
-    ['Обідала вдома, пішло 224&nbsp;₴', 'Обедала дома, ушло 224&nbsp;₴'],
-    ['Купила подарунок за&nbsp;1&nbsp;500&nbsp;₴', 'Купила подарок за&nbsp;1&nbsp;500&nbsp;₴'],
+    ['Обід удома, пішло 224&nbsp;₴', 'Обед дома, ушло 224&nbsp;₴'],
+    ['Подарунок за&nbsp;1&nbsp;500&nbsp;₴', 'Подарок за&nbsp;1&nbsp;500&nbsp;₴'],
     ['Прийшла премія 2&nbsp;000&nbsp;₴', 'Пришла премия 2&nbsp;000&nbsp;₴']];
   var PRE = [null, ['Тоді далі', 'Тогда дальше'], ['Нічого, далі', 'Ничего, дальше'], ['Ура, далі', 'Ура, дальше']];
   var TO = [544, 560, 496, 644];
@@ -2099,10 +2098,10 @@ G.M = (function(){
         ? G.L('понад на ', 'сверх на ') + G.fmt(sp - lim) + ' ₴'
         : G.L('лишилось ', 'осталось ') + G.fmt(lim - sp) + ' ₴';
       v.querySelector('.s5-rt').textContent = st === 'o'
-        ? G.L('Ліміт уже скінчився. Наступного місяця дай їй трохи більше.', 'Лимит уже закончился. В следующем месяце дай ей чуть больше.')
+        ? G.L('Ліміт уже скінчився. Наступного місяця дай категорії трохи більше', 'Лимит уже закончился. В следующем месяце дай категории чуть больше')
         : st === 't'
-        ? G.L('Впритул. Ще трохи, і ліміт скінчиться.', 'Впритык. Ещё чуть-чуть, и лимит закончится.')
-        : G.L('Вистачає, можна не рахувати кожну гривню.', 'Хватает, можно не считать каждую гривну.');
+        ? G.L('Впритул. Ще трохи, і ліміт скінчиться', 'Впритык. Ещё чуть-чуть, и лимит закончится')
+        : G.L('Вистачає, можна не рахувати кожну гривню', 'Хватает, можно не считать каждую гривну');
     });
   }
   paint(); G.onLang(paint);

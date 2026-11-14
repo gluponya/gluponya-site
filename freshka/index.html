@@ -171,6 +171,18 @@ a:focus-visible,button:focus-visible{outline:3px solid var(--coral-deep);outline
 .grid div{background:#fff;border-radius:22px;aspect-ratio:1;display:grid;place-items:center;padding:16%}
 .grid img{width:100%;height:100%;object-fit:contain}
 
+/* reviews: live Trustpilot widget once the gluponya.tv profile is claimed, until then a first-review card */
+.reviews{background:var(--honey)}
+.rv{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.2fr);gap:70px;align-items:center}
+.rv .head{margin-bottom:0}
+.rv .head p{color:var(--ink)}
+.rv-card{background:var(--paper);border-radius:32px;padding:44px 40px;display:flex;flex-direction:column;align-items:flex-start;gap:26px;box-shadow:0 30px 40px -30px rgba(58,46,38,.4)}
+.rv-stars{display:flex;gap:8px}
+.rv-stars svg{width:44px;height:44px;fill:#F1E6D8;stroke:var(--ink);stroke-width:1.4}
+.rv-card h3{font-size:clamp(26px,2.6vw,36px)}
+.rv-widget{width:100%;min-height:240px}
+.rv-widget[hidden],.rv-card[hidden]{display:none}
+.rv-btn{background:var(--black);color:#fff;border-color:var(--black)}
 /* final */
 .final{background:var(--coral);overflow:hidden}
 .final .in{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:40px;align-items:center}
@@ -193,7 +205,10 @@ footer .peek{position:absolute;right:6%;bottom:96px;width:150px}
 
 @media (max-width:900px){
   .band{padding-block:72px}
-  .spoil,.live,.final .in{grid-template-columns:1fr}
+  .spoil,.live,.final .in,.rv{grid-template-columns:1fr}
+  .rv{gap:36px}
+  .rv-card{padding:32px 26px}
+  .rv-stars svg{width:36px;height:36px}
   .hero .in{min-height:0;padding-block:110px 60px}
   .card-wrap{padding:28px 12px}
   .hero-text{padding:32px 26px}
@@ -331,6 +346,18 @@ footer .peek{position:absolute;right:6%;bottom:96px;width:150px}
     <div class="seg" id="cats"><button aria-pressed="true" data-k="fv">Овочі й фрукти</button><button aria-pressed="false" data-k="dairy">Молочне й м'ясо</button><button aria-pressed="false" data-k="ready">Готова їжа</button><button aria-pressed="false" data-k="tara">Тара</button></div>
   </div>
   <div class="grid" id="grid"></div>
+</div></section>
+
+<section class="reviews band" id="reviews"><div class="in rv">
+  <div class="head"><h2>Що кажуть <em>про Фрешку</em></h2><p>Відгуки живуть на Trustpilot, ми їх не редагуємо і не відбираємо.</p></div>
+  <div>
+    <div class="rv-widget" id="rvWidget" hidden></div>
+    <div class="rv-card" id="rvEmpty">
+      <div class="rv-stars" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M12 2.8l2.8 5.8 6.3.9-4.6 4.4 1.1 6.3L12 17.2l-5.6 3 1.1-6.3-4.6-4.4 6.3-.9z"/></svg><svg viewBox="0 0 24 24"><path d="M12 2.8l2.8 5.8 6.3.9-4.6 4.4 1.1 6.3L12 17.2l-5.6 3 1.1-6.3-4.6-4.4 6.3-.9z"/></svg><svg viewBox="0 0 24 24"><path d="M12 2.8l2.8 5.8 6.3.9-4.6 4.4 1.1 6.3L12 17.2l-5.6 3 1.1-6.3-4.6-4.4 6.3-.9z"/></svg><svg viewBox="0 0 24 24"><path d="M12 2.8l2.8 5.8 6.3.9-4.6 4.4 1.1 6.3L12 17.2l-5.6 3 1.1-6.3-4.6-4.4 6.3-.9z"/></svg><svg viewBox="0 0 24 24"><path d="M12 2.8l2.8 5.8 6.3.9-4.6 4.4 1.1 6.3L12 17.2l-5.6 3 1.1-6.3-4.6-4.4 6.3-.9z"/></svg></div>
+      <h3>Відгуків ще немає. <em>Напиши перший</em></h3>
+      <a class="ghost rv-btn" href="https://www.trustpilot.com/evaluate/gluponya.tv" target="_blank" rel="noopener">Залишити відгук на Trustpilot</a>
+    </div>
+  </div>
 </div></section>
 
 <section class="final band" id="get"><div class="in">
@@ -508,5 +535,20 @@ const drawGrid=cat=>{$('grid').innerHTML=CAT[cat].split(' ').map(n=>`<div><img s
 pick($('cats'),'k',drawGrid);drawGrid('fv');
 </script>
 
+<script>
+/* Trustpilot: after the gluponya.tv profile is claimed put its Business Unit ID here; the live widget replaces the first-review card.
+   TEMPLATE: Carousel shows review texts (may need a paid plan); Review Collector 56278e9abfbbba0bdcd568bc works on the free one. */
+(function(){
+  var TP_BUSINESS_ID='';
+  var TEMPLATE='53aa8912dec7e10d38f59f36';
+  if(!TP_BUSINESS_ID)return;
+  var w=document.getElementById('rvWidget');
+  w.innerHTML='<div class="trustpilot-widget" data-locale="uk-UA" data-template-id="'+TEMPLATE+'" data-businessunit-id="'+TP_BUSINESS_ID+'" data-style-height="240px" data-style-width="100%" data-theme="light" data-stars="1,2,3,4,5"><a href="https://www.trustpilot.com/review/gluponya.tv" target="_blank" rel="noopener">Trustpilot</a></div>';
+  var sc=document.createElement('script');
+  sc.src='https://widget.trustpilot.com/bootstrap/v5/tp.widget.bootstrap.min.js';sc.async=true;
+  sc.onload=function(){w.hidden=false;document.getElementById('rvEmpty').hidden=true;window.Trustpilot&&Trustpilot.loadFromElement(w.firstChild,true);};
+  document.head.appendChild(sc);
+})();
+</script>
 </body>
 </html>

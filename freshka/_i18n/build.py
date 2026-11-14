@@ -5,7 +5,8 @@ Builds the landing's translations from the Ukrainian page.
 
 freshka/index.html is the only page edited by hand. This writes
 freshka/<lang>/index.html and freshka/<lang>/support/index.html (from
-freshka/support/index.html) for every language in strings.py and refreshes the
+freshka/support/index.html) for every language in strings.py, the privacy
+policy and the terms for the languages of legal.py, and refreshes the
 two generated blocks inside the Ukrainian page itself (hreflang links in the
 head, the language row in the footer), which sit between marker comments.
 The row's CSS (footer .langs) is in the Ukrainian page like any other style.
@@ -22,6 +23,7 @@ HERE = Path(__file__).resolve().parent
 sys.path.insert(0, str(HERE))
 from strings import LANGS, META, T  # noqa: E402
 from support_strings import S  # noqa: E402
+import legal  # noqa: E402
 
 FRESHKA = HERE.parent
 SOURCE = FRESHKA / "index.html"
@@ -62,6 +64,11 @@ def foot_block(current):
     return '  <nav class="langs" aria-label="Language">' + "".join(links) + "</nav>\n"
 
 
+def legal_path(lang, part):
+    """The policy or the terms for a reader of `lang`: English sits behind #en on the original page."""
+    return f"/freshka/{lang}/{part}/" if lang in legal.LANGS else f"/freshka/{part}/#en"
+
+
 def swap(text, old, new, count=None):
     if old not in text:
         raise SystemExit(f"not on the page: {old!r}")
@@ -81,9 +88,8 @@ def translate(page, lang):
     page = swap(page, 'data-locale="uk-UA"', f'data-locale="{tp_locale}"')
     for name in ("shot-fridge", "shot-photo", "shot-add", "scene"):
         page = swap(page, f"/freshka/home/img/{name}.webp", f"/freshka/home/img/en/{name}.webp")
-    # the legal pages and support carry an English part behind #en
-    for part in ("privacy", "terms"):
-        page = swap(page, f'href="https://gluponya.tv/freshka/{part}/"', f'href="https://gluponya.tv/freshka/{part}/#en"')
+    for part in legal.PAGES:
+        page = swap(page, f'href="https://gluponya.tv/freshka/{part}/"', f'href="https://gluponya.tv{legal_path(lang, part)}"')
     page = swap(page, 'href="https://gluponya.tv/freshka/support/"', f'href="{url(lang)}support/"')
     # Latin lines run longer than the Ukrainian ones and slide under the carrot sticker on a phone
     page = swap(page, "</style>", "@media (max-width:560px){.hero-text p{padding-right:34px}}\n</style>", 1)
@@ -109,8 +115,8 @@ def support(page, lang):
     page = swap(page, 'content="uk_UA"', f'content="{META[lang][1]}"')
     page = swap(page, "https://gluponya.tv/freshka/support/", f"{url(lang)}support/")
     page = swap(page, 'href="/freshka/"', f'href="/freshka/{lang}/"')
-    for part in ("privacy", "terms"):
-        page = swap(page, f'href="/freshka/{part}/"', f'href="/freshka/{part}/#en"')
+    for part in legal.PAGES:
+        page = swap(page, f'href="/freshka/{part}/"', f'href="{legal_path(lang, part)}"')
     for uk in S:
         if uk not in page:
             raise SystemExit(f"not on the support page: {uk!r}")
@@ -149,6 +155,15 @@ def main():
         out = FRESHKA / lang / "support/index.html"
         out.parent.mkdir(exist_ok=True)
         out.write_text(support(help_page, lang), encoding="utf-8", newline="\n")
+
+    for lang in legal.LANGS:
+        i = LANGS.index(lang)
+        shared = {uk: row[i] for uk, row in {**T, **S}.items()}
+        for name, text in legal.pages(lang, shared, META).items():
+            cyrillic_left(text, lang)
+            out = FRESHKA / lang / name / "index.html"
+            out.parent.mkdir(exist_ok=True)
+            out.write_text(text, encoding="utf-8", newline="\n")
 
 
 main()

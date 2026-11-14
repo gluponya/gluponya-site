@@ -1,20 +1,156 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9" xmlns:xhtml="http://www.w3.org/1999/xhtml">
   <url><loc>https://gluponya.tv/</loc><lastmod>2026-11-14</lastmod></url>
-  <url><loc>https://gluponya.tv/freshka/</loc><lastmod>2026-11-14</lastmod></url>
-  <url><loc>https://gluponya.tv/freshka/en/</loc><lastmod>2026-11-14</lastmod></url>
-  <url><loc>https://gluponya.tv/freshka/de/</loc><lastmod>2026-11-14</lastmod></url>
-  <url><loc>https://gluponya.tv/freshka/es/</loc><lastmod>2026-11-14</lastmod></url>
-  <url><loc>https://gluponya.tv/freshka/pt/</loc><lastmod>2026-11-14</lastmod></url>
-  <url><loc>https://gluponya.tv/freshka/vi/</loc><lastmod>2026-11-14</lastmod></url>
-  <url><loc>https://gluponya.tv/freshka/tr/</loc><lastmod>2026-11-14</lastmod></url>
-  <url><loc>https://gluponya.tv/freshka/support/</loc><lastmod>2026-11-14</lastmod></url>
-  <url><loc>https://gluponya.tv/freshka/en/support/</loc><lastmod>2026-11-14</lastmod></url>
-  <url><loc>https://gluponya.tv/freshka/de/support/</loc><lastmod>2026-11-14</lastmod></url>
-  <url><loc>https://gluponya.tv/freshka/es/support/</loc><lastmod>2026-11-14</lastmod></url>
-  <url><loc>https://gluponya.tv/freshka/pt/support/</loc><lastmod>2026-11-14</lastmod></url>
-  <url><loc>https://gluponya.tv/freshka/vi/support/</loc><lastmod>2026-11-14</lastmod></url>
-  <url><loc>https://gluponya.tv/freshka/tr/support/</loc><lastmod>2026-11-14</lastmod></url>
+  <url><loc>https://gluponya.tv/freshka/</loc><lastmod>2026-11-14</lastmod>
+    <xhtml:link rel="alternate" hreflang="uk" href="https://gluponya.tv/freshka/"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://gluponya.tv/freshka/en/"/>
+    <xhtml:link rel="alternate" hreflang="de" href="https://gluponya.tv/freshka/de/"/>
+    <xhtml:link rel="alternate" hreflang="es" href="https://gluponya.tv/freshka/es/"/>
+    <xhtml:link rel="alternate" hreflang="pt" href="https://gluponya.tv/freshka/pt/"/>
+    <xhtml:link rel="alternate" hreflang="vi" href="https://gluponya.tv/freshka/vi/"/>
+    <xhtml:link rel="alternate" hreflang="tr" href="https://gluponya.tv/freshka/tr/"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://gluponya.tv/freshka/en/"/>
+  </url>
+  <url><loc>https://gluponya.tv/freshka/en/</loc><lastmod>2026-11-14</lastmod>
+    <xhtml:link rel="alternate" hreflang="uk" href="https://gluponya.tv/freshka/"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://gluponya.tv/freshka/en/"/>
+    <xhtml:link rel="alternate" hreflang="de" href="https://gluponya.tv/freshka/de/"/>
+    <xhtml:link rel="alternate" hreflang="es" href="https://gluponya.tv/freshka/es/"/>
+    <xhtml:link rel="alternate" hreflang="pt" href="https://gluponya.tv/freshka/pt/"/>
+    <xhtml:link rel="alternate" hreflang="vi" href="https://gluponya.tv/freshka/vi/"/>
+    <xhtml:link rel="alternate" hreflang="tr" href="https://gluponya.tv/freshka/tr/"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://gluponya.tv/freshka/en/"/>
+  </url>
+  <url><loc>https://gluponya.tv/freshka/de/</loc><lastmod>2026-11-14</lastmod>
+    <xhtml:link rel="alternate" hreflang="uk" href="https://gluponya.tv/freshka/"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://gluponya.tv/freshka/en/"/>
+    <xhtml:link rel="alternate" hreflang="de" href="https://gluponya.tv/freshka/de/"/>
+    <xhtml:link rel="alternate" hreflang="es" href="https://gluponya.tv/freshka/es/"/>
+    <xhtml:link rel="alternate" hreflang="pt" href="https://gluponya.tv/freshka/pt/"/>
+    <xhtml:link rel="alternate" hreflang="vi" href="https://gluponya.tv/freshka/vi/"/>
+    <xhtml:link rel="alternate" hreflang="tr" href="https://gluponya.tv/freshka/tr/"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://gluponya.tv/freshka/en/"/>
+  </url>
+  <url><loc>https://gluponya.tv/freshka/es/</loc><lastmod>2026-11-14</lastmod>
+    <xhtml:link rel="alternate" hreflang="uk" href="https://gluponya.tv/freshka/"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://gluponya.tv/freshka/en/"/>
+    <xhtml:link rel="alternate" hreflang="de" href="https://gluponya.tv/freshka/de/"/>
+    <xhtml:link rel="alternate" hreflang="es" href="https://gluponya.tv/freshka/es/"/>
+    <xhtml:link rel="alternate" hreflang="pt" href="https://gluponya.tv/freshka/pt/"/>
+    <xhtml:link rel="alternate" hreflang="vi" href="https://gluponya.tv/freshka/vi/"/>
+    <xhtml:link rel="alternate" hreflang="tr" href="https://gluponya.tv/freshka/tr/"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://gluponya.tv/freshka/en/"/>
+  </url>
+  <url><loc>https://gluponya.tv/freshka/pt/</loc><lastmod>2026-11-14</lastmod>
+    <xhtml:link rel="alternate" hreflang="uk" href="https://gluponya.tv/freshka/"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://gluponya.tv/freshka/en/"/>
+    <xhtml:link rel="alternate" hreflang="de" href="https://gluponya.tv/freshka/de/"/>
+    <xhtml:link rel="alternate" hreflang="es" href="https://gluponya.tv/freshka/es/"/>
+    <xhtml:link rel="alternate" hreflang="pt" href="https://gluponya.tv/freshka/pt/"/>
+    <xhtml:link rel="alternate" hreflang="vi" href="https://gluponya.tv/freshka/vi/"/>
+    <xhtml:link rel="alternate" hreflang="tr" href="https://gluponya.tv/freshka/tr/"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://gluponya.tv/freshka/en/"/>
+  </url>
+  <url><loc>https://gluponya.tv/freshka/vi/</loc><lastmod>2026-11-14</lastmod>
+    <xhtml:link rel="alternate" hreflang="uk" href="https://gluponya.tv/freshka/"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://gluponya.tv/freshka/en/"/>
+    <xhtml:link rel="alternate" hreflang="de" href="https://gluponya.tv/freshka/de/"/>
+    <xhtml:link rel="alternate" hreflang="es" href="https://gluponya.tv/freshka/es/"/>
+    <xhtml:link rel="alternate" hreflang="pt" href="https://gluponya.tv/freshka/pt/"/>
+    <xhtml:link rel="alternate" hreflang="vi" href="https://gluponya.tv/freshka/vi/"/>
+    <xhtml:link rel="alternate" hreflang="tr" href="https://gluponya.tv/freshka/tr/"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://gluponya.tv/freshka/en/"/>
+  </url>
+  <url><loc>https://gluponya.tv/freshka/tr/</loc><lastmod>2026-11-14</lastmod>
+    <xhtml:link rel="alternate" hreflang="uk" href="https://gluponya.tv/freshka/"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://gluponya.tv/freshka/en/"/>
+    <xhtml:link rel="alternate" hreflang="de" href="https://gluponya.tv/freshka/de/"/>
+    <xhtml:link rel="alternate" hreflang="es" href="https://gluponya.tv/freshka/es/"/>
+    <xhtml:link rel="alternate" hreflang="pt" href="https://gluponya.tv/freshka/pt/"/>
+    <xhtml:link rel="alternate" hreflang="vi" href="https://gluponya.tv/freshka/vi/"/>
+    <xhtml:link rel="alternate" hreflang="tr" href="https://gluponya.tv/freshka/tr/"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://gluponya.tv/freshka/en/"/>
+  </url>
+  <url><loc>https://gluponya.tv/freshka/support/</loc><lastmod>2026-11-14</lastmod>
+    <xhtml:link rel="alternate" hreflang="uk" href="https://gluponya.tv/freshka/support/"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://gluponya.tv/freshka/en/support/"/>
+    <xhtml:link rel="alternate" hreflang="de" href="https://gluponya.tv/freshka/de/support/"/>
+    <xhtml:link rel="alternate" hreflang="es" href="https://gluponya.tv/freshka/es/support/"/>
+    <xhtml:link rel="alternate" hreflang="pt" href="https://gluponya.tv/freshka/pt/support/"/>
+    <xhtml:link rel="alternate" hreflang="vi" href="https://gluponya.tv/freshka/vi/support/"/>
+    <xhtml:link rel="alternate" hreflang="tr" href="https://gluponya.tv/freshka/tr/support/"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://gluponya.tv/freshka/en/support/"/>
+  </url>
+  <url><loc>https://gluponya.tv/freshka/en/support/</loc><lastmod>2026-11-14</lastmod>
+    <xhtml:link rel="alternate" hreflang="uk" href="https://gluponya.tv/freshka/support/"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://gluponya.tv/freshka/en/support/"/>
+    <xhtml:link rel="alternate" hreflang="de" href="https://gluponya.tv/freshka/de/support/"/>
+    <xhtml:link rel="alternate" hreflang="es" href="https://gluponya.tv/freshka/es/support/"/>
+    <xhtml:link rel="alternate" hreflang="pt" href="https://gluponya.tv/freshka/pt/support/"/>
+    <xhtml:link rel="alternate" hreflang="vi" href="https://gluponya.tv/freshka/vi/support/"/>
+    <xhtml:link rel="alternate" hreflang="tr" href="https://gluponya.tv/freshka/tr/support/"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://gluponya.tv/freshka/en/support/"/>
+  </url>
+  <url><loc>https://gluponya.tv/freshka/de/support/</loc><lastmod>2026-11-14</lastmod>
+    <xhtml:link rel="alternate" hreflang="uk" href="https://gluponya.tv/freshka/support/"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://gluponya.tv/freshka/en/support/"/>
+    <xhtml:link rel="alternate" hreflang="de" href="https://gluponya.tv/freshka/de/support/"/>
+    <xhtml:link rel="alternate" hreflang="es" href="https://gluponya.tv/freshka/es/support/"/>
+    <xhtml:link rel="alternate" hreflang="pt" href="https://gluponya.tv/freshka/pt/support/"/>
+    <xhtml:link rel="alternate" hreflang="vi" href="https://gluponya.tv/freshka/vi/support/"/>
+    <xhtml:link rel="alternate" hreflang="tr" href="https://gluponya.tv/freshka/tr/support/"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://gluponya.tv/freshka/en/support/"/>
+  </url>
+  <url><loc>https://gluponya.tv/freshka/es/support/</loc><lastmod>2026-11-14</lastmod>
+    <xhtml:link rel="alternate" hreflang="uk" href="https://gluponya.tv/freshka/support/"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://gluponya.tv/freshka/en/support/"/>
+    <xhtml:link rel="alternate" hreflang="de" href="https://gluponya.tv/freshka/de/support/"/>
+    <xhtml:link rel="alternate" hreflang="es" href="https://gluponya.tv/freshka/es/support/"/>
+    <xhtml:link rel="alternate" hreflang="pt" href="https://gluponya.tv/freshka/pt/support/"/>
+    <xhtml:link rel="alternate" hreflang="vi" href="https://gluponya.tv/freshka/vi/support/"/>
+    <xhtml:link rel="alternate" hreflang="tr" href="https://gluponya.tv/freshka/tr/support/"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://gluponya.tv/freshka/en/support/"/>
+  </url>
+  <url><loc>https://gluponya.tv/freshka/pt/support/</loc><lastmod>2026-11-14</lastmod>
+    <xhtml:link rel="alternate" hreflang="uk" href="https://gluponya.tv/freshka/support/"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://gluponya.tv/freshka/en/support/"/>
+    <xhtml:link rel="alternate" hreflang="de" href="https://gluponya.tv/freshka/de/support/"/>
+    <xhtml:link rel="alternate" hreflang="es" href="https://gluponya.tv/freshka/es/support/"/>
+    <xhtml:link rel="alternate" hreflang="pt" href="https://gluponya.tv/freshka/pt/support/"/>
+    <xhtml:link rel="alternate" hreflang="vi" href="https://gluponya.tv/freshka/vi/support/"/>
+    <xhtml:link rel="alternate" hreflang="tr" href="https://gluponya.tv/freshka/tr/support/"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://gluponya.tv/freshka/en/support/"/>
+  </url>
+  <url><loc>https://gluponya.tv/freshka/vi/support/</loc><lastmod>2026-11-14</lastmod>
+    <xhtml:link rel="alternate" hreflang="uk" href="https://gluponya.tv/freshka/support/"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://gluponya.tv/freshka/en/support/"/>
+    <xhtml:link rel="alternate" hreflang="de" href="https://gluponya.tv/freshka/de/support/"/>
+    <xhtml:link rel="alternate" hreflang="es" href="https://gluponya.tv/freshka/es/support/"/>
+    <xhtml:link rel="alternate" hreflang="pt" href="https://gluponya.tv/freshka/pt/support/"/>
+    <xhtml:link rel="alternate" hreflang="vi" href="https://gluponya.tv/freshka/vi/support/"/>
+    <xhtml:link rel="alternate" hreflang="tr" href="https://gluponya.tv/freshka/tr/support/"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://gluponya.tv/freshka/en/support/"/>
+  </url>
+  <url><loc>https://gluponya.tv/freshka/tr/support/</loc><lastmod>2026-11-14</lastmod>
+    <xhtml:link rel="alternate" hreflang="uk" href="https://gluponya.tv/freshka/support/"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://gluponya.tv/freshka/en/support/"/>
+    <xhtml:link rel="alternate" hreflang="de" href="https://gluponya.tv/freshka/de/support/"/>
+    <xhtml:link rel="alternate" hreflang="es" href="https://gluponya.tv/freshka/es/support/"/>
+    <xhtml:link rel="alternate" hreflang="pt" href="https://gluponya.tv/freshka/pt/support/"/>
+    <xhtml:link rel="alternate" hreflang="vi" href="https://gluponya.tv/freshka/vi/support/"/>
+    <xhtml:link rel="alternate" hreflang="tr" href="https://gluponya.tv/freshka/tr/support/"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://gluponya.tv/freshka/en/support/"/>
+  </url>
+  <url><loc>https://gluponya.tv/freshka/de/privacy/</loc><lastmod>2026-11-14</lastmod></url>
+  <url><loc>https://gluponya.tv/freshka/de/terms/</loc><lastmod>2026-11-14</lastmod></url>
+  <url><loc>https://gluponya.tv/freshka/es/privacy/</loc><lastmod>2026-11-14</lastmod></url>
+  <url><loc>https://gluponya.tv/freshka/es/terms/</loc><lastmod>2026-11-14</lastmod></url>
+  <url><loc>https://gluponya.tv/freshka/pt/privacy/</loc><lastmod>2026-11-14</lastmod></url>
+  <url><loc>https://gluponya.tv/freshka/pt/terms/</loc><lastmod>2026-11-14</lastmod></url>
+  <url><loc>https://gluponya.tv/freshka/vi/privacy/</loc><lastmod>2026-11-14</lastmod></url>
+  <url><loc>https://gluponya.tv/freshka/vi/terms/</loc><lastmod>2026-11-14</lastmod></url>
+  <url><loc>https://gluponya.tv/freshka/tr/privacy/</loc><lastmod>2026-11-14</lastmod></url>
+  <url><loc>https://gluponya.tv/freshka/tr/terms/</loc><lastmod>2026-11-14</lastmod></url>
   <url><loc>https://gluponya.tv/freshka/privacy/</loc><lastmod>2026-11-14</lastmod></url>
   <url><loc>https://gluponya.tv/freshka/terms/</loc><lastmod>2026-11-14</lastmod></url>
   <url><loc>https://gluponya.tv/groshyk/</loc><lastmod>2026-11-14</lastmod></url>

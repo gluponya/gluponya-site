@@ -4,7 +4,8 @@ Builds the landing's translations from the Ukrainian page.
     python -I freshka/_i18n/build.py
 
 freshka/index.html is the only page edited by hand. This writes
-freshka/<lang>/index.html for every language in strings.py and refreshes the
+freshka/<lang>/index.html and freshka/<lang>/support/index.html (from
+freshka/support/index.html) for every language in strings.py and refreshes the
 two generated blocks inside the Ukrainian page itself (hreflang links in the
 head, the language row in the footer), which sit between marker comments.
 The row's CSS (footer .langs) is in the Ukrainian page like any other style.
@@ -20,6 +21,7 @@ from pathlib import Path
 HERE = Path(__file__).resolve().parent
 sys.path.insert(0, str(HERE))
 from strings import LANGS, META, T  # noqa: E402
+from support_strings import S  # noqa: E402
 
 FRESHKA = HERE.parent
 SOURCE = FRESHKA / "index.html"
@@ -80,16 +82,42 @@ def translate(page, lang):
     for name in ("shot-fridge", "shot-photo", "shot-add", "scene"):
         page = swap(page, f"/freshka/home/img/{name}.webp", f"/freshka/home/img/en/{name}.webp")
     # the legal pages and support carry an English part behind #en
-    for part in ("privacy", "terms", "support"):
+    for part in ("privacy", "terms"):
         page = swap(page, f'href="https://gluponya.tv/freshka/{part}/"', f'href="https://gluponya.tv/freshka/{part}/#en"')
+    page = swap(page, 'href="https://gluponya.tv/freshka/support/"', f'href="{url(lang)}support/"')
     # Latin lines run longer than the Ukrainian ones and slide under the carrot sticker on a phone
     page = swap(page, "</style>", "@media (max-width:560px){.hero-text p{padding-right:34px}}\n</style>", 1)
     for uk in sorted(T, key=len, reverse=True):
         page = swap(page, uk, T[uk][i])
+    cyrillic_left(page, lang)
+    return page
+
+
+def cyrillic_left(page, lang):
     own = page.replace(f">{META['uk'][0]}<", "><")  # the language row names Ukrainian in Ukrainian
-    left = sorted(set(re.findall(r"[^<>\n]*[Ѐ-ӿ][^<>\n]*", own)))
+    left = sorted(set(re.findall(r"[^<>\n]*[\u0400-\u04FF][^<>\n]*", own)))
     if left:
         raise SystemExit(f"{lang}: Cyrillic left:\n  " + "\n  ".join(s.strip()[:120] for s in left))
+
+
+def support(page, lang):
+    """freshka/support/index.html in `lang`, without its own English section."""
+    i = LANGS.index(lang)
+    page = re.sub(r'  <section class="en".*?</section>\n\n', "", page, count=1, flags=re.S)
+    page = swap(page, '<html lang="uk">', f'<html lang="{lang}">')
+    page = swap(page, 'content="https://gluponya.tv/freshka/og.jpg"', f'content="{url(lang)}og.jpg"')
+    page = swap(page, 'content="uk_UA"', f'content="{META[lang][1]}"')
+    page = swap(page, "https://gluponya.tv/freshka/support/", f"{url(lang)}support/")
+    page = swap(page, 'href="/freshka/"', f'href="/freshka/{lang}/"')
+    for part in ("privacy", "terms"):
+        page = swap(page, f'href="/freshka/{part}/"', f'href="/freshka/{part}/#en"')
+    for uk in S:
+        if uk not in page:
+            raise SystemExit(f"not on the support page: {uk!r}")
+    words = {**T, **S}
+    for uk in sorted(words, key=len, reverse=True):
+        page = page.replace(uk, words[uk][i])
+    cyrillic_left(page, lang)
     return page
 
 
@@ -112,6 +140,15 @@ def main():
         out.parent.mkdir(exist_ok=True)
         out.write_text(translate(bare, lang), encoding="utf-8", newline="\n")
         print(lang, out.stat().st_size // 1024, "KB")
+
+    for uk, row in S.items():
+        if len(row) != len(LANGS):
+            raise SystemExit(f"{uk!r}: {len(row)} translations, need {len(LANGS)}")
+    help_page = (FRESHKA / "support/index.html").read_text(encoding="utf-8")
+    for lang in LANGS:
+        out = FRESHKA / lang / "support/index.html"
+        out.parent.mkdir(exist_ok=True)
+        out.write_text(support(help_page, lang), encoding="utf-8", newline="\n")
 
 
 main()

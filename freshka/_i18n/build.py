@@ -21,7 +21,7 @@ from pathlib import Path
 
 HERE = Path(__file__).resolve().parent
 sys.path.insert(0, str(HERE))
-from strings import LANGS, META, T  # noqa: E402
+from strings import LANGS, META, T, TITLE  # noqa: E402
 from support_strings import S  # noqa: E402
 import legal  # noqa: E402
 
@@ -34,6 +34,12 @@ HEAD_MARK = ("<!--langs:head-->", "<!--/langs:head-->")
 FOOT_MARK = ("<!--langs:foot-->", "<!--/langs:foot-->")
 HEAD_ANCHOR = '<link rel="canonical" href="https://gluponya.tv/freshka/">\n'
 FOOT_ANCHOR = '  <div class="base">'
+
+
+SUPPORT_ANCHOR = '<link rel="canonical" href="https://gluponya.tv/freshka/support/">\n'
+
+def support_marked():
+    return f"{HEAD_MARK[0]}\n{legal.alternates('support/', ALL, 'en')}{HEAD_MARK[1]}\n"
 
 
 def url(lang):
@@ -82,6 +88,9 @@ def translate(page, lang):
     page = swap(page, '<html lang="uk">', f'<html lang="{lang}">')
     page = swap(page, 'content="https://gluponya.tv/freshka/og.jpg"', f'content="{url(lang)}og.jpg"')
     page = swap(page, 'content="uk_UA"', f'content="{og_locale}"')
+    page = swap(page, f"<title>{TITLE['uk']}</title>", f"<title>{TITLE[lang]}</title>")
+    page = swap(page, '"inLanguage": "uk"', f'"inLanguage": "{lang}"')
+    page = swap(page, '"priceCurrency": "UAH"', '"priceCurrency": "USD"')
     page = swap(page, '<link rel="canonical" href="https://gluponya.tv/freshka/">', f'<link rel="canonical" href="{url(lang)}">')
     page = swap(page, '<meta property="og:url" content="https://gluponya.tv/freshka/">', f'<meta property="og:url" content="{url(lang)}">')
     page = swap(page, '"url": "https://gluponya.tv/freshka/",', f'"url": "{url(lang)}",')
@@ -110,6 +119,7 @@ def support(page, lang):
     """freshka/support/index.html in `lang`, without its own English section."""
     i = LANGS.index(lang)
     page = re.sub(r'  <section class="en".*?</section>\n\n', "", page, count=1, flags=re.S)
+    page = legal.MARKED.sub("", page)  # the source's own hreflang block; the language's one is added below
     page = swap(page, '<html lang="uk">', f'<html lang="{lang}">')
     page = swap(page, 'content="https://gluponya.tv/freshka/og.jpg"', f'content="{url(lang)}og.jpg"')
     page = swap(page, 'content="uk_UA"', f'content="{META[lang][1]}"')
@@ -117,6 +127,7 @@ def support(page, lang):
     page = swap(page, 'href="/freshka/"', f'href="/freshka/{lang}/"')
     for part in legal.PAGES:
         page = swap(page, f'href="/freshka/{part}/"', f'href="{legal_path(lang, part)}"')
+    page = swap(page, SUPPORT_ANCHOR.replace("freshka/support/", f"freshka/{lang}/support/"), SUPPORT_ANCHOR.replace("freshka/support/", f"freshka/{lang}/support/") + support_marked())
     for uk in S:
         if uk not in page:
             raise SystemExit(f"not on the support page: {uk!r}")
@@ -150,7 +161,14 @@ def main():
     for uk, row in S.items():
         if len(row) != len(LANGS):
             raise SystemExit(f"{uk!r}: {len(row)} translations, need {len(LANGS)}")
-    help_page = (FRESHKA / "support/index.html").read_text(encoding="utf-8")
+    support_src = FRESHKA / "support/index.html"
+    help_page = between(support_src.read_text(encoding="utf-8"), HEAD_MARK, legal.alternates("support/", ALL, "en"), SUPPORT_ANCHOR, False)
+    support_src.write_text(help_page, encoding="utf-8", newline="\n")
+    for name in legal.PAGES:
+        src = FRESHKA / name / "index.html"
+        text = src.read_text(encoding="utf-8")
+        anchor = f'<link rel="canonical" href="https://gluponya.tv/freshka/{name}/">\n'
+        src.write_text(between(text, HEAD_MARK, legal.head_links(name), anchor, False), encoding="utf-8", newline="\n")
     for lang in LANGS:
         out = FRESHKA / lang / "support/index.html"
         out.parent.mkdir(exist_ok=True)

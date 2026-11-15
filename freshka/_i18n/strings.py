@@ -27,6 +27,21 @@ META = {
     "nl": ("Nederlands", "nl_NL", "nl-NL"),
 }
 
+# <title> of the landing: the App Store name of the app in each language (60 characters at most)
+TITLE = {
+    "uk": "Фрешка: холодильник, продукти",
+    "en": "Freshka: Fridge, Food Tracker",
+    "de": "Freshka: Kühlschrank, Vorrat",
+    "es": "Freshka: nevera y despensa",
+    "pt": "Freshka: geladeira e controle de comida",
+    "vi": "Freshka: tủ lạnh, quản lý thực phẩm",
+    "tr": "Freshka: buzdolabı, yiyecek takibi",
+    "fr": "Freshka: frigo, anti-gaspi",
+    "it": "Freshka: frigo, dispensa",
+    "pl": "Freshka: lodówka i jedzenie",
+    "nl": "Freshka: koelkast en eten",
+}
+
 # The link-preview picture's headline, two lines, the accent between asterisks.
 OG_HEADLINE = {
     "uk": ["Холодильник,", "*який видно*"],
@@ -326,7 +341,7 @@ T = {
     "Сьогодні": ("Today", "Heute", "Hoy", "Hoje", "Hôm nay", "Bugün", "Auj.", "Oggi", "Dziś", "Vandaag"),
     "3 дні": ("3 days", "3 Tage", "3 días", "3 dias", "3 ngày", "3 gün", "3 jours", "3 giorni", "3 dni", "3 dagen"),
     "5 днів": ("5 days", "5 Tage", "5 días", "5 dias", "5 ngày", "5 gün", "5 jours", "5 giorni", "5 dni", "5 dagen"),
-    "Тиждень": ("A week", "Eine Woche", "Una semana", "Uma semana", "Một tuần", "Bir hafta", "7 jours", "7 giorni", "Tydzień", "Een week"),
+    "Тиждень": ("A week", "7 Tage", "7 días", "7 dias", "Một tuần", "Bir hafta", "7 jours", "7 giorni", "Tydzień", "Een week"),
 
     # catalogue
     "малюнків для продуктів, <em>банок і каструль</em>": (

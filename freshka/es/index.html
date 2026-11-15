@@ -13,7 +13,7 @@
 <meta property="og:site_name" content="Freshka">
 <meta property="og:locale" content="es_ES">
 <link rel="icon" href="/img/freshka-icon.png">
-<title>Freshka</title>
+<title>Freshka: nevera y despensa</title>
 <link rel="canonical" href="https://gluponya.tv/freshka/es/">
 <!--langs:head-->
 <link rel="alternate" hreflang="uk" href="https://gluponya.tv/freshka/">
@@ -47,8 +47,8 @@
   "operatingSystem": "iOS 16.4",
   "applicationCategory": "LifestyleApplication",
   "applicationSubCategory": "Food & Drink",
-  "inLanguage": ["uk", "en"],
-  "offers": {"@type": "Offer", "price": "0", "priceCurrency": "UAH"},
+  "inLanguage": "es",
+  "offers": {"@type": "Offer", "price": "0", "priceCurrency": "USD"},
   "author": {"@type": "Organization", "name": "gluponya", "url": "https://gluponya.tv/"}
 }
 </script>
@@ -565,7 +565,7 @@ const mini=$('mini'),stages=[...document.querySelectorAll('.st')];
 const seven='apple avocado banana tomato cucumber lemon peach'.split(' ');
 const suf=['','-wilting','-spoiled'];
 const stageOf=d=>d<=2?0:d<=5?1:2;
-const DAYS=[[0,'Hoy'],[3,'3 días'],[5,'5 días'],[7,'Una semana']];
+const DAYS=[[0,'Hoy'],[3,'3 días'],[5,'5 días'],[7,'7 días']];
 $('days').innerHTML=DAYS.map(([d,t])=>`<button data-d="${d}" aria-pressed="${d===0}" style="--c:${['var(--fresh)','var(--soon)','var(--gone)'][stageOf(d)]}">${t}</button>`).join('');
 function day(d){const st=stageOf(d);stages.forEach((s,i)=>s.classList.toggle('on',i===st));
   mini.innerHTML=seven.map((n,i)=>{const kk=stageOf(Math.max(0,d-(i%3)));return `<div><img src="/freshka/home/img/c/${n}${suf[kk]}.webp" alt=""></div>`}).join('');

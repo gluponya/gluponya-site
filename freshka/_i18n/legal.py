@@ -41,6 +41,30 @@ PHRASE = re.compile(r"<(\w+)([^>]*)>((?:[^<]|<a [^>]*>[^<]*</a>)+)</\1>")
 ATTR = re.compile(r'(content|aria-label)="([^"]*)"')
 
 
+BASE = "https://gluponya.tv/freshka/"
+HEAD_MARK = ("<!--langs:head-->", "<!--/langs:head-->")
+MARKED = re.compile(re.escape(HEAD_MARK[0]) + r".*?" + re.escape(HEAD_MARK[1]) + r"\n", re.S)
+
+
+def alternates(path, langs, default):
+    """hreflang links of one page family: `path` under each language, x-default on `default`."""
+    def url(lang):
+        return BASE + ("" if lang == "uk" else lang + "/") + path
+    rows = [f'<link rel="alternate" hreflang="{lang}" href="{url(lang)}">\n' for lang in langs]
+    rows.append(f'<link rel="alternate" hreflang="x-default" href="{url(default)}">\n')
+    return "".join(rows)
+
+
+def head_links(name):
+    """Privacy and terms: Ukrainian page (it holds English behind #en) and the nine translations.
+    No hreflang="en": a fragment address does not work there."""
+    return alternates(f"{name}/", ("uk",) + LANGS, "uk")
+
+
+def marked(name):
+    return f"{HEAD_MARK[0]}\n{head_links(name)}{HEAD_MARK[1]}\n"
+
+
 def english(page, name):
     """The page with its Ukrainian half and the language switch taken out."""
     page = UK_PART.sub("", page)
@@ -85,6 +109,7 @@ def source():
 def translate(page, name, lang, words, shared, meta):
     """`words`: English phrase -> translation. `shared`: Ukrainian phrase -> translation, from the landing."""
     base = f"https://gluponya.tv/freshka/{lang}/"
+    page = MARKED.sub("", page)
     page = english(page, name)
     missing = []
 
@@ -110,6 +135,10 @@ def translate(page, name, lang, words, shared, meta):
     for part in ("privacy", "terms", "support"):
         if part != name:
             page = page.replace(f'href="/freshka/{part}/"', f'href="/freshka/{lang}/{part}/"')
+    anchor = f'<link rel="canonical" href="{base}{name}/">\n'
+    if anchor not in page:
+        raise SystemExit(f"{lang}/{name}: no canonical")
+    page = page.replace(anchor, anchor + marked(name), 1)
     return page.replace(">Фрешка</a>", ">Freshka</a>")
 
 

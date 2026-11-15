@@ -29,6 +29,29 @@
 <link rel="alternate" hreflang="nl" href="https://gluponya.tv/freshka/nl/">
 <link rel="alternate" hreflang="x-default" href="https://gluponya.tv/freshka/en/">
 <!--/langs:head-->
+<!--hint:head-->
+<script>
+/* A thin bar for browsers in a language we have a page for (English if none): a link, never a redirect.
+   Not for Ukrainian/Russian/Belarusian, not for bots, not after an in-site click. */
+(function(){try{
+if(/bot|crawl|spider|slurp|google|bing|yandex|duckduck|baidu|facebook|telegram|whatsapp|preview|lighthouse|headless/i.test(navigator.userAgent))return;
+if(document.referrer&&new URL(document.referrer).hostname.replace(/^www\./,'')==='gluponya.tv')return;
+var T={en:'Read in English',de:'Auf Deutsch lesen',es:'Leer en español',pt:'Ler em português',vi:'Đọc bằng tiếng Việt',tr:'Türkçe oku',fr:'Lire en français',it:'Leggi in italiano',pl:'Czytaj po polsku',nl:'Lees in het Nederlands'};
+var list=navigator.languages&&navigator.languages.length?navigator.languages:[navigator.language];
+var pick='en';
+for(var i=0;i<list.length;i++){var l=String(list[i]||'').toLowerCase().split('-')[0];
+if(l==='uk'||l==='ru'||l==='be')return;if(T[l]){pick=l;break}}
+if(!list[0])return;
+document.addEventListener('DOMContentLoaded',function(){
+var b=document.createElement('div');b.className='hint';
+var a=document.createElement('a');a.href='/freshka/'+pick+'/';a.lang=pick;a.textContent=T[pick];
+b.appendChild(a);document.body.insertBefore(b,document.body.firstChild);
+var h=document.querySelector('.top');if(h)h.style.top=b.offsetHeight+'px';
+});
+}catch(e){}})();
+</script>
+<style>.hint{background:var(--honey);text-align:center;padding:10px 16px;font-weight:700}.hint a{color:var(--ink);text-decoration:underline;text-underline-offset:3px}</style>
+<!--/hint:head-->
 <meta property="og:url" content="https://gluponya.tv/freshka/">
 <meta property="og:type" content="website">
 <meta name="twitter:card" content="summary_large_image">

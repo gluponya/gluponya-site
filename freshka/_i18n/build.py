@@ -137,7 +137,7 @@ def main():
 
     page = SOURCE.read_text(encoding="utf-8")
     page = between(page, HEAD_MARK, head_block(), HEAD_ANCHOR, False)
-    bare = page
+    bare = re.sub(r"<!--hint:head-->.*?<!--/hint:head-->\n", "", page, flags=re.S)
     page = between(page, FOOT_MARK, foot_block("uk"), FOOT_ANCHOR, True)
     SOURCE.write_text(page, encoding="utf-8", newline="\n")
 

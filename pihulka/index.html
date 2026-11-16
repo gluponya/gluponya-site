@@ -2,28 +2,369 @@
 <html lang="uk">
 <head>
 <meta charset="utf-8">
-<meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Пігулка</title>
-<meta name="description" content="Пігулка: домашня аптечка, в якій усе на місці. Скоро.">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Пігулка: аптечка в Telegram, терміни ліків</title>
+<meta name="description" content="Пігулка показує, які ліки є вдома, до якого часу вони придатні і коли їх приймати. Працює в Telegram, без реєстрації.">
 <link rel="canonical" href="https://gluponya.tv/pihulka/">
+<meta property="og:title" content="Пігулка: аптечка, яка памʼятає терміни">
+<meta property="og:description" content="Ліки вдома, в машині, на дачі і в батьків. Видно, що протерміновано і що закінчується. Відкривається в Telegram.">
+<meta property="og:url" content="https://gluponya.tv/pihulka/">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Глупоня">
+<meta property="og:locale" content="uk_UA">
+<meta property="og:image" content="https://gluponya.tv/pihulka/og.jpg">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="Пігулка. Аптечка, яка памʼятає терміни: екран застосунку зі списком ліків і їхніми термінами">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="icon" href="/pihulka/img/icon.png">
+<link rel="apple-touch-icon" href="/pihulka/img/icon.png">
+<meta name="theme-color" content="#EEF3FE" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#131826" media="(prefers-color-scheme: dark)">
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "WebApplication",
+  "name": "Пігулка",
+  "description": "Домашня аптечка в Telegram: які ліки є вдома, до якого часу вони придатні і коли їх приймати. Кілька аптечок, пошук у Державному реєстрі лікарських засобів України, розклад прийому і список покупок.",
+  "url": "https://gluponya.tv/pihulka/",
+  "sameAs": ["https://t.me/pihulka_bot/Pihulka"],
+  "image": "https://gluponya.tv/pihulka/img/icon.png",
+  "applicationCategory": "HealthApplication",
+  "operatingSystem": "Telegram",
+  "browserRequirements": "Telegram",
+  "inLanguage": "uk",
+  "author": {"@type": "Organization", "name": "Глупоня", "url": "https://gluponya.tv/"}
+}
+</script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&display=swap">
 <style>
-:root{--bg:#f6f1e7;--ink:#2b2622;--accent:#d8553f}
-@media (prefers-color-scheme:dark){:root{--bg:#1d1a17;--ink:#f1eadd;--accent:#ef7a63}}
+/* Colours and type are the app's own (new-app/src/ui/theme.ts, typography.ts): periwinkle background, white cards, one blue, Manrope. */
+:root{
+  --bg:#EEF3FE; --surface:#FFFFFF; --surface-soft:#F7F9FE; --line:#DCE3F2;
+  --ink:#2F3A4F; --ink-muted:#66718A;
+  --primary:#4A6CF7; --primary-hover:#3B5CE6; --primary-soft:#E6ECFE; --on-primary:#FFFFFF;
+  --danger:#E0352B; --danger-soft:#FDE8E6;
+  --warning:#B86A06; --warning-soft:#FEF2DF;
+  --success:#1F9D63; --success-soft:#E2F5EB;
+  --bezel:#222736;
+  --shadow:0 1px 2px rgba(47,58,79,.06);
+  --lift:0 18px 40px rgba(47,58,79,.12);
+  --font:"Manrope",system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;
+  color-scheme:light;
+}
+@media (prefers-color-scheme:dark){
+  :root{
+    --bg:#131826; --surface:#1C2232; --surface-soft:#232A3C; --line:#2F384D;
+    --ink:#E9EDF7; --ink-muted:#A3AABB;
+    --primary:#7D95FA; --primary-hover:#93A7FB; --primary-soft:#28325A; --on-primary:#111628;
+    --danger:#FF7A6E; --danger-soft:#3D2226;
+    --warning:#F2AC4B; --warning-soft:#3B2E1A;
+    --success:#4CC98E; --success-soft:#193326;
+    --bezel:#0B0E16;
+    --shadow:0 1px 2px rgba(0,0,0,.3);
+    --lift:0 18px 40px rgba(0,0,0,.4);
+    color-scheme:dark;
+  }
+}
 *{box-sizing:border-box}
-html,body{height:100%;margin:0}
-body{background:var(--bg);color:var(--ink);font-family:system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;display:flex;align-items:center;justify-content:center;padding:48px 16px;text-align:center}
-main{max-width:520px}
-.pill{width:120px;height:52px;margin:0 auto 32px;border-radius:26px;border:3px solid var(--ink);background:linear-gradient(90deg,var(--accent) 50%,var(--bg) 50%);transform:rotate(-14deg)}
-h1{font-size:clamp(40px,10vw,64px);margin:0 0 16px;letter-spacing:-.02em}
-p{font-size:20px;line-height:1.5;margin:0}
+html{-webkit-text-size-adjust:100%}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--font);font-weight:400;font-size:17px;line-height:1.55;overflow-x:hidden}
+img{display:block;max-width:100%}
+a{color:var(--primary)}
+a:focus-visible{outline:3px solid var(--primary);outline-offset:3px;border-radius:6px}
+.wrap{width:100%;max-width:1160px;margin:0 auto;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+@media(min-width:720px){.wrap{padding-left:32px;padding-right:32px}}
+h1,h2,h3{font-weight:800;letter-spacing:-.02em;margin:0;text-wrap:balance}
+p{margin:0}
+
+/* buttons */
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:10px;min-height:52px;padding:14px 24px;border-radius:14px;background:var(--primary);color:var(--on-primary);font-weight:700;font-size:17px;line-height:1.2;text-decoration:none;transition:background .15s ease,transform .15s ease;max-width:100%}
+.btn:hover{background:var(--primary-hover);transform:translateY(-1px)}
+.btn svg{width:22px;height:22px;flex:none}
+.btn.sm{min-height:44px;padding:10px 16px;font-size:15px;border-radius:12px}
+.btn.sm svg{width:18px;height:18px}
+
+/* header */
+.top{padding-block:20px}
+.top .wrap{display:flex;align-items:center;justify-content:space-between;gap:12px}
+.logo{display:inline-flex;align-items:center;gap:10px;color:var(--ink);text-decoration:none;font-weight:800;font-size:20px;letter-spacing:-.01em}
+.logo img{width:36px;height:36px;border-radius:10px}
+@media(max-width:420px){.top .btn .long{display:none}}
+
+/* hero */
+.hero{padding-block:48px 72px}
+.hero .wrap{display:grid;grid-template-columns:minmax(0,1fr);gap:48px;align-items:center}
+@media(min-width:900px){.hero{padding-block:72px 96px}.hero .wrap{grid-template-columns:minmax(0,1.1fr) minmax(0,.9fr);gap:56px}}
+.hero .txt{display:grid;gap:24px;justify-items:start}
+.badge{display:inline-flex;align-items:center;gap:8px;padding:8px 14px;border-radius:999px;background:var(--primary-soft);color:var(--primary);font-weight:700;font-size:14px;line-height:1.2}
+.badge svg{width:16px;height:16px;flex:none}
+h1{font-size:clamp(38px,6.2vw,68px);line-height:1.05}
+h1 em{font-style:normal;color:var(--primary)}
+.lead{font-size:clamp(18px,1.7vw,21px);line-height:1.5;color:var(--ink-muted);max-width:32em}
+
+/* phone with the real screenshot (1170x2682, shown far below native size) */
+.phone{justify-self:center;width:min(300px,76vw);padding:10px;border-radius:46px;background:var(--bezel);box-shadow:var(--lift);rotate:2deg}
+.phone img{width:100%;height:auto;aspect-ratio:1170/2682;border-radius:36px;background:#EEF3FE}
+
+/* sections */
+.sec{padding-block:56px}
+@media(min-width:900px){.sec{padding-block:80px}}
+.sec h2{font-size:clamp(28px,3.6vw,42px);line-height:1.12}
+.sec .body{display:grid;gap:16px;max-width:36em}
+.sec .body p{color:var(--ink-muted)}
+.sec .body p strong{color:var(--ink);font-weight:700}
+.intro{display:grid;gap:20px;max-width:46em}
+.intro p{font-size:clamp(18px,1.7vw,21px);color:var(--ink-muted)}
+.intro p strong{color:var(--ink);font-weight:700}
+
+.row{display:grid;grid-template-columns:minmax(0,1fr);gap:32px;align-items:center}
+@media(min-width:900px){.row{grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:64px}.row.flip .body{order:2}.row .card{justify-self:end}.row.flip .card{justify-self:start}}
+
+/* app-style cards (drawn after the app's own screens) */
+.card{background:var(--surface);border:1px solid var(--line);border-radius:16px;box-shadow:var(--shadow);padding:24px 20px 20px;width:100%;max-width:440px;justify-self:center}
+@media(min-width:900px){.card{padding:28px 24px 24px}}
+.card .ttl{display:flex;justify-content:space-between;align-items:baseline;gap:12px;font-weight:700;font-size:18px;line-height:1.3;margin-bottom:14px}
+.card .ttl span{font-weight:600;font-size:14px;color:var(--ink-muted)}
+.list{list-style:none;margin:0;padding:0}
+.list li{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:12px 0;border-top:1px solid var(--line);min-width:0}
+.list li:first-child{border-top:0;padding-top:4px}
+.list li:last-child{padding-bottom:0}
+.list .nm{display:grid;gap:2px;min-width:0}
+.list .nm b{font-weight:600;font-size:16px;line-height:1.35}
+.list .nm small{font-size:14px;font-weight:500;color:var(--ink-muted);line-height:1.35}
+.list .nm mark{background:none;color:inherit;font-weight:800}
+.chip{display:inline-flex;align-items:center;gap:6px;flex:none;padding:5px 10px;border-radius:999px;font-weight:600;font-size:13px;line-height:1.2;white-space:nowrap;background:var(--primary-soft);color:var(--primary)}
+.chip::before{content:"";width:6px;height:6px;border-radius:50%;background:currentColor}
+.chip.plain::before{display:none}
+.chip.red{background:var(--danger-soft);color:var(--danger)}
+.chip.amber{background:var(--warning-soft);color:var(--warning)}
+
+.field{display:flex;align-items:center;gap:10px;min-height:48px;padding:10px 14px;border:1px solid var(--line);border-radius:12px;background:var(--surface-soft);font-weight:500;font-size:17px;margin-bottom:16px}
+.field svg{width:20px;height:20px;flex:none;color:var(--ink-muted)}
+.field .cur{display:inline-block;width:2px;height:20px;background:var(--primary);margin-left:1px;vertical-align:-4px}
+
+/* cabinets */
+.cabs{display:grid;gap:10px}
+.cab{display:flex;align-items:center;gap:12px;padding:12px 14px;border:1px solid var(--line);border-radius:12px;background:var(--surface-soft)}
+.cab.on{border-color:var(--primary);background:var(--primary-soft)}
+.cab .ic{display:grid;place-items:center;width:40px;height:40px;flex:none;border-radius:10px;background:var(--surface);color:var(--primary)}
+.cab .ic svg{width:22px;height:22px}
+.cab .nm{display:grid;gap:2px;min-width:0}
+.cab b{font-weight:700;font-size:16px;line-height:1.3}
+.cab small{font-weight:500;font-size:14px;line-height:1.3;color:var(--ink-muted)}
+.code{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;margin-top:16px;padding:16px;border-radius:12px;background:var(--surface-soft);border:1px dashed var(--line)}
+.code b{font-weight:800;font-size:24px;letter-spacing:.12em;font-variant-numeric:tabular-nums}
+.code span{font-weight:600;font-size:14px;color:var(--ink-muted)}
+
+/* today */
+.dose{display:flex;align-items:center;gap:12px;padding:4px 0 16px}
+.dose .ck{display:grid;place-items:center;width:28px;height:28px;flex:none;border-radius:50%;background:var(--success);color:#fff}
+.dose .ck svg{width:16px;height:16px}
+.dose .nm{display:grid;gap:2px;min-width:0}
+.dose b{font-weight:600;font-size:16px;line-height:1.35}
+.dose small{font-size:14px;font-weight:500;color:var(--ink-muted)}
+.next{border:1px solid var(--line);border-radius:14px;padding:18px 16px 16px;display:grid;gap:14px;background:var(--surface-soft)}
+.next .when{display:flex;align-items:center;gap:8px;color:var(--primary);font-weight:700;font-size:14px}
+.next .when svg{width:18px;height:18px}
+.next b{font-weight:700;font-size:18px;line-height:1.3}
+.next .acts{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:10px}
+.next .acts span{display:flex;align-items:center;justify-content:center;min-height:46px;border-radius:12px;font-weight:600;font-size:16px}
+.next .acts .p{background:var(--primary);color:var(--on-primary)}
+.next .acts .s{background:var(--surface);border:1px solid var(--line);color:var(--ink)}
+
+/* plain facts */
+.facts{display:grid;grid-template-columns:minmax(0,1fr);gap:16px;margin-top:32px}
+@media(min-width:720px){.facts{grid-template-columns:repeat(3,minmax(0,1fr))}}
+.fact{background:var(--surface);border:1px solid var(--line);border-radius:16px;box-shadow:var(--shadow);padding:24px 20px 22px;display:grid;gap:10px;align-content:start}
+.fact .ic{display:grid;place-items:center;width:44px;height:44px;border-radius:12px;background:var(--primary-soft);color:var(--primary)}
+.fact .ic svg{width:24px;height:24px}
+.fact h3{font-size:19px;line-height:1.3;letter-spacing:-.01em}
+.fact p{color:var(--ink-muted);font-size:16px}
+
+/* faq */
+.faq{display:grid;grid-template-columns:minmax(0,1fr);gap:16px;margin-top:32px}
+@media(min-width:900px){.faq{grid-template-columns:repeat(2,minmax(0,1fr))}}
+.qa{background:var(--surface);border:1px solid var(--line);border-radius:16px;padding:24px 20px 22px;display:grid;gap:10px;align-content:start}
+.qa h3{font-size:19px;line-height:1.3;letter-spacing:-.01em}
+.qa p{color:var(--ink-muted);font-size:16px}
+
+/* final call */
+.final{padding-top:24px}
+.final .box{--f-bg:#4A6CF7;--f-ink:#FFFFFF;--f-btn:#FFFFFF;--f-btn-ink:#4A6CF7;--f-btn-hover:#EEF3FE;background:var(--f-bg);color:var(--f-ink);border-radius:24px;padding:48px 24px;display:grid;gap:24px;justify-items:center;text-align:center}
+@media (prefers-color-scheme:dark){.final .box{--f-bg:#232D52;--f-ink:#E9EDF7;--f-btn:#7D95FA;--f-btn-ink:#111628;--f-btn-hover:#93A7FB;--f-ring:none}}
+@media(min-width:900px){.final .box{padding:64px 48px}}
+.final .box img{width:64px;height:64px;border-radius:16px;box-shadow:var(--f-ring,0 0 0 3px rgba(255,255,255,.35))}
+.final .box p{font-weight:800;font-size:clamp(24px,3vw,34px);line-height:1.2;letter-spacing:-.02em;max-width:18em;text-wrap:balance}
+.final .btn{background:var(--f-btn);color:var(--f-btn-ink)}
+.final .btn:hover{background:var(--f-btn-hover)}
+
+/* footer */
+footer{padding-block:48px 56px;border-top:1px solid var(--line);margin-top:24px}
+footer .wrap{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:24px 32px}
+footer nav{display:flex;flex-wrap:wrap;gap:12px 28px}
+footer nav a{color:var(--ink);font-weight:600;text-decoration:none}
+footer nav a:hover{color:var(--primary)}
+footer .made{color:var(--ink-muted);font-weight:500;flex-basis:100%}
+footer .made a{color:var(--ink-muted)}
 </style>
 </head>
 <body>
+
+<header class="top">
+  <div class="wrap">
+    <a class="logo" href="/pihulka/"><img src="/pihulka/img/icon.png" alt="" width="36" height="36">Пігулка</a>
+    <a class="btn sm" href="https://t.me/pihulka_bot/Pihulka"><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M21.6 3.3 2.9 10.6c-1.1.4-1.1 1.1-.2 1.4l4.7 1.5 1.8 5.6c.2.6.4.8.8.8.5 0 .7-.2 1-.5l2.4-2.3 4.9 3.6c.9.5 1.5.2 1.8-.8L23 4.9c.3-1.3-.5-1.9-1.4-1.6zM8.3 13.2l9.9-6.2c.5-.3.9-.1.5.2l-8.4 7.6-.3 3.5-1.7-5.1z"/></svg><span>Відкрити<span class="long"> у Telegram</span></span></a>
+  </div>
+</header>
+
 <main>
-<div class="pill" aria-hidden="true"></div>
-<h1>Пігулка</h1>
-<p>Домашня аптечка, в якій усе на місці. Скоро.</p>
+<section class="hero">
+  <div class="wrap">
+    <div class="txt">
+      <span class="badge"><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M21.6 3.3 2.9 10.6c-1.1.4-1.1 1.1-.2 1.4l4.7 1.5 1.8 5.6c.2.6.4.8.8.8.5 0 .7-.2 1-.5l2.4-2.3 4.9 3.6c.9.5 1.5.2 1.8-.8L23 4.9c.3-1.3-.5-1.9-1.4-1.6zM8.3 13.2l9.9-6.2c.5-.3.9-.1.5.2l-8.4 7.6-.3 3.5-1.7-5.1z"/></svg>Міні-застосунок у Telegram</span>
+      <h1>Аптечка, яка <em>памʼятає терміни</em></h1>
+      <p class="lead">Пігулка показує, які ліки є вдома, до якого часу вони придатні і коли їх приймати. Відкривається прямо в Telegram, нічого не треба встановлювати.</p>
+      <a class="btn" href="https://t.me/pihulka_bot/Pihulka"><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M21.6 3.3 2.9 10.6c-1.1.4-1.1 1.1-.2 1.4l4.7 1.5 1.8 5.6c.2.6.4.8.8.8.5 0 .7-.2 1-.5l2.4-2.3 4.9 3.6c.9.5 1.5.2 1.8-.8L23 4.9c.3-1.3-.5-1.9-1.4-1.6zM8.3 13.2l9.9-6.2c.5-.3.9-.1.5.2l-8.4 7.6-.3 3.5-1.7-5.1z"/></svg>Відкрити у Telegram</a>
+    </div>
+    <div class="phone"><img src="/img/scr-medkit.jpg" alt="Головний екран Пігулки: аптечка «Дім», блок «Потребує уваги» з протермінованим парацетамолом і список ліків з термінами" width="1170" height="2682"></div>
+  </div>
+</section>
+
+<section class="sec" id="what">
+  <div class="wrap"><div class="intro">
+    <h2>Що таке Пігулка</h2>
+    <p>Це облік домашньої аптечки. Ти додаєш ліки, які є вдома, і бачиш їх одним списком: назва, форма, дозування, термін і скільки залишилось.</p>
+    <p>Шукати по шухлядах не треба. <strong>Пігулка сама піднімає нагору те, що потребує уваги:</strong> протерміноване, те, у чого скоро кінець терміну, і те, що закінчується.</p>
+  </div></div>
+</section>
+
+<section class="sec" id="add">
+  <div class="wrap row">
+    <div class="body">
+      <h2>Додати ліки за назвою</h2>
+      <p>Почни вводити назву або діючу речовину. Пігулка знайде ліки в <strong>Державному реєстрі лікарських засобів України</strong> і сама підставить форму й дозування. Лишається вказати термін і кількість.</p>
+      <p>Добавок і закордонних ліків у реєстрі немає. Їх можна ввести вручну: пʼять коротких кроків, одне питання на екран.</p>
+    </div>
+    <div class="card" aria-hidden="true">
+      <div class="ttl">Знайти ліки</div>
+      <div class="field"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg><span>ібупро<i class="cur"></i></span></div>
+      <ul class="list">
+        <li><span class="nm"><b><mark>Ібупро</mark>фен</b><small>таблетки, 200 мг</small></span></li>
+        <li><span class="nm"><b>Нурофєн форте</b><small><mark>ібупро</mark>фен, таблетки, 400 мг</small></span><span class="chip plain">Є в «Дім»</span></li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<section class="sec" id="expiry">
+  <div class="wrap row flip">
+    <div class="body">
+      <h2>Терміни видно одразу</h2>
+      <p>На головному екрані є блок «Потребує уваги». Там протерміновані ліки, ті, у яких скоро кінець терміну, і ті, яких залишилось мало.</p>
+      <p>За скільки днів попереджати про термін, вирішуєш ти, окремо для кожної аптечки. У пошуку протерміновані ліки сірі, а ті, що скоро закінчаться, підсвічені.</p>
+    </div>
+    <div class="card" aria-hidden="true">
+      <div class="ttl">Потребує уваги <span>3</span></div>
+      <ul class="list">
+        <li><span class="nm"><b>Парацетамол</b></span><span class="chip red">Протерміновано</span></li>
+        <li><span class="nm"><b>Лоратадин</b></span><span class="chip amber">Закінчується термін</span></li>
+        <li><span class="nm"><b>Но-шпа</b></span><span class="chip amber">Залишилось 4 шт</span></li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<section class="sec" id="cabinets">
+  <div class="wrap row">
+    <div class="body">
+      <h2>Кілька аптечок: дім, машина, дача, батьки</h2>
+      <p>У кожної аптечки свій вміст, а перемикаєшся між ними в заголовку. Для кожної обираєш, за чим стежити: тільки терміни або терміни і прийом. В машині досить термінів, а вдома знадобиться і розклад.</p>
+      <p>Аптечкою можна <strong>поділитися з родиною</strong>. Надсилаєш код запрошення, і всі бачать одне й те саме. Код діє 7 днів.</p>
+    </div>
+    <div class="card" aria-hidden="true">
+      <div class="ttl">Аптечки</div>
+      <div class="cabs">
+        <div class="cab on"><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="m3 11 9-7 9 7v9a1 1 0 0 1-1 1h-5v-6h-6v6H4a1 1 0 0 1-1-1v-9Z"/></svg></span><span class="nm"><b>Дім</b><small>Терміни і прийом</small></span></div>
+        <div class="cab"><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M5 17H3v-5l2-5h10l4 5h2v5h-2"/><circle cx="7.5" cy="17" r="2"/><circle cx="16.5" cy="17" r="2"/><path d="M9.5 17h5"/></svg></span><span class="nm"><b>Машина</b><small>Тільки терміни</small></span></div>
+        <div class="cab"><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M12 21v-7"/><path d="M8 14h8l-4-6-4 6Z"/><path d="M9.5 10.5 12 3l2.5 7.5"/><path d="M3 21h18"/></svg></span><span class="nm"><b>Дача</b><small>Тільки терміни</small></span></div>
+        <div class="cab"><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="8" r="3.5"/><path d="M2.5 20a6.5 6.5 0 0 1 13 0"/><circle cx="17" cy="9" r="2.5"/><path d="M16 14.2a5 5 0 0 1 5.5 5.8"/></svg></span><span class="nm"><b>Батьки</b><small>Тільки терміни</small></span></div>
+      </div>
+      <div class="code"><b>K7Q 4MP</b><span>Діє 7 днів</span></div>
+    </div>
+  </div>
+</section>
+
+<section class="sec" id="doses">
+  <div class="wrap row flip">
+    <div class="body">
+      <h2>Розклад прийому</h2>
+      <p>Для ліків, які пʼєш регулярно, постав розклад: один, два чи три рази на день, у певні дні або за потреби. Курс постійний або на 7, 14 чи 30 днів.</p>
+      <p>На вкладці «Сьогодні» видно, що і коли приймати. Позначаєш прийняту дозу, і <strong>залишок рахується сам</strong>. Коли ліки закінчуються, вони потрапляють у список «Покупки».</p>
+    </div>
+    <div class="card" aria-hidden="true">
+      <div class="ttl">Сьогодні <span>1 з 2</span></div>
+      <div class="dose"><span class="ck"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="m5 12 5 5 9-10"/></svg></span><span class="nm"><b>Лоратадин, 1 таблетка</b><small>Прийнято о 9:00</small></span></div>
+      <div class="next">
+        <span class="when"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>Час прийняти</span>
+        <b>Но-шпа, 1 таблетка</b>
+        <div class="acts"><span class="p">Прийняти</span><span class="s">Пізніше</span></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="sec" id="no-account">
+  <div class="wrap">
+    <div class="intro">
+      <h2>Без реєстрації і реклами</h2>
+      <p>Пігулка відкривається прямо в Telegram. Пошта, пароль і анкети не потрібні: вхід через твій Telegram відбувається сам.</p>
+    </div>
+    <div class="facts">
+      <div class="fact"><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><rect x="6" y="2.5" width="12" height="19" rx="3"/><path d="M10.5 18.5h3"/></svg></span><h3>Нічого не встановлювати</h3><p>Відкриваєш посилання, і аптечка вже перед тобою.</p></div>
+      <div class="fact"><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3 4.5 6v5.5c0 4.5 3.2 8.3 7.5 9.5 4.3-1.2 7.5-5 7.5-9.5V6L12 3Z"/><path d="m9 12 2 2 4-4"/></svg></span><h3>Без реклами</h3><p>Тільки твої ліки і їхні терміни.</p></div>
+      <div class="fact"><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M6 6h15l-1.5 9h-12L6 6Zm0 0L5 3H2"/><circle cx="9" cy="20" r="1.5"/><circle cx="18" cy="20" r="1.5"/></svg></span><h3>Список для аптеки</h3><p>Що закінчилось або протермінувалось, Пігулка складає в «Покупки».</p></div>
+    </div>
+  </div>
+</section>
+
+<section class="sec" id="faq">
+  <div class="wrap">
+    <h2>Часті питання</h2>
+    <div class="faq">
+      <div class="qa"><h3>Що треба встановити?</h3><p>Нічого. Пігулка працює як міні-застосунок усередині Telegram. Відкрий посилання, і аптечка вже перед тобою.</p></div>
+      <div class="qa"><h3>Звідки Пігулка знає ліки?</h3><p>З Державного реєстру лікарських засобів України. Шукає за назвою і за діючою речовиною. Якщо ліків там немає, їх можна ввести вручну.</p></div>
+      <div class="qa"><h3>Хто бачить мою аптечку?</h3><p>Тільки ти і ті, кому ти надсилаєш код запрошення. Розклад прийому бачиш тільки ти.</p></div>
+      <div class="qa"><h3>Пігулка замінює лікаря?</h3><p>Ні. Пігулка допомагає вести облік ліків. Це не медична порада і не заміна лікаря чи фармацевта.</p></div>
+    </div>
+  </div>
+</section>
+
+<section class="sec final">
+  <div class="wrap">
+    <div class="box">
+      <img src="/pihulka/img/icon.png" alt="" width="64" height="64">
+      <p>Відкрий Пігулку і додай ліки, які є вдома</p>
+      <a class="btn" href="https://t.me/pihulka_bot/Pihulka"><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M21.6 3.3 2.9 10.6c-1.1.4-1.1 1.1-.2 1.4l4.7 1.5 1.8 5.6c.2.6.4.8.8.8.5 0 .7-.2 1-.5l2.4-2.3 4.9 3.6c.9.5 1.5.2 1.8-.8L23 4.9c.3-1.3-.5-1.9-1.4-1.6zM8.3 13.2l9.9-6.2c.5-.3.9-.1.5.2l-8.4 7.6-.3 3.5-1.7-5.1z"/></svg>Відкрити у Telegram</a>
+    </div>
+  </div>
+</section>
 </main>
+
+<footer>
+  <div class="wrap">
+    <a class="logo" href="/pihulka/"><img src="/pihulka/img/icon.png" alt="" width="36" height="36">Пігулка</a>
+    <nav aria-label="Посилання">
+      <a href="https://t.me/pihulka_bot/Pihulka">Telegram</a>
+      <a href="mailto:hello@gluponya.tv">hello@gluponya.tv</a>
+      <a href="https://gluponya.tv/">Глупоня</a>
+    </nav>
+    <p class="made">Зроблено в студії <a href="https://gluponya.tv/">Глупоня</a> у Львові</p>
+  </div>
+</footer>
+
 <script defer src="https://static.cloudflareinsights.com/beacon.min.js" data-cf-beacon='{"token": "e333441f10df4fae820f812d0ebedacf"}'></script>
 </body>
 </html>

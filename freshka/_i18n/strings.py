@@ -29,17 +29,17 @@ META = {
 
 # <title> of the landing: the App Store name of the app in each language (60 characters at most)
 TITLE = {
-    "uk": "Фрешка: холодильник, продукти",
-    "en": "Freshka: Fridge, Food Tracker",
-    "de": "Freshka: Kühlschrank, Vorrat",
-    "es": "Freshka: nevera y despensa",
-    "pt": "Freshka: geladeira e controle de comida",
-    "vi": "Freshka: tủ lạnh, quản lý thực phẩm",
-    "tr": "Freshka: buzdolabı, yiyecek takibi",
-    "fr": "Freshka: frigo, anti-gaspi",
-    "it": "Freshka: frigo, dispensa",
-    "pl": "Freshka: lodówka i jedzenie",
-    "nl": "Freshka: koelkast en eten",
+    "uk": "Фрешка: холодильник і терміни придатності",
+    "en": "Freshka: Fridge &amp; Expiry Date Tracker",
+    "de": "Freshka: Kühlschrank &amp; Haltbarkeit im Blick",
+    "es": "Freshka: nevera y fechas de caducidad",
+    "pt": "Freshka: geladeira e validade dos alimentos",
+    "vi": "Freshka: tủ lạnh và hạn sử dụng",
+    "tr": "Freshka: buzdolabı ve son kullanma tarihi",
+    "fr": "Freshka: frigo et dates de péremption",
+    "it": "Freshka: frigo e scadenze degli alimenti",
+    "pl": "Freshka: lodówka i terminy ważności",
+    "nl": "Freshka: koelkast en houdbaarheid",
 }
 
 # The link-preview picture's headline, two lines, the accent between asterisks.
@@ -60,17 +60,17 @@ OG_HEADLINE = {
 # uk: (en, de, es, pt, vi, tr, fr, it, pl, nl)
 T = {
     # head
-    "Фрешка показує холодильник як картинку: полиці, продукти на них і те, що скоро зіпсується": (
-        "Freshka shows your fridge as a picture: the shelves, the food on them and what is about to go off",
-        "Freshka zeigt deinen Kühlschrank als Bild: die Fächer, die Lebensmittel darin und was bald verdirbt",
-        "Freshka muestra tu nevera como un dibujo: los estantes, la comida que hay en ellos y lo que está a punto de estropearse",
-        "O Freshka mostra sua geladeira como um desenho: as prateleiras, a comida nelas e o que está prestes a estragar",
-        "Freshka vẽ tủ lạnh của bạn thành một bức tranh: các ngăn, đồ ăn trên đó và món nào sắp hỏng",
-        "Freshka buzdolabını bir resim olarak gösterir: raflar, üstündeki yiyecekler ve yakında bozulacak olanlar",
-        "Freshka montre ton frigo en dessin : les étagères, les aliments posés dessus et ce qui va bientôt se gâter",
-        "Freshka mostra il tuo frigo come un’immagine: i ripiani, il cibo sopra e cosa sta per andare a male",
-        "Freshka pokazuje twoją lodówkę jako obrazek: półki, jedzenie na nich i to, co zaraz się zepsuje",
-        "Freshka toont je koelkast als plaatje: de planken, de producten erop en wat bijna bederft",
+    "Фрешка: додаток для обліку продуктів і термінів придатності. Холодильник як картинка, ШІ читає чек і штрихкод, увечері нагадує, що зʼїсти першим": (
+        "Freshka: an app to track your food and expiry dates. Your fridge as a picture, AI reads the receipt and barcode, an evening reminder says what to eat first",
+        "Freshka: App für Lebensmittel und Haltbarkeit. Dein Kühlschrank als Bild, die KI liest Kassenbon und Barcode, abends erinnert sie, was zuerst gegessen werden soll",
+        "Freshka: app para controlar tu comida y las fechas de caducidad. Tu nevera como un dibujo, la IA lee el tique y el código de barras, y por la noche te recuerda qué comer primero",
+        "Freshka: app para controlar a comida e a validade. Sua geladeira como um desenho, a IA lê o cupom e o código de barras, e à noite lembra o que comer primeiro",
+        "Freshka: ứng dụng quản lý thực phẩm và hạn sử dụng. Tủ lạnh thành một bức tranh, AI đọc hóa đơn và mã vạch, buổi tối nhắc món nào nên ăn trước",
+        "Freshka: yiyecekleri ve son kullanma tarihlerini takip eden uygulama. Buzdolabın bir resim olarak, yapay zekâ fişi ve barkodu okur, akşamları önce neyi yemen gerektiğini hatırlatır",
+        "Freshka : l’appli pour suivre tes aliments et leurs dates de péremption. Ton frigo en dessin, l’IA lit le ticket et le code-barres, et le soir elle te rappelle quoi manger en premier",
+        "Freshka: l’app per tenere traccia del cibo e delle scadenze. Il tuo frigo come un’immagine, l’IA legge scontrino e codice a barre, e la sera ricorda cosa mangiare per primo",
+        "Freshka: aplikacja do pilnowania jedzenia i terminów ważności. Twoja lodówka jako obrazek, AI czyta paragon i kod kreskowy, a wieczorem przypomina, co zjeść najpierw",
+        "Freshka: app voor je eten en houdbaarheidsdata. Je koelkast als plaatje, AI leest kassabon en streepjescode, en ’s avonds herinnert ze je aan wat je eerst moet opeten",
     ),
     "Фрешка: холодильник у телефоні": (
         "Freshka: the fridge in your phone",
@@ -142,12 +142,12 @@ T = {
         "Lodówka, <em>którą widać</em>",
         "Een koelkast <em>die je ziet</em>",
     ),
-    "Намалюй свій холодильник у телефоні. Що скоро зіпсується, видно одразу.": (
-        "Draw your own fridge on your phone. What is about to go off shows at a glance.",
-        "Zeichne deinen Kühlschrank im Handy nach. Was bald verdirbt, siehst du sofort.",
-        "Dibuja tu nevera en el móvil. Lo que está a punto de estropearse se ve al instante.",
-        "Desenhe sua geladeira no celular. O que está prestes a estragar aparece na hora.",
-        "Vẽ chiếc tủ lạnh của bạn ngay trên điện thoại. Món nào sắp hỏng là thấy ngay.",
+    "Намалюй свій холодильник у телефоні: додаток стежить за термінами придатності, а що скоро зіпсується, видно одразу.": (
+        "Draw your own fridge on your phone: the app keeps track of expiry dates, and what is about to go off shows at a glance.",
+        "Zeichne deinen Kühlschrank im Handy nach: Die App behält die Haltbarkeitsdaten im Blick, und was bald verdirbt, siehst du sofort.",
+        "Dibuja tu nevera en el móvil: la app vigila las fechas de caducidad y lo que está a punto de estropearse se ve al instante.",
+        "Desenhe sua geladeira no celular: o app acompanha a validade e o que está prestes a estragar aparece na hora.",
+        "Vẽ chiếc tủ lạnh của bạn ngay trên điện thoại: ứng dụng theo dõi hạn sử dụng, món nào sắp hỏng là thấy ngay.",
         "Buzdolabını telefonunda çiz. Yakında bozulacak olan hemen görünür.",
         "Dessine ton propre frigo dans ton téléphone. Ce qui va bientôt se gâter se voit d’un coup d’œil.",
         "Disegna il tuo frigo sul telefono. Cosa sta per andare a male si vede subito.",
